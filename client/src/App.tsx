@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "./utils/apiClient";
 
 interface KudelmaResponse {
   message: string;
@@ -11,7 +11,7 @@ const App = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get<KudelmaResponse>("/api/kudelma");
+        const response = await axios.get<KudelmaResponse>("/kudelma");
         setMessage(response.data.message);
       } catch (error) {
         console.error(error);
