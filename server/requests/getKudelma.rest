@@ -1,1 +1,1 @@
-GET http://localhost:3001/api/kudelma
+GET http://localhost:3001/kudelma
