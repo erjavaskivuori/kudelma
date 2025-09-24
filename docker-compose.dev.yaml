@@ -1,0 +1,37 @@
+services:
+  client:
+    image: kudelma-client-dev
+    build:
+      context: ./client
+      dockerfile: dev.Dockerfile
+    environment:
+      - VITE_BACKEND_URL=/api
+    volumes:
+      - ./client:/usr/src/app
+      # Prevents overwriting node_modules in the container
+      # This is necessary when using mac and linux containers together
+      - /usr/src/app/node_modules
+    container_name: kudelma-client-dev
+
+  server:
+    image: kudelma-backend-dev
+    build:
+      context: ./server
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./server:/usr/src/app
+      # Prevents overwriting node_modules in the container
+      # This is necessary when using mac and linux containers together
+      - /usr/src/app/node_modules
+    container_name: kudelma-backend-dev
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - 8080:80
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    container_name: reverse-proxy
+    depends_on:
+      - client
+      - server
