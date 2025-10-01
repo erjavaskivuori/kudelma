@@ -1,29 +1,15 @@
-import { useEffect, useState } from "react";
-import axios from "./utils/apiClient";
-
-interface KudelmaResponse {
-  message: string;
-}
+import { useWeather } from './hooks/useWeather';
+import { useGeoLocation } from './hooks/useGeoLocation';
+import Weather from './components/weather';
 
 const App = () => {
-  const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get<KudelmaResponse>("/kudelma");
-        setMessage(response.data.message);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    void fetchData();
-  }, []);
+  const coords = useGeoLocation();
+  const weather = useWeather(coords);
 
   return (
     <div>
-      <p>Message from backend: {message}</p>
+      <h1>Weather info</h1>
+      <Weather weather={weather} />
     </div>
   );
 };
