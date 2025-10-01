@@ -1,0 +1,22 @@
+services:
+  app:
+    restart: unless-stopped
+    image: kudelma-client
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile
+      args:
+          VITE_BACKEND_URL: /api
+    container_name: kudelma-client
+    ports:
+      - 8080:80
+    depends_on:
+      - kudelma-backend
+
+  kudelma-backend:
+    restart: unless-stopped
+    image: kudelma-backend
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: kudelma-backend
