@@ -1,11 +1,11 @@
 import express from 'express';
 import cors from 'cors';
-import kudelmaRouter from './routes/kudelmaRoutes.js';
+import weatherRouter from './routes/weatherRoutes.js';
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 
-app.use('/kudelma', kudelmaRouter);
+app.use('/weather', weatherRouter);
 
 export default app;
