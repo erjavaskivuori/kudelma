@@ -5,7 +5,7 @@ export const fetchWeatherByCoordinates = async (latitude: number, longitude: num
   if (!response.ok) {
     throw new Error('Failed to fetch weather data');
   }
-  const data: OpenWeatherData = await response.json();
+  const data: OpenWeatherData = await response.json() as OpenWeatherData;
 
   const weather: WeatherData = {
     city: data.name,
