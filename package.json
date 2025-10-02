@@ -2,10 +2,15 @@
   "name": "kudelma",
   "private": true,
   "scripts": {
-    "prepare": "husky"
+    "dev:setup": "./scripts/dev_setup.sh",
+    "dev:start": "./scripts/dev_start.sh",
+    "lint": "./scripts/lint.sh",
+    "prepare": "husky",
+    "markdownlint": "markdownlint-cli2 '**/*.md' '#**/node_modules'"
   },
   "devDependencies": {
     "husky": "^9.1.7",
-    "lint-staged": "^16.2.3"
+    "lint-staged": "^16.2.3",
+    "markdownlint-cli2": "^0.18.1"
   }
 }
