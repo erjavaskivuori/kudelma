@@ -13,7 +13,7 @@ const Weather = ({ weather }: { weather: WeatherData | null }) => {
         <li>Sunset: {new Date(weather.sunset * 1000).toLocaleTimeString('fi-FI')}</li>
       </ul>
     </div>
-  )
+  );
 };
 
 export default Weather;
