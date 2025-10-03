@@ -21,7 +21,14 @@ export default defineConfig([
       "@stylistic": stylistic,
     },
     rules: {
+      '@stylistic/indent': ['error', 2],
+      '@stylistic/quotes': ['error', 'single'],
       '@stylistic/semi': 'error',
+      '@stylistic/max-len': ['error', { 
+        code: 100,
+        tabWidth: 2,
+        ignoreUrls: true,
+      }],
       '@typescript-eslint/no-unsafe-assignment': 'error',
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/explicit-function-return-type': 'off',

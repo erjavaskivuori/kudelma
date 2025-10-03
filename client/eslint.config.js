@@ -36,6 +36,11 @@ export default defineConfig([
       ],
       '@stylistic/semi': 'error',
 
+      '@stylistic/max-len': ['error', { 
+        code: 100,
+        tabWidth: 2,
+        ignoreUrls: true,
+      }],
       '@typescript-eslint/no-unsafe-assignment': 'warn',
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/explicit-function-return-type': 'off',
