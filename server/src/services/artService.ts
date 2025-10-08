@@ -34,7 +34,7 @@ const CC_LICENSES = {
 
 const INCLUDE_FIELDS = [
   'id',
-  'title', 
+  'title',
   'year',
   'imageRights',
   'images',
@@ -118,7 +118,7 @@ export const fetchArtworksByKeywords = async (keywords: string[], limit = DEFAUL
     }
 
     throw new HttpError(
-      `Failed to fetch artworks: ${error instanceof Error ? error.message : 'Unknown error'}`, 
+      `Failed to fetch artworks: ${error instanceof Error ? error.message : 'Unknown error'}`,
       500
     );
   }

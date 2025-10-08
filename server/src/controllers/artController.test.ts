@@ -202,8 +202,8 @@ describe('artController', () => {
 
       expect(response.status).toBe(200);
       expect(mockFetchArtworksByKeywords).toHaveBeenCalledWith([
-        'art-123', 
-        'painting_modern', 
+        'art-123',
+        'painting_modern',
         'design'
       ]);
     });
