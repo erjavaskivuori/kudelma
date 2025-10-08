@@ -31,6 +31,7 @@ export default defineConfig([
       }],
       '@stylistic/eol-last': ['error', 'always'],
       '@stylistic/no-trailing-spaces': 'error',
+      '@stylistic/no-multiple-empty-lines': ["error", { "max": 1, "maxBOF": 0 }],
       '@typescript-eslint/no-unsafe-assignment': 'error',
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/explicit-function-return-type': 'off',

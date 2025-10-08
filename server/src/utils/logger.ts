@@ -6,7 +6,6 @@ const error = (...params: unknown[]) => {
   console.error(new Date().toISOString(), '[ERROR]', ...params);
 };
 
-
 export default {
   info,
   error
