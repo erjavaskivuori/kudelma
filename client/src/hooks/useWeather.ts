@@ -1,30 +1,33 @@
-import { useState, useEffect } from 'react';
-import axios from '../utils/apiClient';
-import type { WeatherData, Coordinates } from '../../../shared/types/weather';
+import { useEffect, useMemo } from 'react';
+import { useAppSelector, useAppDispatch } from './common';
+import { 
+  fetchWeatherData, 
+  selectWeatherData, 
+  selectWeatherLoading, 
+  selectWeatherError,
+} from '../reducers/weatherSlice';
+import type { UseWeatherReturn, Coordinates } from '../../../shared/types/weather';
 
-interface WeatherResponse {
-  data: {
-    weather: WeatherData;
-  };
-}
+export const useWeather = (coords: Coordinates | null): UseWeatherReturn => {
+  const dispatch = useAppDispatch();
+  const weather = useAppSelector(selectWeatherData);
+  const loading = useAppSelector(selectWeatherLoading);
+  const error = useAppSelector(selectWeatherError);
 
-export const useWeather = (coords: Coordinates | null): WeatherData | null => {
-  const [weather, setWeather] = useState<WeatherData | null>(null);
+  const shouldFetch = useMemo(() => {
+    if (!coords) return false;
+    if (!weather) return true;
+  }, [coords, weather]);
 
   useEffect(() => {
-  if (!coords) return;
-
-  void (async () => {
-    try {
-      const response: WeatherResponse = await axios.get('/weather', {
-        params: { latitude: coords.lat, longitude: coords.lon }
-      });
-      setWeather(response.data.weather);
-    } catch (error) {
-      console.error(error);
+    if (shouldFetch && coords) {
+      void dispatch(fetchWeatherData(coords));
     }
-  })();
-}, [coords]);
+  }, [shouldFetch, coords, dispatch]);
 
-  return weather;
+  return {
+    weather,
+    loading,
+    error,
+  };
 };
