@@ -75,3 +75,9 @@ export interface WeatherData {
   sunrise: number;
   sunset: number;
 }
+
+export interface UseWeatherReturn {
+  weather: WeatherData | null;
+  loading: boolean;
+  error: string | null;
+}

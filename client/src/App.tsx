@@ -9,7 +9,7 @@ const App = () => {
   return (
     <div>
       <h1>Weather info</h1>
-      <Weather weather={weather} />
+      <Weather weather={weather.weather} loading={weather.loading} error={weather.error} />
     </div>
   );
 };

@@ -1,7 +1,18 @@
-import type { WeatherData } from '../../../shared/types/weather';
+import type { UseWeatherReturn } from '../../../shared/types/weather';
 
-const Weather = ({ weather }: { weather: WeatherData | null }) => {
-  if (!weather) return <p>No weather data available</p>;
+const Weather = ({ weather, loading, error }: UseWeatherReturn) => {
+  if (loading) {
+    return <p>Loading weather data...</p>;
+  }
+
+  if (error) {
+    return <p>Error loading weather: {error}</p>;
+  }
+
+  if (!weather) {
+     return <p>No weather data available</p>;
+  }
+
   return (
     <div>
       <p>Weather in {weather.city}:</p>
