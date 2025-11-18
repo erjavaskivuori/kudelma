@@ -25,8 +25,8 @@ const Weather = () => {
         <li>Main: {weatherData.main}</li>
         <li>Temperature: {weatherData.temperature}°C</li>
         <li>Cloudiness: {weatherData.cloudiness}%</li>
-        <li>Sunrise: {new Date(weatherData.sunrise * 1000).toLocaleTimeString('fi-FI')}</li>
-        <li>Sunset: {new Date(weatherData.sunset * 1000).toLocaleTimeString('fi-FI')}</li>
+        <li>Sunrise: {weatherData.sunrise}</li>
+        <li>Sunset: {weatherData.sunset}</li>
       </ul>
     </div>
   );

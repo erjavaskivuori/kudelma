@@ -34,8 +34,8 @@ describe('weatherService', () => {
       main: 'Clear',
       temperature: 15.5,
       cloudiness: 20,
-      sunrise: 1633072800,
-      sunset: 1633116000,
+      sunrise: '6:12:34',
+      sunset: '22:45:56',
     };
 
     it('should return weather data for valid coordinates', async () => {
@@ -80,8 +80,8 @@ describe('weatherService', () => {
         main: undefined,
         temperature: 15.5,
         cloudiness: 20,
-        sunrise: 1633072800,
-        sunset: 1633116000,
+        sunrise: '6:12:34',
+        sunset: '22:45:56',
       });
     });
 

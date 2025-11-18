@@ -24,8 +24,8 @@ describe('GET /weather', () => {
       main: 'Clear',
       temperature: 15,
       cloudiness: 0,
-      sunrise: 1633072800,
-      sunset: 1633116000,
+      sunrise: '6:12:34',
+      sunset: '22:45:56',
     };
 
     mockFetchWeatherByCoordinates.mockResolvedValue(mockWeather);

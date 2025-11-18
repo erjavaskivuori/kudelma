@@ -16,8 +16,8 @@ export const fetchWeatherByCoordinates = async (
     main: data.weather[0]?.main,
     temperature: data.main.temp,
     cloudiness: data.clouds.all,
-    sunrise: data.sys.sunrise,
-    sunset: data.sys.sunset,
+    sunrise: new Date(data.sys.sunrise * 1000).toLocaleTimeString('fi-FI'),
+    sunset: new Date(data.sys.sunset * 1000).toLocaleTimeString('fi-FI'),
   };
 
   return weather;

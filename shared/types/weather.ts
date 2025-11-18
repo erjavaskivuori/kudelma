@@ -72,8 +72,8 @@ export interface WeatherData {
   main: string | undefined;
   temperature: number;
   cloudiness: number;
-  sunrise: number;
-  sunset: number;
+  sunrise: string;
+  sunset: string;
 }
 
 export interface UseWeatherReturn {
