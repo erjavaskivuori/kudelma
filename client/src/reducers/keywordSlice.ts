@@ -3,6 +3,7 @@ import type { RootState } from '../store';
 import type { Keywords } from '../../../shared/types/keywords';
 import axios from '../utils/apiClient';
 import type { AxiosResponse } from 'axios';
+import type { WeatherData } from '../../../shared/types/weather';
 
 interface KeywordState {
   keywords: Keywords | null;
@@ -22,9 +23,11 @@ const initialState: KeywordState = {
 
 export const fetchKeywords = createAsyncThunk(
   'keywords/fetchKeywords',
-  async (_, { rejectWithValue }) => {
+  async (weather: WeatherData, { rejectWithValue }) => {
     try {
-      const response: AxiosResponse<KeywordsApiResponse> = await axios.get('/keywords');
+      const response: AxiosResponse<KeywordsApiResponse> = await axios.get('/keywords', {
+        params: { ...weather }
+      });
       return { keywords: response.data.keywords };
     } catch (error) {
       return rejectWithValue(

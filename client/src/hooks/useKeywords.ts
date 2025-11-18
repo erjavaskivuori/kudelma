@@ -17,15 +17,15 @@ export const useKeywords = (): UseKeywordsReturn => {
   const keywords = useAppSelector(selectKeywords);
 
   const shouldFetch = useMemo(() => {
-    if (!weather || keywords) return false;
+    if (keywords) return false;
     return true;
-  }, [weather, keywords]);
+  }, [keywords]);
 
   useEffect(() => {
-    if (shouldFetch) {
-      void dispatch(fetchKeywords());
+    if (shouldFetch && weather) {
+      void dispatch(fetchKeywords(weather));
     }
-  }, [shouldFetch, dispatch]);
+  }, [shouldFetch, dispatch, weather]);
 
   return {
     keywords,
