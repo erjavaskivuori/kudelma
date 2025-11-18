@@ -1,6 +1,7 @@
 import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
 import type { Keywords } from '../../../shared/types/keywords.ts';
+import type { WeatherData } from '../../../shared/types/weather.js';
 
 dotenv.config();
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -32,16 +33,11 @@ const getTimeOfDay = (): string => {
   return 'night';
 };
 
-const createContextualPrompt = (): string => {
-  console.log(GENAI_PROMPT);
-  const weather = {'Main': 'Clouds',
-    'Temperature': '25.88°C',
-    'Cloudiness': '75%'};
-
+const createContextualPrompt = (weather: WeatherData): string => {
   const context = `{"date": ${new Date().toLocaleDateString()}, \
     "season": ${getSeason()}, \
+    "time": ${new Date().toLocaleTimeString()}, \
     "time_of_day": ${getTimeOfDay()}, \
-    "location": "Helsinki"}, \
     "weather": ${JSON.stringify(weather)}}, \
     "flag_day": ${false}}`;
 
@@ -61,8 +57,10 @@ const extractJsonFromText = (text: string): string => {
   return jsonStr;
 };
 
-export const generateKeywords = async (): Promise<Keywords> => {
-  const promptWithContext = createContextualPrompt();
+export const generateKeywords = async (weather: WeatherData): Promise<Keywords> => {
+  console.log('Generating keywords for weather:', weather);
+  const promptWithContext = createContextualPrompt(weather);
+  console.log('Prompt sent to GenAI:', promptWithContext);
   const response = await ai.models.generateContent({
     model: 'gemini-2.0-flash',
     contents: promptWithContext,
@@ -71,7 +69,6 @@ export const generateKeywords = async (): Promise<Keywords> => {
   if (!response || !response.text) {
     throw new Error('No response from GenAI');
   }
-  console.log('GenAI response:', response.text);
   const jsonStr = extractJsonFromText(response.text);
   console.log('Extracted JSON:', jsonStr);
 
