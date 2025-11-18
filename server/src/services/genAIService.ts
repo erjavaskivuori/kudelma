@@ -1,5 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
+import type { Keywords } from '../../../shared/types/keywords.ts';
 
 dotenv.config();
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -60,7 +61,7 @@ const extractJsonFromText = (text: string): string => {
   return jsonStr;
 };
 
-export const generateKeywords = async (): Promise<JSON> => {
+export const generateKeywords = async (): Promise<Keywords> => {
   const promptWithContext = createContextualPrompt();
   const response = await ai.models.generateContent({
     model: 'gemini-2.0-flash',
@@ -75,7 +76,7 @@ export const generateKeywords = async (): Promise<JSON> => {
   console.log('Extracted JSON:', jsonStr);
 
   try {
-    const keywords = JSON.parse(jsonStr) as JSON;
+    const keywords = JSON.parse(jsonStr) as Keywords;
     return keywords;
   } catch (error) {
     if (error instanceof SyntaxError) {
