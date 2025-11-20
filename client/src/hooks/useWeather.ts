@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from './common';
 import { 
   fetchWeatherData, 
@@ -14,10 +14,7 @@ export const useWeather = (coords: Coordinates | null): UseWeatherReturn => {
   const loading = useAppSelector(selectWeatherLoading);
   const error = useAppSelector(selectWeatherError);
 
-  const shouldFetch = useMemo(() => {
-    if (!coords) return false;
-    if (!weather) return true;
-  }, [coords, weather]);
+  const shouldFetch = coords && !weather;
 
   useEffect(() => {
     if (shouldFetch && coords) {
