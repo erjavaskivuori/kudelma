@@ -23,5 +23,5 @@ export const getArtworks = async (req: Request, res: Response) => {
 
   const artworkData = await fetchArtworksByKeywords(keywordsArray);
 
-  return res.json({ artwork: artworkData });
+  return res.json({ artworks: artworkData });
 };
