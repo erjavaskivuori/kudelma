@@ -47,28 +47,28 @@ const ccLicense = (license: keyof typeof CC_LICENSES): string | null => {
 };
 
 const buildFinnaUrl = (keywords: string[], limit = DEFAULT_LIMIT): string => {
-  const params = new URLSearchParams();
+  const params: string[] = [];
 
   const searchTerms = keywords.join('+OR+');
-  params.append('lookfor[]', searchTerms);
+  params.push(`lookfor[]=${searchTerms}`);
 
   // Search keywords in all fields
-  params.append('type0[]', 'AllFields');
+  params.push('type0[]=AllFields');
 
-  params.append('filter[]', '~format:"1/WorkOfArt/Painting/"');
+  params.push('filter[]=~format:"1/WorkOfArt/Painting/"');
 
   Object.keys(CC_LICENSES).forEach(license => {
     const licenseValue = ccLicense(license as keyof typeof CC_LICENSES);
     if (licenseValue) {
-      params.append('filter[]', `~usage_rights_ext_str_mv:"${licenseValue}"`);
+      params.push(`filter[]=~usage_rights_ext_str_mv:"${licenseValue}"`);
     }
   });
 
-  INCLUDE_FIELDS.forEach(field => {params.append('field[]', field);});
+  INCLUDE_FIELDS.forEach(field => {params.push(`field[]=${field}`);});
+  params.push(`limit=${limit.toString()}`);
+  const url = `${FINNA_API_BASE}?${params.join('&')}`;
 
-  params.append('limit', limit.toString());
-
-  return `${FINNA_API_BASE}?${params.toString()}`;
+  return url;
 };
 
 const transformFinnaRecordToArtwork = (record: FinnaRecord): Artwork | null => {
@@ -90,6 +90,7 @@ const transformFinnaRecordToArtwork = (record: FinnaRecord): Artwork | null => {
 
 export const fetchArtworksByKeywords = async (keywords: string[], limit = DEFAULT_LIMIT) => {
   const url = buildFinnaUrl(keywords, limit);
+  console.log('Fetching artworks from Finna API with URL:', url);
 
   try {
     const response = await fetch(url);
@@ -102,6 +103,7 @@ export const fetchArtworksByKeywords = async (keywords: string[], limit = DEFAUL
     }
 
     const data: FinnaApiResponse = await response.json() as FinnaApiResponse;
+    console.log('Finna API response data:', data);
     if (!data.records || !Array.isArray(data.records)) {
       throw new HttpError('Invalid response structure from Finna API', 500);
     }
