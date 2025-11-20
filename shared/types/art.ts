@@ -23,3 +23,8 @@ export interface Artwork {
   buildings: building[] | null;
 }
 
+export interface UseArtworksReturn {
+  artworks: Artwork[] | null;
+  loading: boolean;
+  error: string | null;
+}
