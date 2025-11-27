@@ -1,5 +1,15 @@
 import { HttpError } from '../utils/errors/HttpError.js';
-import type { Palette } from '../../../shared/types/colors.js';
+
+export interface Palette {
+  id: string;
+  colors: string[];
+  tags: string[];
+  text: string;
+  likesCount: number;
+  isLiked: boolean;
+  normalizedHash: string;
+  createdAt: string;
+}
 
 export const fetchColorsByKeywords = async (keywords: string[]): Promise<string[]> => {
   for (let i = 0; i < keywords.length; i++) {
