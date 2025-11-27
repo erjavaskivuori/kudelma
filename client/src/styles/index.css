@@ -2,3 +2,11 @@
 
 @import "tailwindcss";
 @import "tailwindcss/utilities";
+
+:root {
+  --color-extra-dark: #bc5507;
+  --color-dark: #ef8645;
+  --color-medium: #e99e36;
+  --color-light: #faeaa2;
+  --color-extra-light: #ebebe5;
+}
