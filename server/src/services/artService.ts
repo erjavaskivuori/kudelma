@@ -23,7 +23,7 @@ interface FinnaRecord {
 }
 
 const FINNA_API_BASE = 'https://api.finna.fi/v1/search';
-const DEFAULT_LIMIT = 100;
+const DEFAULT_LIMIT = 40;
 
 const CC_LICENSES = {
   'cc-0': '0/A Free/', // Free usage
@@ -78,11 +78,15 @@ const transformFinnaRecordToArtwork = (record: FinnaRecord): Artwork | null => {
     return null;
   }
 
+  const uniqueAuthors = record.nonPresenterAuthors.filter((author, index, array) =>
+    array.findIndex(a => a.name === author.name) === index
+  );
+
   return {
     id: record.id,
     title: record.title,
     year: record.year ? parseInt(record.year, 10) : null,
-    authors: record.nonPresenterAuthors,
+    authors: uniqueAuthors,
     imageUrl: imageUrl,
     buildings: record.buildings || null,
   };
