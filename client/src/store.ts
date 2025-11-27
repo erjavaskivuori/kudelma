@@ -1,16 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit';
-import weatherReducer from './reducers/weatherSlice';
-import keywordReducer from './reducers/keywordSlice';
-import artworkReducer from './reducers/artworkSlice';
+import { setupListeners } from '@reduxjs/toolkit/query';
+import { api } from './services/api';
 
 export const store = configureStore({
   reducer: {
-    weather: weatherReducer,
-    keywords: keywordReducer,
-    artworks: artworkReducer,
-  }
+    [api.reducerPath]: api.reducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(api.middleware),
 });
+
+setupListeners(store.dispatch);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-export type AppStore = typeof store;

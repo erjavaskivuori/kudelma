@@ -1,32 +1,15 @@
-import { useWeather } from '../hooks/useWeather';
-import { useGeoLocation } from '../hooks/useGeoLocation';
+import type { WeatherData } from '../../../shared/types/weather';
 
-const Weather = () => {
-  const coords = useGeoLocation();
-  const weather = useWeather(coords);
-  const weatherData = weather.weather;
-
-  if (weather.loading) {
-    return <p>Loading weather data...</p>;
-  }
-
-  if (weather.error) {
-    return <p>Error loading weather: {weather.error}</p>;
-  }
-
-  if (!weatherData) {
-     return <p>No weather data available</p>;
-  }
-
+const Weather = (weather: WeatherData) => {
   return (
     <div>
-      <p>Weather in {weatherData.city}:</p>
+      <p>Weather in {weather.city}:</p>
       <ul>
-        <li>Main: {weatherData.main}</li>
-        <li>Temperature: {weatherData.temperature}°C</li>
-        <li>Cloudiness: {weatherData.cloudiness}%</li>
-        <li>Sunrise: {weatherData.sunrise}</li>
-        <li>Sunset: {weatherData.sunset}</li>
+        <li>Main: {weather.main}</li>
+        <li>Temperature: {weather.temperature}°C</li>
+        <li>Cloudiness: {weather.cloudiness}%</li>
+        <li>Sunrise: {weather.sunrise}</li>
+        <li>Sunset: {weather.sunset}</li>
       </ul>
     </div>
   );
