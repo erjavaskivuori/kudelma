@@ -8,8 +8,17 @@ export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: String(import.meta.env.VITE_BACKEND_URL),
   }),
-  tagTypes: ['Keywords', 'Weather', 'Artworks', 'Books'],
+  tagTypes: ['Colors', 'Keywords', 'Weather', 'Artworks', 'Books'],
   endpoints: (builder) => ({
+    getColors: builder.query<string[], string[]>({
+      query: (keywords) => ({
+        url: '/colors',
+        params: { keywords: keywords.join(',') },
+      }),
+      transformResponse: (response: { colors: string[] }) => response.colors,
+      providesTags: ['Colors'],
+    }),
+
     getKeywords: builder.query<Record<string, string[]>, WeatherData>({
       query: (weather) => ({
         url: '/keywords',
@@ -49,6 +58,7 @@ export const api = createApi({
 });
 
 export const { 
+  useGetColorsQuery, 
   useGetKeywordsQuery, 
   useGetWeatherQuery,
   useGetArtworksQuery,
