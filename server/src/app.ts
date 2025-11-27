@@ -4,6 +4,7 @@ import middleware from './utils/middleware.js';
 import weatherRouter from './routes/weatherRoutes.js';
 import artRouter from './routes/artRoutes.js';
 import genAiKeywordRouter from './routes/genAIRoutes.js';
+import colorRouter from './routes/colorRoutes.js';
 const app = express();
 
 app.use(express.json());
@@ -13,6 +14,7 @@ app.use(middleware.requestLogger);
 app.use('/weather', weatherRouter);
 app.use('/art', artRouter);
 app.use('/keywords', genAiKeywordRouter);
+app.use('/colors', colorRouter);
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
 
