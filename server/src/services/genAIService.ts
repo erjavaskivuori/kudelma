@@ -62,7 +62,7 @@ export const generateKeywords = async (weather: WeatherData): Promise<Keywords> 
   const promptWithContext = createContextualPrompt(weather);
   console.log('Prompt sent to GenAI:', promptWithContext);
   const response = await ai.models.generateContent({
-    model: 'gemini-2.0-flash',
+    model: 'gemini-2.5-flash',
     contents: promptWithContext,
   });
 
