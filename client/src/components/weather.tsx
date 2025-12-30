@@ -1,6 +1,10 @@
 import type { WeatherData } from '../../../shared/types/weather';
 
-const Weather = (weather: WeatherData) => {
+interface WeatherProps {
+  weather: WeatherData;
+}
+
+const Weather = ({ weather }: WeatherProps) => {
   return (
     <div>
       <p>Weather in {weather.city}:</p>
