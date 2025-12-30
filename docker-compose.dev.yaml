@@ -24,6 +24,8 @@ services:
       # This is necessary when using mac and linux containers together
       - /usr/src/app/node_modules
     container_name: kudelma-backend-dev
+    depends_on:
+      - redis
 
   nginx:
     image: nginx:latest
@@ -35,3 +37,15 @@ services:
     depends_on:
       - client
       - server
+
+  redis:
+    image: redis:8.2
+    container_name: kudelma-redis-dev
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+
+volumes:
+  redis-data:
