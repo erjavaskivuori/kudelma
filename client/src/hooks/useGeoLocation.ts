@@ -8,8 +8,8 @@ export const useGeoLocation = (): Coordinates | null => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setCoords({
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
+          lat: Math.round(position.coords.latitude * 100) / 100,
+          lon: Math.round(position.coords.longitude * 100) / 100,
       });
     },
     (error) => console.error('Location error:', error)
