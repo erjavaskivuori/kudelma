@@ -12,4 +12,4 @@ ENV DEBUG=kudelma-backend:*
 
 USER node
 
-CMD ["npm", "run", "dev:watch", "--", "--host"]
+CMD ["npm", "run", "dev:watch"]
