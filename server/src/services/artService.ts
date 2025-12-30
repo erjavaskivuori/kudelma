@@ -5,6 +5,8 @@ import type {
   nonPresenterAuthor,
   building
 } from '../../../shared/types/art.ts';
+import { redis } from '../infra/redis.js';
+import { getNextChangeTimestamp } from '../utils/timeBuckets.js';
 
 interface FinnaApiResponse {
   records: FinnaRecord[];
@@ -22,6 +24,7 @@ interface FinnaRecord {
   buildings: building[];
 }
 
+const EXPIRE_AT = getNextChangeTimestamp();
 const FINNA_API_BASE = 'https://api.finna.fi/v1/search';
 const DEFAULT_LIMIT = 40;
 
@@ -93,8 +96,13 @@ const transformFinnaRecordToArtwork = (record: FinnaRecord): Artwork | null => {
 };
 
 export const fetchArtworksByKeywords = async (keywords: string[], limit = DEFAULT_LIMIT) => {
+  const cacheKey = `artworks:${keywords.sort().join(',')}`;
+  const cachedData = await redis.get(cacheKey);
+  if (cachedData) {
+    return JSON.parse(cachedData) as Artwork[];
+  }
+
   const url = buildFinnaUrl(keywords, limit);
-  console.log('Fetching artworks from Finna API with URL:', url);
 
   try {
     const response = await fetch(url);
@@ -107,7 +115,6 @@ export const fetchArtworksByKeywords = async (keywords: string[], limit = DEFAUL
     }
 
     const data: FinnaApiResponse = await response.json() as FinnaApiResponse;
-    console.log('Finna API response data:', data);
     if (!data.records || !Array.isArray(data.records)) {
       throw new HttpError('Invalid response structure from Finna API', 500);
     }
@@ -116,6 +123,10 @@ export const fetchArtworksByKeywords = async (keywords: string[], limit = DEFAUL
       .map(transformFinnaRecordToArtwork)
       .filter((artwork): artwork is Artwork => artwork !== null);
 
+    await redis.set(
+      cacheKey, JSON.stringify(artworks),
+      { expiration: { type:'EXAT', value: EXPIRE_AT } }
+    );
     return artworks;
 
   } catch (error) {

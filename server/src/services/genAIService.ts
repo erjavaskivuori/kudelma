@@ -2,6 +2,10 @@ import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
 import type { Keywords } from '../../../shared/types/keywords.ts';
 import type { WeatherData } from '../../../shared/types/weather.js';
+import { redis } from '../infra/redis.js';
+import { getNextChangeTimestamp } from '../utils/timeBuckets.js';
+
+const EXPIRE_AT = getNextChangeTimestamp();
 
 dotenv.config();
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -58,9 +62,13 @@ const extractJsonFromText = (text: string): string => {
 };
 
 export const generateKeywords = async (weather: WeatherData): Promise<Keywords> => {
-  console.log('Generating keywords for weather:', weather);
+  const cacheKey = `keywords:${JSON.stringify(weather)}`;
+  const cachedData = await redis.get(cacheKey);
+  if (cachedData) {
+    return JSON.parse(cachedData) as Keywords;
+  };
+
   const promptWithContext = createContextualPrompt(weather);
-  console.log('Prompt sent to GenAI:', promptWithContext);
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
     contents: promptWithContext,
@@ -70,14 +78,19 @@ export const generateKeywords = async (weather: WeatherData): Promise<Keywords> 
     throw new Error('No response from GenAI');
   }
   const jsonStr = extractJsonFromText(response.text);
-  console.log('Extracted JSON:', jsonStr);
 
   try {
     const keywords = JSON.parse(jsonStr) as Keywords;
+
+    await redis.set(
+      cacheKey, JSON.stringify(keywords),
+      { expiration: { type:'EXAT', value: EXPIRE_AT } }
+    );
+
     return keywords;
   } catch (error) {
     if (error instanceof SyntaxError) {
-      console.error('JSON parsing error:', error.message);
+      throw new Error(`JSON parsing error: ${error.message}`);
     }
     throw new Error('Failed to parse JSON from GenAI response');
   }
