@@ -1,7 +1,6 @@
 import type { Request, Response } from 'express';
 import { fetchArtworksByKeywords } from '../services/artService.js';
 import { HttpError } from '../utils/errors/HttpError.js';
-import { fetchImageStream } from '../services/imageProxyService.js';
 
 export const getArtworks = async (req: Request, res: Response) => {
   const { keywords } = req.query;
@@ -25,24 +24,4 @@ export const getArtworks = async (req: Request, res: Response) => {
   const artworkData = await fetchArtworksByKeywords(keywordsArray);
 
   return res.json({ artworks: artworkData });
-};
-
-export const proxyImage = async (req: Request, res: Response): Promise<void> => {
-  const imageUrl = req.query.url as string;
-
-  if (!imageUrl) {
-    res.status(400).json({ error: 'Missing image URL' });
-    return;
-  }
-
-  const { stream, contentType, contentLength } =
-    await fetchImageStream(imageUrl);
-
-  res.set({
-    'Content-Type': contentType,
-    'Cache-Control': 'public, max-age=3600',
-    ...(contentLength && { 'Content-Length': contentLength }),
-  });
-
-  stream.pipe(res);
 };
