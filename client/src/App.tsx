@@ -1,11 +1,13 @@
 import clsx from 'clsx';
+import type { Item } from '../../shared/types/feed';
 import Weather from './components/weather';
 import { useGeoLocation } from './hooks/useGeoLocation';
 import {
   useGetWeatherQuery,
   useGetKeywordsQuery,
   useGetColorsQuery,
-  useGetArtworksQuery
+  useGetArtworksQuery,
+  useGetBooksQuery
 } from './services/api';
 import { useEffect } from 'react';
 import { updateColorRange } from './utils/colorManager';
@@ -13,7 +15,6 @@ import Masonry from './components/Masonry';
 
 const App = () => {
   const coords = useGeoLocation();
-  let itemList = [];
 
   const { data: weather, 
     isLoading: weatherLoading, 
@@ -44,20 +45,30 @@ const App = () => {
     { skip: !keywords?.art }
   );
 
+  const { data: books, isLoading: booksLoading } = useGetBooksQuery(
+    keywords?.books || [],
+    { skip: !keywords?.books }
+  );
+
   // Update colors when palette changes
   useEffect(() => {
     if (palette && palette.length === 5) {
-      console.log('Updating colors with:', palette);
       updateColorRange(palette);
     }
   }, [palette]);
 
-  const isLoading = weatherLoading || keywordsLoading || colorsLoading || artworksLoading;
+  const isLoading = [
+    weatherLoading, keywordsLoading, colorsLoading,
+    artworksLoading, booksLoading
+  ].some(Boolean);
 
   if (isLoading) return <div>Loading...</div>;
   if (weatherError) return <div>Error loading weather</div>;
 
-  itemList = artworks?.map(artwork => ({ type: 'artwork', data: artwork })) || [];
+  const itemList: Item[] = [
+  ...(artworks?.map(artwork => ({ type: 'artwork' as const, data: artwork })) ?? []),
+  ...(books?.map(book => ({ type: 'book' as const, data: book })) ?? [])
+];
 
   return (
     <div
