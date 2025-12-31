@@ -16,9 +16,7 @@ export const sortColorsByLuminance = (colors: string[]): string[] => {
 
 export const updateColorRange = (colors: string[]): void => {
   const root = document.documentElement;
-  console.log('Updating color range with colors:', colors);
   const sortedColors = sortColorsByLuminance(colors);
-  console.log('Sorted colors:', sortedColors);
 
   root.style.setProperty('--color-extra-dark', sortedColors[0]);
   root.style.setProperty('--color-dark', sortedColors[1]);
