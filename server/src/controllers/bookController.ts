@@ -13,7 +13,9 @@ export const getBooks = async (req: Request, res: Response) => {
     throw new HttpError('At least one keyword is required', 400);
   }
 
-  const keywordsArray = keywords?.split(',').map(keyword => keyword.trim().toLowerCase()) || [];
+  const keywordsArray = keywords?.split(',').map(
+    keyword => keyword.trim().toLowerCase().replace(/ /g, '_')
+  ) || [];
 
   if (keywordsArray.length > 10) {
     throw new HttpError('Maximum 10 keywords allowed', 400);
