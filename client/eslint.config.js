@@ -41,6 +41,7 @@ export default defineConfig([
         tabWidth: 2,
         ignoreUrls: true,
       }],
+      '@stylistic/eol-last': ['error', 'always'],
       '@typescript-eslint/no-unsafe-assignment': 'warn',
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/explicit-function-return-type': 'off',
