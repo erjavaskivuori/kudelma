@@ -1,10 +1,6 @@
-import type { Artwork } from "../../../shared/types/art";
+import type { Item } from "../../../shared/types/feed";
 import ArtCard from "./ArtCard";
-
-export interface Item {
-  type: string;
-  data: Artwork;
-}
+import BookCard from "./BookCard";
 
 interface FeedItemProps {
   item: Item;
@@ -14,6 +10,8 @@ const FeedItem = ({ item }: FeedItemProps) => {
   switch (item.type) {
     case "artwork":
       return <ArtCard artwork={item.data} />;
+    case "book":
+      return <BookCard book={item.data} />;
     default:
       return null;
   }
