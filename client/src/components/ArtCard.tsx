@@ -7,7 +7,7 @@ interface ArtCardProps {
 const ArtCard = ({ artwork }: ArtCardProps) => {
   const getProxiedImageUrl = (originalImageUrl: string): string => {
     const fullImageUrl = `https://api.finna.fi${originalImageUrl}`;
-    return `/api/art/image?url=${encodeURIComponent(fullImageUrl)}`;
+    return `/api/image-proxy?url=${encodeURIComponent(fullImageUrl)}`;
   };
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -18,7 +18,7 @@ const ArtCard = ({ artwork }: ArtCardProps) => {
   return (
     <div className="bg-[var(--color-dark)] block max-w-sm rounded-2xl shadow-xs">
       <img 
-        className="rounded-t-2xl" 
+        className="rounded-t-2xl w-full" 
         src={getProxiedImageUrl(artwork.imageUrl)} 
         alt={artwork.title}
         onError={handleImageError}
