@@ -25,7 +25,10 @@ services:
       - /usr/src/app/node_modules
     container_name: kudelma-backend-dev
     depends_on:
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
   nginx:
     image: nginx:latest
@@ -47,5 +50,38 @@ services:
     ports:
       - "6379:6379"
 
+  postgres:
+    image: postgres:18.1-bookworm
+    container_name: kudelma-postgres-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: prisma
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 2s
+      retries: 20
+
+  prisma-studio:
+    image: node:25-bookworm
+    container_name: kudelma-prisma-studio-dev
+    working_dir: /usr/src/app
+    volumes:
+      - ./server:/usr/src/app
+    command: npx prisma studio --port 5555 --browser none
+    ports:
+      - "5555:5555"
+    env_file:
+      - ./server/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   redis-data:
+  pgdata:
