@@ -11,6 +11,6 @@
   "devDependencies": {
     "husky": "^9.1.7",
     "lint-staged": "^16.2.3",
-    "markdownlint-cli2": "^0.18.1"
+    "markdownlint-cli2": "^0.20.0"
   }
 }
