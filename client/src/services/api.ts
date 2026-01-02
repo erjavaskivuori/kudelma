@@ -2,13 +2,14 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { WeatherData, Coordinates } from '../../../shared/types/weather';
 import type { Artwork } from '../../../shared/types/art';
 import type { DisplayBook } from '../../../shared/types/books';
+import type { Recipe } from '../../../shared/types/recipe';
 
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
     baseUrl: String(import.meta.env.VITE_BACKEND_URL),
   }),
-  tagTypes: ['Colors', 'Keywords', 'Weather', 'Artworks', 'Books'],
+  tagTypes: ['Colors', 'Keywords', 'Weather', 'Artworks', 'Books', 'Recipes'],
   endpoints: (builder) => ({
     getColors: builder.query<string[], string[]>({
       query: (keywords) => ({
@@ -54,6 +55,14 @@ export const api = createApi({
       transformResponse: (response: { books: DisplayBook[] }) => response.books,
       providesTags: ['Books'],
     }),
+    getRecipes: builder.query<Recipe[], string[]>({
+      query: (keywords) => ({
+        url: '/recipes',
+        params: { keywords: keywords.join(',') },
+      }),
+      transformResponse: (response: { recipes: Recipe[] }) => response.recipes,
+      providesTags: ['Recipes'],
+    }),
   }),
 });
 
@@ -62,5 +71,6 @@ export const {
   useGetKeywordsQuery, 
   useGetWeatherQuery,
   useGetArtworksQuery,
-  useGetBooksQuery 
+  useGetBooksQuery,
+  useGetRecipesQuery
 } = api;

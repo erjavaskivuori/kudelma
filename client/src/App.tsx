@@ -7,7 +7,8 @@ import {
   useGetKeywordsQuery,
   useGetColorsQuery,
   useGetArtworksQuery,
-  useGetBooksQuery
+  useGetBooksQuery,
+  useGetRecipesQuery
 } from './services/api';
 import { useEffect } from 'react';
 import { updateColorRange } from './utils/colorManager';
@@ -50,6 +51,11 @@ const App = () => {
     { skip: !keywords?.books }
   );
 
+  const { data: recipes, isLoading: recipesLoading } = useGetRecipesQuery(
+    keywords?.recipes || [],
+    { skip: !keywords?.recipes }
+  );
+
   // Update colors when palette changes
   useEffect(() => {
     if (palette && palette.length === 5) {
@@ -59,7 +65,7 @@ const App = () => {
 
   const isLoading = [
     weatherLoading, keywordsLoading, colorsLoading,
-    artworksLoading, booksLoading
+    artworksLoading, booksLoading, recipesLoading
   ].some(Boolean);
 
   if (isLoading) return <div>Loading...</div>;
@@ -67,8 +73,9 @@ const App = () => {
 
   const itemList: Item[] = [
   ...(artworks?.map(artwork => ({ type: 'artwork' as const, data: artwork })) ?? []),
-  ...(books?.map(book => ({ type: 'book' as const, data: book })) ?? [])
-];
+  ...(books?.map(book => ({ type: 'book' as const, data: book })) ?? []),
+  ...(recipes?.map(recipe => ({ type: 'recipe' as const, data: recipe })) ?? [])
+  ];
 
   return (
     <div
