@@ -1,6 +1,7 @@
 import type { Item } from "../../../shared/types/feed";
 import ArtCard from "./ArtCard";
 import BookCard from "./BookCard";
+import RecipeCard from "./RecipeCard";
 
 interface FeedItemProps {
   item: Item;
@@ -12,6 +13,8 @@ const FeedItem = ({ item }: FeedItemProps) => {
       return <ArtCard artwork={item.data} />;
     case "book":
       return <BookCard book={item.data} />;
+    case "recipe":
+      return <RecipeCard recipe={item.data} />;
     default:
       return null;
   }
