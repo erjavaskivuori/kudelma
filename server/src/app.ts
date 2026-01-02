@@ -7,6 +7,7 @@ import genAiKeywordRouter from './routes/genAIRoutes.js';
 import colorRouter from './routes/colorRoutes.js';
 import bookRouter from './routes/bookRoutes.js';
 import imageProxyRouter from './routes/imageProxyRoutes.js';
+import recipeRouter from './routes/recipeRoutes.js';
 const app = express();
 
 app.use(express.json());
@@ -19,6 +20,7 @@ app.use('/keywords', genAiKeywordRouter);
 app.use('/colors', colorRouter);
 app.use('/books', bookRouter);
 app.use('/image-proxy', imageProxyRouter);
+app.use('/recipes', recipeRouter);
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
 
