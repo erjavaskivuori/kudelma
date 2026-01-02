@@ -25,6 +25,12 @@ echo "🧼 Making sure there aren't old containers running..."
 docker-compose -f docker-compose.dev.yaml down -v
 
 echo "🐳 Building Docker images for development..."
-docker-compose -f docker-compose.dev.yaml build
+docker-compose -f docker-compose.dev.yaml up --build -d
+
+echo "💾 Reseting DB, applying migrations and running seed scripts..."
+docker-compose -f docker-compose.dev.yaml exec server npx prisma migrate reset
+docker-compose -f docker-compose.dev.yaml down
 
 echo "✅ Project setup complete!"
+
+echo "🛠️ You can now start the development environment by running 'npm run dev:start'"
