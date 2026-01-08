@@ -1,6 +1,6 @@
 // UI data feed types
 import type { Artwork } from "./art";
-import type { DisplayBook as Book } from "./books";
+import type { Book } from "./books";
 import type { Recipe } from "./recipe";
 
 export type Item = 
