@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { fetchWeatherByCoordinates } from '../services/weatherService.js';
+import { fetchWeatherByCoordinates } from './weatherService.js';
 import { HttpError } from '../utils/errors/HttpError.js';
 
 export const getWeather = async (req: Request, res: Response) => {

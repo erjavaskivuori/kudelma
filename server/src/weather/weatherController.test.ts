@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import app from '../app.js';
-import * as weatherService from '../services/weatherService.js';
+import * as weatherService from './weatherService.js';
 
 vi.mock('../services/weatherService.js');
 

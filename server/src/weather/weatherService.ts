@@ -1,4 +1,5 @@
-import type { OpenWeatherData, WeatherData } from '../../../shared/types/weather.ts';
+import type { OpenWeatherData } from './weatherTypes.js';
+import type { WeatherData } from '../../../shared/types/weather.js';
 import { HttpError } from '../utils/errors/HttpError.js';
 import { redis } from '../infra/redis.js';
 import { getNextChangeTimestamp } from '../utils/timeBuckets.js';
