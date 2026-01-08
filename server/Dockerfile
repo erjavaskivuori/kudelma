@@ -1,4 +1,4 @@
-FROM node:24-slim AS build
+FROM node:lts-slim AS build
 
 WORKDIR /usr/src/app
 
@@ -8,7 +8,7 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-FROM node:24-slim AS production
+FROM node:lts-slim AS production
 
 WORKDIR /usr/src/app
 

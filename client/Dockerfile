@@ -1,4 +1,4 @@
-FROM node:24-slim AS build
+FROM node:lts-slim AS build
 
 WORKDIR /usr/src/app
 
