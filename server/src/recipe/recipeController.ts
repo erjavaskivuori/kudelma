@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import { HttpError } from '../utils/errors/HttpError.js';
-import { fetchRecipes } from '../services/recipeService.js';
+import { fetchRecipes } from './recipeService.js';
 
 export const getRecipes = async (req: Request, res: Response) => {
   const { keywords } = req.query;

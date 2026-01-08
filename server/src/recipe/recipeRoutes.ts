@@ -1,6 +1,6 @@
 import express from 'express';
 import { asyncWrapper } from '../utils/asyncWrapper.js';
-import { getRecipes } from '../controllers/recipeController.js';
+import { getRecipes } from './recipeController.js';
 
 const recipeRouter = express.Router();
 

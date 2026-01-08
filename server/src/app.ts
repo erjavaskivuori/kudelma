@@ -8,7 +8,7 @@ import genAiKeywordRouter from './routes/genAIRoutes.js';
 import colorRouter from './color/colorRoutes.js';
 import bookRouter from './book/bookRoutes.js';
 import imageProxyRouter from './imageProxy/imageProxyRoutes.js';
-import recipeRouter from './routes/recipeRoutes.js';
+import recipeRouter from './recipe/recipeRoutes.js';
 const app = express();
 
 app.use(express.json());

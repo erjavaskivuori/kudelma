@@ -1,9 +1,6 @@
 import { HttpError } from '../utils/errors/HttpError.js';
-import type {
-  Recipe,
-  SpoonacularRecipe,
-  SpoonacularRecipeResponse
-} from '../../../shared/types/recipe.js';
+import type { SpoonacularRecipe, SpoonacularRecipeResponse } from './recipeTypes.js';
+import type { Recipe } from '../../../shared/types/recipe.js';
 import { redis } from '../infra/redis.js';
 
 const SPOONACULAR_API_URL = 'https://api.spoonacular.com/recipes/complexSearch';

@@ -1,23 +1,23 @@
-export interface StepIngredient {
+type StepIngredient = {
   id: number;
   name: string;
   localizedName: string;
   image: string;
 }
 
-export interface StepEquipment {
+type StepEquipment = {
   id: number;
   name: string;
   localizedName: string;
   image: string;
 }
 
-export interface StepLength {
+type StepLength = {
   number: number;
   unit: string;
 }
 
-export interface RecipeStep {
+type RecipeStep = {
   number: number;
   step: string;
   ingredients: StepIngredient[];
@@ -25,49 +25,12 @@ export interface RecipeStep {
   length?: StepLength;
 }
 
-export interface AnalyzedInstruction {
+export type AnalyzedInstruction = {
   name: string;
   steps: RecipeStep[];
 }
 
-export interface SpoonacularRecipe {
-  id: number;
-  image: string;
-  imageType: string;
-  title: string;
-  readyInMinutes: number;
-  servings: number;
-  sourceUrl: string;
-  vegetarian: boolean;
-  vegan: boolean;
-  glutenFree: boolean;
-  dairyFree: boolean;
-  veryHealthy: boolean;
-  cheap: boolean;
-  veryPopular: boolean;
-  sustainable: boolean;
-  lowFodmap: boolean;
-  weightWatcherSmartPoints: number;
-  gaps: string;
-  preparationMinutes: number | null;
-  cookingMinutes: number | null;
-  aggregateLikes: number;
-  healthScore: number;
-  creditsText: string;
-  license: string;
-  sourceName: string;
-  pricePerServing: number;
-  summary: string;
-  cuisines: string[];
-  dishTypes: string[];
-  diets: string[];
-  occasions: string[];
-  analyzedInstructions: AnalyzedInstruction[];
-  spoonacularScore: number;
-  spoonacularSourceUrl: string;
-}
-
-export interface Recipe {
+export type Recipe = {
   id: number;
   title: string;
   image: string;
@@ -81,11 +44,4 @@ export interface Recipe {
   sourceUrl: string;
   summary: string;
   analyzedInstructions: AnalyzedInstruction[];
-}
-
-export interface SpoonacularRecipeResponse {
-  results: SpoonacularRecipe[];
-  offset: number;
-  number: number;
-  totalResults: number;
 }
