@@ -1,7 +1,7 @@
 import type { Response } from 'express';
 import { HttpError } from '../utils/errors/HttpError.js';
 import { registerUser } from '../auth/authService.js';
-import type { TypedRequestBody } from '../types/express.js';
+import type { TypedRequestBody } from '../utils/types/express.js';
 
 type RegisterRequestBody = {
   name: string;
