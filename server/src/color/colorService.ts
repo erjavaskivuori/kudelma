@@ -4,7 +4,7 @@ import { getNextChangeTimestamp } from '../utils/timeBuckets.js';
 
 const EXPIRE_AT = getNextChangeTimestamp();
 
-export interface Palette {
+type Palette = {
   id: string;
   colors: string[];
   tags: string[];
@@ -13,7 +13,7 @@ export interface Palette {
   isLiked: boolean;
   normalizedHash: string;
   createdAt: string;
-}
+};
 
 export const fetchColorsByKeywords = async (keywords: string[]): Promise<string[]> => {
   const cacheKey = `colors:${keywords.sort().join(',')}`;

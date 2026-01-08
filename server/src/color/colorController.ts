@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import { HttpError } from '../utils/errors/HttpError.js';
-import { fetchColorsByKeywords } from '../services/colorService.js';
+import { fetchColorsByKeywords } from './colorService.js';
 
 export const getColorPalette = async (req: Request, res: Response) => {
   const { keywords } = req.query;
