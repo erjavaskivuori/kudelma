@@ -24,6 +24,8 @@ services:
       # This is necessary when using mac and linux containers together
       - /usr/src/app/node_modules
     container_name: kudelma-backend-dev
+    env_file:
+      - ./server/.env
     depends_on:
       postgres:
         condition: service_healthy
@@ -68,7 +70,7 @@ services:
       retries: 20
 
   prisma-studio:
-    image: node:25-bookworm
+    image: node:lts-bullseye
     container_name: kudelma-prisma-studio-dev
     working_dir: /usr/src/app
     volumes:
