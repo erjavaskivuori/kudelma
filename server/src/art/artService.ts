@@ -72,7 +72,7 @@ const transformFinnaRecordToArtwork = (record: FinnaRecord): Artwork | null => {
     authors: uniqueAuthors,
     imageUrl: imageUrl,
     buildings: record.buildings || null,
-    license: record.imageRights
+    imageRights: record.imageRights
   };
 };
 
