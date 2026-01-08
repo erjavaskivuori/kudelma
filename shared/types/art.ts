@@ -1,7 +1,7 @@
 export type imageRights = {
   copyright: string;
   link: string;
-  description: string[] | null;
+  description: string[];
 }
 
 export type nonPresenterAuthor = {
@@ -21,5 +21,5 @@ export type Artwork = {
   imageUrl: string;
   authors: nonPresenterAuthor[];
   buildings: building[] | null;
-  license: imageRights;
+  imageRights: imageRights;
 }
