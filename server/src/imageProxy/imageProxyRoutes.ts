@@ -1,6 +1,6 @@
 import express from 'express';
 import { asyncWrapper } from '../utils/asyncWrapper.js';
-import { proxyImage } from '../controllers/imageProxyController.js';
+import { proxyImage } from './imageProxyController.js';
 
 const imageProxyRouter = express.Router();
 

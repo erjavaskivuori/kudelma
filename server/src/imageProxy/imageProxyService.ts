@@ -1,11 +1,11 @@
 import { Readable } from 'stream';
 import { HttpError } from '../utils/errors/HttpError.js';
 
-export interface ImageStreamResult {
+type ImageStreamResult = {
   stream: NodeJS.ReadableStream;
   contentType: string;
   contentLength?: string;
-}
+};
 
 export const fetchImageStream = async (
   imageUrl: string

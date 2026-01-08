@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { fetchImageStream } from '../services/imageProxyService.js';
+import { fetchImageStream } from './imageProxyService.js';
 
 export const proxyImage = async (req: Request, res: Response): Promise<void> => {
   const imageUrl = req.query.url as string;

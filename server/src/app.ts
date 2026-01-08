@@ -5,9 +5,9 @@ import authRouter from './auth/authRoutes.js';
 import weatherRouter from './routes/weatherRoutes.js';
 import artRouter from './art/artRoutes.js';
 import genAiKeywordRouter from './routes/genAIRoutes.js';
-import colorRouter from './routes/colorRoutes.js';
+import colorRouter from './color/colorRoutes.js';
 import bookRouter from './book/bookRoutes.js';
-import imageProxyRouter from './routes/imageProxyRoutes.js';
+import imageProxyRouter from './imageProxy/imageProxyRoutes.js';
 import recipeRouter from './routes/recipeRoutes.js';
 const app = express();
 
