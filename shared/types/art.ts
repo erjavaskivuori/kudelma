@@ -1,30 +1,25 @@
-export interface imageRights {
+export type imageRights = {
   copyright: string;
   link: string;
   description: string[] | null;
 }
 
-export interface nonPresenterAuthor {
+export type nonPresenterAuthor = {
   name: string;
   role: string | null;
 }
 
-export interface building {
+export type building = {
   value: string
   translated: string
 }
 
-export interface Artwork {
+export type Artwork = {
   id: string;
   title: string;
   year: number | null;
   imageUrl: string;
   authors: nonPresenterAuthor[];
   buildings: building[] | null;
-}
-
-export interface UseArtworksReturn {
-  artworks: Artwork[] | null;
-  loading: boolean;
-  error: string | null;
+  license: imageRights;
 }

@@ -3,7 +3,7 @@ import cors from 'cors';
 import middleware from './utils/middleware.js';
 import authRouter from './auth/authRoutes.js';
 import weatherRouter from './routes/weatherRoutes.js';
-import artRouter from './routes/artRoutes.js';
+import artRouter from './art/artRoutes.js';
 import genAiKeywordRouter from './routes/genAIRoutes.js';
 import colorRouter from './routes/colorRoutes.js';
 import bookRouter from './routes/bookRoutes.js';

@@ -1,28 +1,8 @@
 import { HttpError } from '../utils/errors/HttpError.js';
-import type {
-  Artwork,
-  imageRights,
-  nonPresenterAuthor,
-  building
-} from '../../../shared/types/art.ts';
+import type { Artwork } from '../../../shared/types/art.ts';
 import { redis } from '../infra/redis.js';
 import { getNextChangeTimestamp } from '../utils/timeBuckets.js';
-
-interface FinnaApiResponse {
-  records: FinnaRecord[];
-  resultCount: number;
-  status: string;
-}
-
-interface FinnaRecord {
-  id: string;
-  title: string;
-  year: string;
-  imageRights: imageRights;
-  images: string[];
-  nonPresenterAuthors: nonPresenterAuthor[];
-  buildings: building[];
-}
+import type { FinnaApiResponse, FinnaRecord } from './artTypes.js';
 
 const EXPIRE_AT = getNextChangeTimestamp();
 const FINNA_API_BASE = 'https://api.finna.fi/v1/search';
@@ -92,6 +72,7 @@ const transformFinnaRecordToArtwork = (record: FinnaRecord): Artwork | null => {
     authors: uniqueAuthors,
     imageUrl: imageUrl,
     buildings: record.buildings || null,
+    license: record.imageRights
   };
 };
 

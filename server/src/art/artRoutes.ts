@@ -1,5 +1,5 @@
 import express from 'express';
-import { getArtworks } from '../controllers/artController.js';
+import { getArtworks } from './artController.js';
 import { asyncWrapper } from '../utils/asyncWrapper.js';
 
 const artRouter = express.Router();

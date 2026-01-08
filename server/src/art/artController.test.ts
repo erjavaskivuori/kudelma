@@ -1,10 +1,10 @@
 import request from 'supertest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import app from '../app.js';
-import * as artService from '../services/artService.js';
+import * as artService from './artService.js';
 import { HttpError } from '../utils/errors/HttpError.js';
 
-vi.mock('../services/artService.js');
+vi.mock('./artService.js');
 
 const mockFetchArtworksByKeywords = vi.spyOn(artService, 'fetchArtworksByKeywords');
 
@@ -25,6 +25,11 @@ describe('artController', () => {
           value: '0/Kansallisgalleria Ateneumin taidemuseo/',
           translated: 'Kansallisgalleria / Ateneumin taidemuseo'
         }],
+        license : {
+          copyright: 'Test Copyright A',
+          link: 'http://testlinka.com',
+          description: ['Test description A']
+        },
       },
       {
         id: 'test.artwork-with-image2',
@@ -33,6 +38,11 @@ describe('artController', () => {
         authors: [{ name: 'Test, Artist B', role: 'taiteilija' }],
         imageUrl: '/Cover/Show?source=Solr&id=test.artwork-with-image2&index=0&size=large',
         buildings: [{ value: '0/loviisankaupunginmuseo/', translated: 'Loviisan kaupunginmuseo' }],
+        license: {
+          copyright: 'Test Copyright B',
+          link: 'http://testlinkb.com',
+          description: ['Test description B']
+        },
       },
     ];
 

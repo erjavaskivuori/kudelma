@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { fetchArtworksByKeywords } from '../services/artService.js';
+import { fetchArtworksByKeywords } from './artService.js';
 import { HttpError } from '../utils/errors/HttpError.js';
 
 export const getArtworks = async (req: Request, res: Response) => {
