@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import middleware from './utils/middleware.js';
+import authRouter from './auth/authRoutes.js';
 import weatherRouter from './routes/weatherRoutes.js';
 import artRouter from './routes/artRoutes.js';
 import genAiKeywordRouter from './routes/genAIRoutes.js';
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use(middleware.requestLogger);
+app.use('/auth', authRouter);
 app.use('/weather', weatherRouter);
 app.use('/art', artRouter);
 app.use('/keywords', genAiKeywordRouter);
