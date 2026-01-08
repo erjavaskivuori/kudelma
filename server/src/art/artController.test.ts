@@ -25,10 +25,12 @@ describe('artController', () => {
           value: '0/Kansallisgalleria Ateneumin taidemuseo/',
           translated: 'Kansallisgalleria / Ateneumin taidemuseo'
         }],
-        license : {
-          copyright: 'Test Copyright A',
-          link: 'http://testlinka.com',
-          description: ['Test description A']
+        imageRights: {
+          copyright: 'CC0',
+          link: 'http://creativecommons.org/publicdomain/zero/1.0/deed.fi',
+          description: [
+            'Description of the image rights and usage terms.'
+          ],
         },
       },
       {
@@ -38,10 +40,12 @@ describe('artController', () => {
         authors: [{ name: 'Test, Artist B', role: 'taiteilija' }],
         imageUrl: '/Cover/Show?source=Solr&id=test.artwork-with-image2&index=0&size=large',
         buildings: [{ value: '0/loviisankaupunginmuseo/', translated: 'Loviisan kaupunginmuseo' }],
-        license: {
-          copyright: 'Test Copyright B',
-          link: 'http://testlinkb.com',
-          description: ['Test description B']
+        imageRights: {
+          copyright: 'CC BY 4.0',
+          link: 'http://creativecommons.org/licenses/by/4.0/deed.fi',
+          description: [
+            'Description of the image rights and usage terms.'
+          ]
         },
       },
     ];
@@ -53,7 +57,7 @@ describe('artController', () => {
         .get('/art?keywords=syksy,ruska');
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual({ artwork: mockArtworks });
+      expect(response.body).toEqual({ artworks: mockArtworks });
       expect(mockFetchArtworksByKeywords).toHaveBeenCalledWith(['syksy', 'ruska']);
     });
 
@@ -64,7 +68,7 @@ describe('artController', () => {
         .get('/art?keywords=luonto');
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual({ artwork: mockArtworks });
+      expect(response.body).toEqual({ artworks: mockArtworks });
       expect(mockFetchArtworksByKeywords).toHaveBeenCalledWith(['luonto']);
     });
 
@@ -137,7 +141,7 @@ describe('artController', () => {
         .get('/art?keywords=nonexistent');
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual({ artwork: [] });
+      expect(response.body).toEqual({ artworks: [] });
     });
 
     it('should handle service throwing HttpError', async () => {

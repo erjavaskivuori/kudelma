@@ -5,6 +5,13 @@ import { HttpError } from '../utils/errors/HttpError.js';
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
+vi.mock('../infra/redis.js', () => ({
+  redis: {
+    get: vi.fn().mockResolvedValue(null), // Always return null to skip cache
+    set: vi.fn().mockResolvedValue('OK'),
+  }
+}));
+
 interface MockResponse {
   ok: boolean;
   status?: number;
@@ -27,7 +34,10 @@ describe('artService', () => {
           year: '1941',
           imageRights: {
             copyright: 'CC0',
-            link: 'http://creativecommons.org/publicdomain/zero/1.0/deed.fi'
+            link: 'http://creativecommons.org/publicdomain/zero/1.0/deed.fi',
+            description: [
+              'Description of the image rights and usage terms.'
+            ],
           },
           images: [
             '/Cover/Show?source=Solr&id=test.artwork-with-image1&index=0&size=large'
@@ -78,7 +88,10 @@ describe('artService', () => {
           year: '1980',
           imageRights: {
             copyright: 'CC BY 4.0',
-            link: 'http://creativecommons.org/licenses/by/4.0/deed.fi'
+            link: 'http://creativecommons.org/licenses/by/4.0/deed.fi',
+            description: [
+              'Description of the image rights and usage terms.'
+            ]
           },
           images: [], // No images - should be filtered out
           nonPresenterAuthors: [
@@ -109,6 +122,13 @@ describe('artService', () => {
           value: '0/Kansallisgalleria Ateneumin taidemuseo/',
           translated: 'Kansallisgalleria / Ateneumin taidemuseo'
         }],
+        imageRights: {
+          copyright: 'CC0',
+          link: 'http://creativecommons.org/publicdomain/zero/1.0/deed.fi',
+          description: [
+            'Description of the image rights and usage terms.'
+          ],
+        },
       },
       {
         id: 'test.artwork-with-image2',
@@ -117,6 +137,13 @@ describe('artService', () => {
         authors: [{ name: 'Test, Artist B', role: 'taiteilija' }],
         imageUrl: '/Cover/Show?source=Solr&id=test.artwork-with-image2&index=0&size=large',
         buildings: [{ value: '0/loviisankaupunginmuseo/', translated: 'Loviisan kaupunginmuseo' }],
+        imageRights: {
+          copyright: 'CC BY 4.0',
+          link: 'http://creativecommons.org/licenses/by/4.0/deed.fi',
+          description: [
+            'Description of the image rights and usage terms.'
+          ]
+        },
       },
     ];
 
@@ -132,10 +159,10 @@ describe('artService', () => {
 
       expect(result).toEqual(expectedArtworks);
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('lookfor%5B%5D=autumn%2BOR%2Bfall')
+        expect.stringContaining('lookfor[]=autumn+OR+fall')
       );
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('filter%5B%5D=%7Eformat%3A%221%2FWorkOfArt%2FPainting%2F%22')
+        expect.stringContaining('filter[]=~format:"1/WorkOfArt/Painting/"')
       );
     });
 
@@ -151,7 +178,7 @@ describe('artService', () => {
 
       expect(result).toEqual(expectedArtworks);
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('lookfor%5B%5D=nature')
+        expect.stringContaining('lookfor[]=nature')
       );
     });
 
@@ -339,14 +366,14 @@ describe('artService', () => {
       const calledUrl = mockFetch.mock.calls[0]?.[0] as string;
 
       expect(calledUrl).toContain('https://api.finna.fi/v1/search');
-      expect(calledUrl).toContain('lookfor%5B%5D=test%2BOR%2Bart');
-      expect(calledUrl).toContain('type0%5B%5D=AllFields');
-      expect(calledUrl).toContain('filter%5B%5D=%7Eformat%3A%221%2FWorkOfArt%2FPainting%2F%22');
-      expect(calledUrl).toContain('field%5B%5D=id');
-      expect(calledUrl).toContain('field%5B%5D=title');
-      expect(calledUrl).toContain('field%5B%5D=year');
-      expect(calledUrl).toContain('field%5B%5D=images');
-      expect(calledUrl).toContain('limit=100');
+      expect(calledUrl).toContain('lookfor[]=art+OR+test');
+      expect(calledUrl).toContain('type0[]=AllFields');
+      expect(calledUrl).toContain('filter[]=~format:"1/WorkOfArt/Painting/"');
+      expect(calledUrl).toContain('field[]=id');
+      expect(calledUrl).toContain('field[]=title');
+      expect(calledUrl).toContain('field[]=year');
+      expect(calledUrl).toContain('field[]=images');
+      expect(calledUrl).toContain('limit=40');
     });
 
     it('should include Creative Commons license filters in URL', async () => {
@@ -361,10 +388,10 @@ describe('artService', () => {
 
       const calledUrl = mockFetch.mock.calls[0]?.[0] as string;
 
-      expect(calledUrl).toContain('%7Eusage_rights_ext_str_mv%3A%220%2FA+Free%2F%22');
-      expect(calledUrl).toContain('%7Eusage_rights_ext_str_mv%3A%220%2FB+BY%2F%22');
-      expect(calledUrl).toContain('%7Eusage_rights_ext_str_mv%3A%220%2FE+NC-ND%2F%22');
-      expect(calledUrl).toContain('%7Eusage_rights_ext_str_mv%3A%220%2FD+ND%2F%22');
+      expect(calledUrl).toContain('~usage_rights_ext_str_mv:"0/A Free/"');
+      expect(calledUrl).toContain('~usage_rights_ext_str_mv:"0/B BY/"');
+      expect(calledUrl).toContain('~usage_rights_ext_str_mv:"0/E NC-ND/"');
+      expect(calledUrl).toContain('~usage_rights_ext_str_mv:"0/D ND/"');
     });
   });
 });

@@ -5,6 +5,13 @@ import { HttpError } from '../utils/errors/HttpError.js';
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
+vi.mock('../infra/redis.js', () => ({
+  redis: {
+    get: vi.fn().mockResolvedValue(null), // Always return null to skip cache
+    set: vi.fn().mockResolvedValue('OK'),
+  }
+}));
+
 interface MockResponse {
   ok: boolean;
   status?: number;
@@ -34,8 +41,8 @@ describe('weatherService', () => {
       main: 'Clear',
       temperature: 15.5,
       cloudiness: 20,
-      sunrise: '6:12:34',
-      sunset: '22:45:56',
+      sunrise: '10.20.00',
+      sunset: '22.20.00',
     };
 
     it('should return weather data for valid coordinates', async () => {
@@ -80,8 +87,8 @@ describe('weatherService', () => {
         main: undefined,
         temperature: 15.5,
         cloudiness: 20,
-        sunrise: '6:12:34',
-        sunset: '22:45:56',
+        sunrise: '10.20.00',
+        sunset: '22.20.00',
       });
     });
 
