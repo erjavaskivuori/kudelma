@@ -1,5 +1,5 @@
 import express from 'express';
-import { getKeywords } from '../controllers/genAIController.js';
+import { getKeywords } from './genAIController.js';
 import { asyncWrapper } from '../utils/asyncWrapper.js';
 
 const genAiKeywordRouter = express.Router();

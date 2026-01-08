@@ -4,7 +4,7 @@ import middleware from './utils/middleware.js';
 import authRouter from './auth/authRoutes.js';
 import weatherRouter from './routes/weatherRoutes.js';
 import artRouter from './art/artRoutes.js';
-import genAiKeywordRouter from './routes/genAIRoutes.js';
+import genAiKeywordRouter from './genAI/genAIRoutes.js';
 import colorRouter from './color/colorRoutes.js';
 import bookRouter from './book/bookRoutes.js';
 import imageProxyRouter from './imageProxy/imageProxyRoutes.js';

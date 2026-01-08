@@ -1,6 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
-import type { Keywords } from '../../../shared/types/keywords.ts';
+import type { Keywords } from './genAITypes.js';
 import type { WeatherData } from '../../../shared/types/weather.js';
 import { redis } from '../infra/redis.js';
 import { getNextChangeTimestamp } from '../utils/timeBuckets.js';

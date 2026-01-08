@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { generateKeywords } from '../services/genAIService.js';
+import { generateKeywords } from './genAIService.js';
 import { HttpError } from '../utils/errors/index.js';
 
 export const getKeywords = async (req: Request, res: Response) => {
