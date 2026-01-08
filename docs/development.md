@@ -77,6 +77,9 @@ To run migrations inside server container use the following command.
 docker compose exec server npx prisma migrate dev --name <name-of-the-migration>
 ```
 
+After modifying schema and running migrations, always run `npx prisma generate`
+command again to update the TypeScript types.
+
 Prisma studio is also started when running the development setup. Prisma studio
 is a tool that can be used to visualize and add records to the database. It can
 be accessed at [http://localhost:5555](http://localhost:5555).
