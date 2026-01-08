@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import { HttpError } from '../utils/errors/HttpError.js';
-import { fetchBooksByKeywords } from '../services/bookService.js';
+import { fetchBooksByKeywords } from './bookService.js';
 
 export const getBooks = async (req: Request, res: Response) => {
   const { keywords } = req.query;

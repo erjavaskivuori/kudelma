@@ -1,6 +1,6 @@
 import express from 'express';
 import { asyncWrapper } from '../utils/asyncWrapper.js';
-import { getBooks } from '../controllers/bookController.js';
+import { getBooks } from './bookController.js';
 
 const bookRouter = express.Router();
 

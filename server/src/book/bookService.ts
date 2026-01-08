@@ -1,11 +1,12 @@
 import { HttpError } from '../utils/errors/HttpError.js';
-import type { Book, BookSubjectResponse, DisplayBook } from '../../../shared/types/books.js';
+import type { OpenLibraryBook, BookSubjectResponse } from './bookTypes.js';
+import type { Book } from '../../../shared/types/books.js';
 import { redis } from '../infra/redis.js';
 import { getNextChangeTimestamp } from '../utils/timeBuckets.js';
 
 const EXPIRE_AT = getNextChangeTimestamp();
 
-const transformBookToDisplayBook = (book: Book) => {
+const transformBookToDisplayBook = (book: OpenLibraryBook) => {
   // Skip books without cover images
   if (!book.cover_id && !book.cover_edition_key) {
     return null;
@@ -29,10 +30,10 @@ export const fetchBooksByKeywords = async (keywords: string[]) => {
   const cacheKey = `colors:${keywords.sort().join(',')}`;
   const cachedData = await redis.get(cacheKey);
   if (cachedData) {
-    return JSON.parse(cachedData) as DisplayBook[];
+    return JSON.parse(cachedData) as Book[];
   }
 
-  const books: DisplayBook[] = [];
+  const books: Book[] = [];
 
   for (let i = 0; i < keywords.length; i++) {
     const randomIndex = Math.floor(Math.random() * keywords.length);
@@ -52,9 +53,9 @@ export const fetchBooksByKeywords = async (keywords: string[]) => {
       continue;
     }
 
-    const booksForKeyword: DisplayBook[] = data.works.map(
+    const booksForKeyword: Book[] = data.works.map(
       book => transformBookToDisplayBook(book)
-    ).filter(book => book !== null) as DisplayBook[];
+    ).filter(book => book !== null) as Book[];
 
     // Add books to the main list
     books.push(...booksForKeyword);
