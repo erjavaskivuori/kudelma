@@ -27,7 +27,7 @@ const transformBookToDisplayBook = (book: OpenLibraryBook) => {
 };
 
 export const fetchBooksByKeywords = async (keywords: string[]) => {
-  const cacheKey = `colors:${keywords.sort().join(',')}`;
+  const cacheKey = `books:${keywords.sort().join(',')}`;
   const cachedData = await redis.get(cacheKey);
   if (cachedData) {
     return JSON.parse(cachedData) as Book[];
