@@ -1,9 +1,10 @@
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import stylistic from "@stylistic/eslint-plugin";
-import { defineConfig } from 'eslint/config'
+import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
+  globalIgnores(['./generated/**']),
   {
     files: ['**/*.ts'],
     extends: [
