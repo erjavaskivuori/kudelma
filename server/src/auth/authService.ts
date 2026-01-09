@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
-import { createUser } from '../user/userRepository.js';
+import { createUser, findByName } from '../user/userRepository.js';
 import { HttpError } from '../utils/errors/HttpError.js';
+import { createToken } from '../utils/jwt.js';
 
 type PrismaError = {
   code?: string;
@@ -37,4 +38,17 @@ export const registerUser = async (
 
     throw error;
   }
+};
+
+export const loginUser = async (name: string, password: string) => {
+  const user = await findByName(name);
+  const passwordCorrect = user && (await bcrypt.compare(password, user.password));
+
+  if (!passwordCorrect) {
+    throw new HttpError('Invalid username or password', 401);
+  }
+
+  const token = createToken({ id: user.id.toString(), name: user.name });
+
+  return { token, user: { id: user.id, name: user.name, email: user.email } };
 };

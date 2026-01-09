@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import middleware from './utils/middleware.js';
 import authRouter from './auth/authRoutes.js';
 import weatherRouter from './weather/weatherRoutes.js';
@@ -13,6 +14,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
+app.use(cookieParser());
 
 app.use(middleware.requestLogger);
 app.use('/auth', authRouter);
