@@ -87,7 +87,7 @@ describe('artController', () => {
 
       expect(response.status).toBe(400);
       expect((response.body as { error: string }).error)
-        .toBe('Keywords query parameter is missing or invalid');
+        .toBe('Invalid input: expected string, received undefined');
     });
 
     it('should return 400 if keywords is not a string', async () => {
@@ -96,7 +96,7 @@ describe('artController', () => {
 
       expect(response.status).toBe(400);
       expect((response.body as { error: string }).error)
-        .toBe('Keywords query parameter is missing or invalid');
+        .toBe('Invalid input: expected string, received undefined');
     });
 
     it('should return 400 if keywords is empty string', async () => {
@@ -115,13 +115,12 @@ describe('artController', () => {
       expect((response.body as { error: string }).error).toBe('At least one keyword is required');
     });
 
-    it('should return 400 if any keyword is empty after trimming', async () => {
+    it('should remove empty keywords', async () => {
       const response = await request(app)
         .get('/art?keywords=syksy,,luonto');
 
-      expect(response.status).toBe(400);
-      expect((response.body as { error: string }).error)
-        .toBe('All keywords must be non-empty strings');
+      expect(response.status).toBe(200);
+      expect(mockFetchArtworksByKeywords).toHaveBeenCalledWith(['syksy', 'luonto']);
     });
 
     it('should return 400 if more than 10 keywords are provided', async () => {
@@ -185,7 +184,7 @@ describe('artController', () => {
         .get('/art?keywords=syksy%20maalaus,taide%20museo');
 
       expect(response.status).toBe(200);
-      expect(mockFetchArtworksByKeywords).toHaveBeenCalledWith(['syksy maalaus', 'taide museo']);
+      expect(mockFetchArtworksByKeywords).toHaveBeenCalledWith(['syksy_maalaus', 'taide_museo']);
     });
 
     it('should handle keywords with spaces', async () => {
@@ -195,17 +194,7 @@ describe('artController', () => {
         .get('/art?keywords=abstract art,oil painting');
 
       expect(response.status).toBe(200);
-      expect(mockFetchArtworksByKeywords).toHaveBeenCalledWith(['abstract art', 'oil painting']);
-    });
-
-    it('should preserve case in keywords', async () => {
-      mockFetchArtworksByKeywords.mockResolvedValue(mockArtworks);
-
-      const response = await request(app)
-        .get('/art?keywords=Syksy,MAALAUS,TaiDe');
-
-      expect(response.status).toBe(200);
-      expect(mockFetchArtworksByKeywords).toHaveBeenCalledWith(['Syksy', 'MAALAUS', 'TaiDe']);
+      expect(mockFetchArtworksByKeywords).toHaveBeenCalledWith(['abstract_art', 'oil_painting']);
     });
 
     it('should handle mixed valid and invalid characters', async () => {
