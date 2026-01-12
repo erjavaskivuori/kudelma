@@ -1,4 +1,4 @@
-import type { WeatherData } from '../../../shared/types/weather';
+import type { WeatherData } from '../../../../shared/types/weather';
 
 interface WeatherProps {
   weather: WeatherData;
