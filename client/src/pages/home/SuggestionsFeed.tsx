@@ -10,7 +10,8 @@ import {
 import { useGeoLocation } from '../../hooks/useGeoLocation';
 import type { Item } from '../../../../shared/types/feed';
 import { updateColorRange } from '../../utils/colorManager';
-import Masonry from '../../components/Masonry';
+import Masonry from '@mui/lab/Masonry';
+import FeedItem from '../../components/feed/FeedItem';
 
 const SuggestionsFeed = () => {
   const coords = useGeoLocation();
@@ -36,9 +37,19 @@ const SuggestionsFeed = () => {
     ...(artworks?.map(artwork => ({ type: 'artwork' as const, data: artwork })) ?? []),
     ...(books?.map(book => ({ type: 'book' as const, data: book })) ?? []),
     ...(recipes?.map(recipe => ({ type: 'recipe' as const, data: recipe })) ?? [])
-    ];
+  ];
 
-  return <Masonry items={itemList} />;
+  itemList.sort(() => Math.random() - 0.5); // Shuffle items
+
+  return (
+    <Masonry columns={{ xs: 2, sm: 3, lg: 4 }} spacing={2}>
+      {itemList.map((item) => (
+        <div key={item.data.id} className="break-inside-avoid">
+          <FeedItem item={item} />
+        </div>
+      ))}
+    </Masonry>
+  );
 };
 
 export default SuggestionsFeed;
