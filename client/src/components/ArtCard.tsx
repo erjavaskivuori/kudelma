@@ -17,21 +17,22 @@ const ArtCard = ({ artwork }: ArtCardProps) => {
 
   return (
     <div className="bg-[var(--color-dark)] block max-w-sm rounded-2xl shadow-xs">
-      <img 
-        className="rounded-t-2xl w-full" 
-        src={getProxiedImageUrl(artwork.imageUrl)} 
+      <img
+        className="rounded-t-2xl w-full"
+        src={getProxiedImageUrl(artwork.imageUrl)}
         alt={artwork.title}
         onError={handleImageError}
-        loading="lazy"
       />
       <div className="p-6">
         <h5 className="mt-1 mb-1 font-semibold tracking-tight text-heading">
           {artwork.title} <br />
+        </h5>
+        <p>
           {artwork.year ? artwork.year : 'n.d.'} <br />
           {artwork.authors.map((author) => author.name).join(', ')} <br />
           {artwork.buildings ? artwork.buildings.map((building) =>
             building.translated).join(', ') : ''}
-        </h5>
+        </p>
       </div>
     </div>
   );
