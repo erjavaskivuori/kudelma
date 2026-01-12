@@ -1,4 +1,5 @@
-import type { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction, RequestHandler } from 'express';
+import jwt from 'jsonwebtoken';
 import logger from './logger.js';
 import { HttpError } from './errors/index.js';
 
@@ -29,8 +30,27 @@ const errorHandler = (error: Error, _req: Request, res: Response, _next: NextFun
   });
 };
 
+export const requireAuth: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
+  const token = req.cookies.accessToken as string | undefined;
+
+  if (!token) {
+    return res.status(401).json({ error: 'Not authenticated' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+    req.user = decoded;
+    next();
+  } catch {
+    return res.status(401).json({ error: 'Access token expired' });
+  }
+
+  return;
+};
+
 export default {
   requestLogger,
   unknownEndpoint,
-  errorHandler
+  errorHandler,
+  requireAuth,
 };
