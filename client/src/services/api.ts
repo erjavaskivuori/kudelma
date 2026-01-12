@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { WeatherData, Coordinates } from '../../../shared/types/weather';
 import type { Artwork } from '../../../shared/types/art';
-import type { DisplayBook } from '../../../shared/types/books';
+import type { Book } from '../../../shared/types/books';
 import type { Recipe } from '../../../shared/types/recipe';
 
 export const api = createApi({
@@ -47,12 +47,12 @@ export const api = createApi({
       providesTags: ['Artworks'],
     }),
 
-    getBooks: builder.query<DisplayBook[], string[]>({
+    getBooks: builder.query<Book[], string[]>({
       query: (keywords) => ({
         url: '/books',
         params: { keywords: keywords.join(',') },
       }),
-      transformResponse: (response: { books: DisplayBook[] }) => response.books,
+      transformResponse: (response: { books: Book[] }) => response.books,
       providesTags: ['Books'],
     }),
     getRecipes: builder.query<Recipe[], string[]>({
