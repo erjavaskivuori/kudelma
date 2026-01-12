@@ -8,9 +8,20 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  email     String?   @unique
-  name      String    @unique
-  password  String
+  id            Int            @id @default(autoincrement())
+  createdAt     DateTime       @default(now())
+  email         String?        @unique
+  name          String         @unique
+  password      String
+  refreshTokens RefreshToken[]
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    Int
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
