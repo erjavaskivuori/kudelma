@@ -7,6 +7,12 @@ export const findByName = async (name: string): Promise<User | null> => {
   });
 };
 
+export const findUserById = async (id: number): Promise<User | null> => {
+  return prisma.user.findUnique({
+    where: { id },
+  });
+};
+
 export const createUser = async (
   name: string,
   email: string | null,

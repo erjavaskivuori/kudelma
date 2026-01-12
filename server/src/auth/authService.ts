@@ -1,7 +1,14 @@
 import bcrypt from 'bcrypt';
-import { createUser, findByName } from '../user/userRepository.js';
+import { createUser, findByName, findUserById } from '../user/userRepository.js';
+import { createAccessToken, createRefreshToken, hashToken } from '../utils/token.js';
+import {
+  saveRefreshToken,
+  findRefreshToken,
+  revokeRefreshToken
+} from './refreshTokenRepository.js';
 import { HttpError } from '../utils/errors/HttpError.js';
-import { createToken } from '../utils/jwt.js';
+
+const REFRESH_TOKEN_TTL_DAYS = 30;
 
 type PrismaError = {
   code?: string;
@@ -48,7 +55,44 @@ export const loginUser = async (name: string, password: string) => {
     throw new HttpError('Invalid username or password', 401);
   }
 
-  const token = createToken({ id: user.id.toString(), name: user.name });
+  return { id: user.id, name: user.name, email: user.email };
+};
 
-  return { token, user: { id: user.id, name: user.name, email: user.email } };
+export const issueTokens = async (user: { id: string; name: string }) => {
+  const accessToken = createAccessToken(user);
+  const refreshToken = createRefreshToken();
+
+  const expiresAt = new Date();
+  expiresAt.setDate(expiresAt.getDate() + REFRESH_TOKEN_TTL_DAYS);
+
+  await saveRefreshToken(
+    user.id,
+    hashToken(refreshToken),
+    expiresAt
+  );
+
+  return { accessToken, refreshToken };
+};
+
+export const refreshAccessToken = async (refreshToken: string) => {
+  const stored = await findRefreshToken(hashToken(refreshToken));
+
+  if (!stored || stored.revoked || stored.expiresAt < new Date()) {
+    throw new HttpError('Invalid refresh token', 401);
+  }
+
+  const user = await findUserById(stored.userId);
+
+  if (!user) {
+    throw new HttpError('User not found', 401);
+  }
+
+  return createAccessToken({
+    id: user.id.toString(),
+    name: user.name,
+  });
+};
+
+export const revokeToken = async (tokenHash: string) => {
+  await revokeRefreshToken(hashToken(tokenHash));
 };
