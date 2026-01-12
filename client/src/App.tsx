@@ -17,25 +17,25 @@ import Masonry from './components/Masonry';
 const App = () => {
   const coords = useGeoLocation();
 
-  const { data: weather, 
-    isLoading: weatherLoading, 
-    error: weatherError 
+  const { data: weather,
+    isLoading: weatherLoading,
+    error: weatherError
   } = useGetWeatherQuery(
-    coords || { lat: 0, lon: 0 }, 
+    coords || { lat: 0, lon: 0 },
     { skip: !coords }
   );
-  
-  const { 
-    data: keywords, 
-    isLoading: keywordsLoading 
+
+  const {
+    data: keywords,
+    isLoading: keywordsLoading
   } = useGetKeywordsQuery(
     weather!,
     { skip: !weather }
   );
-  
-  const { 
-    data: palette, 
-    isLoading: colorsLoading 
+
+  const {
+    data: palette,
+    isLoading: colorsLoading
   } = useGetColorsQuery(
     keywords?.colors || [],
     { skip: !keywords?.colors }

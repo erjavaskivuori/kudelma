@@ -9,7 +9,7 @@ export interface ColorRange {
 }
 
 export const sortColorsByLuminance = (colors: string[]): string[] => {
-  return [...colors].sort((a, b) => 
+  return [...colors].sort((a, b) =>
     chroma(a).luminance() - chroma(b).luminance()
   );
 };

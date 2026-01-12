@@ -19,9 +19,9 @@ const RecipeCard = ({ recipe }: RecipeCardProps) => {
 
   return (
     <div className="bg-[var(--color-dark)] block max-w-sm rounded-2xl shadow-xs">
-      <img 
-        className="rounded-t-2xl w-full" 
-        src={recipe.image} 
+      <img
+        className="rounded-t-2xl w-full"
+        src={recipe.image}
         alt={recipe.title}
         onError={handleImageError}
       />

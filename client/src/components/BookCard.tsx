@@ -15,9 +15,9 @@ const BookCard = ({ book }: BookCardProps) => {
   return (
     <div className="bg-[var(--color-dark)] block max-w-sm rounded-2xl shadow-xs">
       <a href={`https://openlibrary.org${book.id}`} target="_blank" rel="noopener noreferrer">
-        <img 
-        className="rounded-t-2xl object-cover w-full" 
-        src={proxiedImageUrl} 
+        <img
+        className="rounded-t-2xl object-cover w-full"
+        src={proxiedImageUrl}
         alt={book.title}
         onError={handleImageError}
       />

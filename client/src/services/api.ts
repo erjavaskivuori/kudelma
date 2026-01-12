@@ -66,9 +66,9 @@ export const api = createApi({
   }),
 });
 
-export const { 
-  useGetColorsQuery, 
-  useGetKeywordsQuery, 
+export const {
+  useGetColorsQuery,
+  useGetKeywordsQuery,
   useGetWeatherQuery,
   useGetArtworksQuery,
   useGetBooksQuery,
