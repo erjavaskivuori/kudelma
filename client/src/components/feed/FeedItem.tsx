@@ -1,4 +1,4 @@
-import type { Item } from "../../../shared/types/feed";
+import type { Item } from "../../../../shared/types/feed";
 import ArtCard from "./ArtCard";
 import BookCard from "./BookCard";
 import RecipeCard from "./RecipeCard";

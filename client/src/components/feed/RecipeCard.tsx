@@ -1,4 +1,4 @@
-import type { Recipe } from "../../../shared/types/recipe";
+import type { Recipe } from "../../../../shared/types/recipe";
 
 interface RecipeCardProps {
   recipe: Recipe;

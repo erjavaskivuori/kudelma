@@ -1,4 +1,4 @@
-import type { Book } from "../../../shared/types/books";
+import type { Book } from "../../../../shared/types/books";
 
 interface BookCardProps {
   book: Book;

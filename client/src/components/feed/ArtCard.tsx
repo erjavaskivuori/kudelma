@@ -1,4 +1,4 @@
-import type { Artwork } from "../../../shared/types/art";
+import type { Artwork } from "../../../../shared/types/art";
 
 interface ArtCardProps {
   artwork: Artwork;
