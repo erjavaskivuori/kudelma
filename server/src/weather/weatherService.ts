@@ -25,6 +25,7 @@ export const fetchWeatherByCoordinates = async (
 
   const weather: WeatherData = {
     city: data.name,
+    id: data.weather[0]?.id,
     main: data.weather[0]?.main,
     temperature: data.main.temp,
     cloudiness: data.clouds.all,

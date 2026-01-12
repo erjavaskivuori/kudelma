@@ -5,6 +5,7 @@ export type Coordinates = {
 
 export interface WeatherData {
   city: string;
+  id: number | undefined;
   main: string | undefined;
   temperature: number;
   cloudiness: number;
