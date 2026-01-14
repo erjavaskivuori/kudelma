@@ -23,7 +23,8 @@ export const registerUser = async (
   const passwordHash = await bcrypt.hash(password, 10);
 
   try {
-    return await createUser(name, email, passwordHash);
+    const user = await createUser(name, email, passwordHash);
+    return { id: user.id, name: user.name, email: user.email };
   } catch (error) {
     const prismaError = error as PrismaError;
 
