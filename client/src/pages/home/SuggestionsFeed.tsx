@@ -1,16 +1,16 @@
 import { useEffect } from 'react';
+import Masonry from '@mui/lab/Masonry';
 import {
-  useGetKeywordsQuery,
-  useGetColorsQuery,
   useGetArtworksQuery,
   useGetBooksQuery,
+  useGetColorsQuery,
+  useGetKeywordsQuery,
   useGetRecipesQuery,
   useGetWeatherQuery
 } from '../../services/api';
 import { useGeoLocation } from '../../hooks/useGeoLocation';
 import type { Item } from '../../../../shared/types/feed';
 import { updateColorRange } from '../../utils/colorManager';
-import Masonry from '@mui/lab/Masonry';
 import FeedItem from '../../components/feed/FeedItem';
 
 const SuggestionsFeed = () => {

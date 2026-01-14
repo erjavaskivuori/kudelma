@@ -1,6 +1,6 @@
-import Weather from './Weather';
 import { useGeoLocation } from '../../hooks/useGeoLocation';
 import { useGetWeatherQuery } from '../../services/api';
+import Weather from './Weather';
 
 const Sidebar = () => {
   const coords = useGeoLocation();
@@ -11,7 +11,7 @@ const Sidebar = () => {
   );
 
   return (
-    <aside className="sticky top-0 h-screen p-4 border-r border-neutral-800">
+    <aside className="sticky top-0 h-screen p-4">
       {weather && <Weather weather={weather} />}
     </aside>
   );

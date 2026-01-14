@@ -2,16 +2,16 @@ import {
   WiCloud,
   WiCloudy,
   WiDayCloudy,
+  WiDaySunny,
+  WiFog,
+  WiNightClear,
   WiNightCloudy,
   WiRain,
   WiShowers,
   WiSnow,
-  WiThunderstorm,
-  WiDaySunny,
-  WiFog,
-  WiNightClear,
   WiSunrise,
-  WiSunset
+  WiSunset,
+  WiThunderstorm
 } from "react-icons/wi";
 import type { WeatherData } from '../../../../shared/types/weather';
 
@@ -67,7 +67,7 @@ const Weather = ({ weather }: WeatherProps) => {
   };
 
   return (
-  <div className="flex flex-col">
+  <div className="flex flex-col text-white">
     <div className="flex gap-5 items-center">
       <div className="flex flex-col">
         <p className='text-2xl font-bold'>{weather.city}</p>

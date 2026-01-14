@@ -1,8 +1,8 @@
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 import { useState } from 'react';
-import { registerUser } from '../../services/userService';
 import { redirect } from 'react-router';
-import axios from 'axios';
+import { isAxiosError } from 'axios';
+import { registerUser } from '../../services/userService';
 
 type ErrorResponse = {
   error: string;
@@ -19,7 +19,6 @@ const RegisterPage = () => {
 };
 
 const submitForm = async () => {
-  console.log({ name, email, password });
   try {
     await registerUser(name, email, password);
     setName('');
@@ -28,7 +27,7 @@ const submitForm = async () => {
     redirect('/');
   }
   catch (error) {
-    if (axios.isAxiosError<ErrorResponse>(error) && error.response) {
+    if (isAxiosError<ErrorResponse>(error) && error.response) {
       const errorMessage: string = error.response.data.error;
       console.error('Registration failed:', errorMessage);
     }
