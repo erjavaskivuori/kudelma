@@ -21,6 +21,17 @@ if (!GENAI_PROMPT) {
 
 const ai = new GoogleGenAI({apiKey: GEMINI_API_KEY});
 
+const getFallbackKeywords = (): Keywords => {
+  const season = getSeason().toUpperCase();
+  const raw = process.env[`FALLBACK_KEYWORDS_${season}`];
+
+  if (!raw) {
+    throw new Error(`FALLBACK_KEYWORDS_${season} is not defined in environment variables`);
+  }
+
+  return JSON.parse(raw) as Keywords;
+};
+
 const getSeason = (): string => {
   const month = new Date().getMonth() + 1;
   if (month >= 3 && month <= 5) return 'spring';
@@ -69,13 +80,20 @@ export const generateKeywords = async (weather: WeatherData): Promise<Keywords> 
   };
 
   const promptWithContext = createContextualPrompt(weather);
-  const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash',
-    contents: promptWithContext,
-  });
+  let response;
+  try {
+    response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: promptWithContext,
+    });
+  } catch (error) {
+    console.error('Error generating content from GenAI:', error, 'using fallback keywords');
+    return getFallbackKeywords();
+  }
 
   if (!response || !response.text) {
-    throw new Error('No response from GenAI');
+    console.error('No response from GenAI, using fallback keywords');
+    return getFallbackKeywords();
   }
   const jsonStr = extractJsonFromText(response.text);
 
@@ -90,8 +108,10 @@ export const generateKeywords = async (weather: WeatherData): Promise<Keywords> 
     return keywords;
   } catch (error) {
     if (error instanceof SyntaxError) {
-      throw new Error(`JSON parsing error: ${error.message}`);
+      console.error(`JSON parsing error: ${error.message}, using fallback keywords`);
+      return getFallbackKeywords();
     }
-    throw new Error('Failed to parse JSON from GenAI response');
+    console.error('Failed to parse GenAI response, using fallback keywords');
+    return getFallbackKeywords();
   }
 };
