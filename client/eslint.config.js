@@ -4,7 +4,6 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 import stylistic from '@stylistic/eslint-plugin'
-import importPlugin from 'eslint-plugin-import'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
@@ -14,8 +13,6 @@ export default defineConfig([
     extends: [
       js.configs.recommended,
       ...tseslint.configs.recommendedTypeChecked,
-      importPlugin.flatConfigs.recommended,
-      importPlugin.flatConfigs.typescript,
     ],
     languageOptions: {
       ecmaVersion: 2022,
@@ -59,8 +56,6 @@ export default defineConfig([
 
       '@typescript-eslint/no-unsafe-member-access': 'warn',
       '@typescript-eslint/no-unsafe-call': 'warn',
-      'import/order': 'error',
-      'import/no-unresolved': 'off',
   },
 }]);
 
