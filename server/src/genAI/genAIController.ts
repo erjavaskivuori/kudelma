@@ -3,7 +3,7 @@ import { generateKeywords } from './genAIService.js';
 import { HttpError } from '../utils/errors/index.js';
 
 export const getKeywords = async (req: Request, res: Response) => {
-  const { city, main, temperature, cloudiness, sunrise, sunset } = req.query;
+  const { city, id, main, temperature, cloudiness, sunrise, sunset } = req.query;
 
   if (!city || !main || !temperature || !cloudiness || !sunrise || !sunset) {
     throw new HttpError('Incomplete weather data provided');
@@ -11,6 +11,7 @@ export const getKeywords = async (req: Request, res: Response) => {
 
   const weather = {
     city: city as string,
+    id: id ? Number(id) : undefined,
     main: main as string,
     temperature: Number(temperature),
     cloudiness: Number(cloudiness),
@@ -19,5 +20,6 @@ export const getKeywords = async (req: Request, res: Response) => {
   };
 
   const keywords = await generateKeywords(weather);
+
   return res.json({ keywords });
 };
