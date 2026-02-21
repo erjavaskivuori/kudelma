@@ -1,44 +1,38 @@
 import { clsx } from 'clsx';
 import { useState } from 'react';
-import { redirect } from 'react-router';
-import { isAxiosError } from 'axios';
-import { registerUser } from '../../services/userService';
-
-type ErrorResponse = {
-  error: string;
-};
+import { useNavigate } from 'react-router';
+import { useAppDispatch, useAppSelector } from '../../hooks/useAppStore';
+import { register, clearError } from '../../services/userSlice';
 
 const RegisterPage = () => {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState<string | undefined>(undefined);
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  event.preventDefault();
-  void submitForm();
-};
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { status, error } = useAppSelector((state) => state.user);
 
-const submitForm = async () => {
-  try {
-    await registerUser(name, email, password);
-    setName('');
-    setEmail(undefined);
-    setPassword('');
-    redirect('/');
-  }
-  catch (error) {
-    if (isAxiosError<ErrorResponse>(error) && error.response) {
-      const errorMessage: string = error.response.data.error;
-      console.error('Registration failed:', errorMessage);
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    dispatch(clearError());
+    const emailValue = email.trim() === '' ? undefined : email;
+    try {
+      await dispatch(register({ name, email: emailValue, password })).unwrap();
+      setName('');
+      setEmail('');
+      setPassword('');
+      void navigate('/');
+    } catch {
+      // Error is handled by the slice
     }
-  }
-};
+  };
 
   return (
     <div className="flex min-h-screen p-5 items-center justify-center">
       <div className="w-96">
         <h1 className='mb-5'>Create account</h1>
-        <form className="max-w-sm mx-auto" onSubmit={handleSubmit}>
+        <form className="max-w-sm mx-auto" onSubmit={(e) => void handleSubmit(e)}>
           <div className="mb-5">
             <label htmlFor="name" className="block mb-2.5 text-sm font-medium text-heading">
               Username
@@ -95,14 +89,18 @@ const submitForm = async () => {
               required
             />
           </div>
+          {error && (
+          <p className="text-red-600 text-sm mb-4">{error}</p>
+          )}
           <button
             type="submit"
+            disabled={status === 'loading'}
             className={clsx(
               "text-white bg-teal-700 box-border border border-transparent hover:bg-teal-800",
               "focus:ring-4 focus:ring-teal-600 shadow-xs font-medium leading-5 rounded-xl",
-              "text-sm px-4 py-2.5 focus:outline-none"
+              "text-sm px-4 py-2.5 focus:outline-none disabled:opacity-50"
             )}>
-              Submit
+              {status === 'loading' ? 'Submitting...' : 'Submit'}
             </button>
         </form>
       </div>
