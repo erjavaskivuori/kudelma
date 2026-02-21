@@ -1,15 +1,33 @@
 import apiClient from "../utils/apiClient";
 
-type RegisterUserResponse = {
+export type User = {
   id: string;
   name: string;
   email?: string;
-  createdAt: string;
 };
 
-export const registerUser = async (name:string, email: string | undefined, password: string) => {
-  const response = await apiClient.post<RegisterUserResponse>(
+export const registerUser = async (
+  name: string,
+  email: string | undefined,
+  password: string
+): Promise<User> => {
+  const response = await apiClient.post<User>(
     '/auth/register', { name, email, password }
   );
   return response.data;
+};
+
+export const loginUser = async (name: string, password: string): Promise<User> => {
+  const response = await apiClient.post<User>(
+    '/auth/login', { name, password }
+  );
+  return response.data;
+};
+
+export const logoutUser = async (): Promise<void> => {
+  await apiClient.post('/auth/logout');
+};
+
+export const refreshAccessToken = async (): Promise<void> => {
+  await apiClient.post('/auth/refresh');
 };
