@@ -18,12 +18,12 @@ const SuggestionsFeed = () => {
   const { data: weather } = useGetWeatherQuery(coords!, { skip: !coords });
 
   const { data: keywords } = useGetKeywordsQuery(weather!, { skip: !weather });
-  const { data: palette } = useGetColorsQuery(keywords?.colors || [], {
+  const { data: palette } = useGetColorsQuery(keywords?.colors ?? [], {
     skip: !keywords?.colors
   });
-  const { data: artworks } = useGetArtworksQuery(keywords?.art || [], { skip: !keywords?.art });
-  const { data: books } = useGetBooksQuery(keywords?.books || [], { skip: !keywords?.books });
-  const { data: recipes } = useGetRecipesQuery(keywords?.recipes || [], {
+  const { data: artworks } = useGetArtworksQuery(keywords?.art ?? [], { skip: !keywords?.art });
+  const { data: books } = useGetBooksQuery(keywords?.books ?? [], { skip: !keywords?.books });
+  const { data: recipes } = useGetRecipesQuery(keywords?.recipes ?? [], {
     skip: !keywords?.recipes
   });
 
