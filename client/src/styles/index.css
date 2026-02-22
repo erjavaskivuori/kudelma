@@ -4,11 +4,13 @@
 @import "tailwindcss/utilities";
 
 :root {
-  --color-extra-dark: #bc5507;
-  --color-dark: #ef8645;
-  --color-medium: #e99e36;
-  --color-light: #faeaa2;
-  --color-extra-light: #ebebe5;
+  --color-popup: #1e2a4a;
+  --color-popup-border: #697FBD;
+  --color-extra-dark: #697FBD;
+  --color-dark: #899BCD;
+  --color-medium: #9dacd5;
+  --color-light: #BDC7E2;
+  --color-extra-light: #E8EAF6;
 }
 
 @keyframes weather-in {
