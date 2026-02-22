@@ -14,6 +14,7 @@ model User {
   name          String         @unique
   password      String
   refreshTokens RefreshToken[]
+  cards        Card[]
 }
 
 model RefreshToken {
@@ -24,4 +25,46 @@ model RefreshToken {
   revoked   Boolean  @default(false)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Book {
+  id          String   @id
+  title       String
+  authors     String[]
+  year        Int?
+  cards       Card[]
+}
+
+model Artwork {
+  id          String   @id
+  title       String
+  artist      String
+  year        Int?
+  imageUrl    String
+  authors     String[]
+  buildings   String[]
+  copyright   String
+  cards       Card[]
+}
+
+model Recipe {
+  id          Int   @id
+  title       String
+  sourceUrl   String
+  cards       Card[]
+}
+
+model Card {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  artworkId  String
+  recipeId   Int
+  bookId     String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  art Artwork @relation(fields: [artworkId], references: [id], onDelete: Cascade)
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, artworkId, recipeId, bookId])
 }
