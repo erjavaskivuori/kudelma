@@ -10,6 +10,7 @@ import colorRouter from './color/colorRoutes.js';
 import bookRouter from './book/bookRoutes.js';
 import imageProxyRouter from './imageProxy/imageProxyRoutes.js';
 import recipeRouter from './recipe/recipeRoutes.js';
+import cardRouter from './card/cardRoutes.js';
 const app = express();
 
 app.use(express.json());
@@ -25,6 +26,7 @@ app.use('/colors', colorRouter);
 app.use('/books', bookRouter);
 app.use('/image-proxy', imageProxyRouter);
 app.use('/recipes', recipeRouter);
+app.use('/cards', cardRouter);
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
 
