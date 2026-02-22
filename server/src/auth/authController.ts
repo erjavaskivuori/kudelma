@@ -17,7 +17,7 @@ export const register = async (req: Request, res: Response) => {
   const user = await registerUser(name, email || null, password);
 
   const { accessToken, refreshToken } = await issueTokens({
-    id: user.id.toString(),
+    id: user.id,
     name: user.name
   });
 
@@ -33,7 +33,7 @@ export const login = async (req: Request, res: Response) => {
   const user = await loginUser(name, password);
 
   const { accessToken, refreshToken } = await issueTokens({
-    id: user.id.toString(),
+    id: user.id,
     name: user.name
   });
 

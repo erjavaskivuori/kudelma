@@ -59,7 +59,7 @@ export const loginUser = async (name: string, password: string) => {
   return { id: user.id, name: user.name, email: user.email };
 };
 
-export const issueTokens = async (user: { id: string; name: string }) => {
+export const issueTokens = async (user: { id: number; name: string }) => {
   const accessToken = createAccessToken(user);
   const refreshToken = createRefreshToken();
 
@@ -89,7 +89,7 @@ export const refreshAccessToken = async (refreshToken: string) => {
   }
 
   return createAccessToken({
-    id: user.id.toString(),
+    id: user.id,
     name: user.name,
   });
 };

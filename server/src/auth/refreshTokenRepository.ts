@@ -1,13 +1,13 @@
 import prisma from '../infra/prisma.js';
 
 export const saveRefreshToken = (
-  userId: string,
+  userId: number,
   tokenHash: string,
   expiresAt: Date
 ) => {
   return prisma.refreshToken.create({
     data: {
-      userId: parseInt(userId, 10),
+      userId,
       tokenHash,
       expiresAt,
     },

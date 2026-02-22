@@ -10,7 +10,7 @@ if (!JWT_SECRET) {
 const JWT_EXPIRES_IN = '15m';
 
 export type JwtPayload = {
-  id: string;
+  id: number;
   name: string;
 };
 
