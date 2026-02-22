@@ -20,6 +20,7 @@ describe('GET /weather', () => {
 
   it('returns weather data for valid coordinates', async () => {
     const mockWeather = {
+      id: 123,
       city: 'Helsinki',
       main: 'Clear',
       temperature: 15,
