@@ -9,7 +9,7 @@ const HomePage = () => {
 
   return (
     <>
-      <header className="flex gap-4 mb-6">
+      <header className="flex items-center justify-center gap-4 mb-6">
         <button onClick={() => setMode('suggestions')}>
           For you
         </button>

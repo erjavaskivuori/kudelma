@@ -1,19 +1,15 @@
 import { Outlet } from 'react-router';
-import Sidebar from '../components/sidebar/Sidebar';
+import TopBar from '../components/topbar/Topbar';
 
 const MainLayout = () => {
   return (
-    <div className="flex min-h-screen bg-[var(--color-extra-dark)]">
-      <aside className="w-72 shrink-0">
-        <Sidebar />
-      </aside>
-
-      <main className="flex-1 px-10">
+    <div className="min-h-screen bg-[var(--color-extra-dark)]">
+      <TopBar />
+      <main className="mx-auto px-10 py-10">
         <Outlet />
       </main>
     </div>
   );
 };
-
 
 export default MainLayout;
