@@ -1,10 +1,12 @@
 import type { Book } from "../../../../shared/types/books";
+import FeedCard from "./FeedCard";
 
 interface BookCardProps {
   book: Book;
+  type: string;
 }
 
-const BookCard = ({ book }: BookCardProps) => {
+const BookCard = ({ book, type }: BookCardProps) => {
   const proxiedImageUrl = `/api/image-proxy?url=${encodeURIComponent(book.coverUrl)}`;
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -13,24 +15,27 @@ const BookCard = ({ book }: BookCardProps) => {
   };
 
   return (
-    <div className="bg-[var(--color-dark)] block max-w-sm rounded-2xl shadow-xs">
-      <a href={`https://openlibrary.org${book.id}`} target="_blank" rel="noopener noreferrer">
-        <img
-        className="rounded-t-2xl object-cover w-full"
-        src={proxiedImageUrl}
+    <FeedCard
+      type={type}
+      image={
+        <>
+        <a href={`https://openlibrary.org${book.id}`} target="_blank" rel="noopener noreferrer">
+          <img
+            className="rounded-t-2xl object-cover w-full"
+            src={proxiedImageUrl}
         alt={book.title}
         onError={handleImageError}
       />
       </a>
-      <div className="p-6">
-        <h5 className="mt-1 mb-1 font-semibold tracking-tight text-heading">
+      </>
+      }
+      title={
           <a href={`https://openlibrary.org${book.id}`} target="_blank" rel="noopener noreferrer">{book.title}</a>
-        </h5>
-        <p>
-          {book.authors.join(', ')}, {book.year}
-        </p>
-      </div>
-    </div>
+      }
+      details={
+        <>{book.authors.join(', ')}, {book.year}</>
+        }
+      />
   );
 };
 

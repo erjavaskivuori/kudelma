@@ -10,11 +10,11 @@ interface FeedItemProps {
 const FeedItem = ({ item }: FeedItemProps) => {
   switch (item.type) {
     case "artwork":
-      return <ArtCard artwork={item.data} />;
+      return <ArtCard type={item.type} artwork={item.data} />;
     case "book":
-      return <BookCard book={item.data} />;
+      return <BookCard type={item.type} book={item.data} />;
     case "recipe":
-      return <RecipeCard recipe={item.data} />;
+      return <RecipeCard type={item.type} recipe={item.data} />;
     default:
       return null;
   }
