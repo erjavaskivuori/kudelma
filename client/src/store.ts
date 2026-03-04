@@ -1,12 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { api } from './services/api';
-import userReducer from './services/userSlice';
+import userReducer from './services/user/userSlice';
+import favoriteSelectionReducer from './services/card/favoriteSelectionSlice';
 
 export const store = configureStore({
   reducer: {
     [api.reducerPath]: api.reducer,
     user: userReducer,
+    favoriteSelection: favoriteSelectionReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(api.middleware),
