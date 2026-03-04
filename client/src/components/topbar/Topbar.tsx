@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { useAppSelector, useAppDispatch } from '../../hooks/useAppStore';
-import { logout } from '../../services/userSlice';
+import { logout } from '../../services/user/userSlice';
 import { useGeoLocation } from '../../hooks/useGeoLocation';
 import { useGetWeatherQuery } from '../../services/api';
 import WeatherCompact from './Weather';

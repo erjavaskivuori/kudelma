@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../hooks/useAppStore';
-import { login, clearError } from '../../services/userSlice';
+import { login, clearError } from '../../services/user/userSlice';
 import AuthForm from '../../components/auth/AuthForm';
 
 const LoginPage = () => {

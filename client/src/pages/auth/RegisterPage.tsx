@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../hooks/useAppStore';
-import { register, clearError } from '../../services/userSlice';
+import { register, clearError } from '../../services/user/userSlice';
 import AuthForm from '../../components/auth/AuthForm';
 
 const RegisterPage = () => {
