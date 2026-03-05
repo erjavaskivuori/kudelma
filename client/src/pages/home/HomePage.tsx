@@ -9,11 +9,27 @@ const HomePage = () => {
 
   return (
     <>
-      <header className="flex items-center justify-center gap-4 mb-6">
-        <button onClick={() => setMode('suggestions')}>
+      <header
+        className="flex items-center justify-center gap-4 mb-6
+          text-[var(--color-extra-light)]">
+        <button
+          onClick={() => setMode('suggestions')}
+          className={`${
+              mode === 'suggestions'
+                ? 'border-b-4 border-[var(--color-popup)]'
+                : 'border-b-4 border-transparent'
+            }`}
+          >
           For you
         </button>
-        <button onClick={() => setMode('community')}>
+        <button
+          onClick={() => setMode('community')}
+          className={`${
+              mode === 'community'
+                ? 'border-b-4 border-[var(--color-popup)]'
+                : 'border-b-4 border-transparent'
+            }`}
+        >
           Community
         </button>
       </header>
