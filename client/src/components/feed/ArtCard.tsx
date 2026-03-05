@@ -1,5 +1,7 @@
 import FeedCard from "./FeedCard";
 import type { Artwork } from "../../../../shared/types/art";
+import { setArtwork, unsetArtwork } from "../../services/card/favoriteSelectionSlice";
+import { useAppDispatch, useAppSelector } from "../../hooks/useAppStore";
 
 interface ArtCardProps {
   artwork: Artwork;
@@ -7,6 +9,29 @@ interface ArtCardProps {
 }
 
 const ArtCard = ({ artwork, type }: ArtCardProps) => {
+  const dispatch = useAppDispatch();
+  const selectedArtwork = useAppSelector(state => state.favoriteSelection.artwork);
+  const isSelected = selectedArtwork?.id === artwork.id;
+
+  const handleFavoriteSelection = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    if (isSelected) {
+      dispatch(unsetArtwork());
+    } else {
+      dispatch(setArtwork({
+        id: artwork.id,
+        title: artwork.title,
+        year: artwork.year,
+        imageUrl: artwork.imageUrl,
+        authors: artwork.authors.map(author => author.name),
+        buildings: artwork.buildings
+          ? artwork.buildings.map(building => building.translated)
+          : null,
+        copyright: artwork.imageRights.copyright
+      }));
+    };
+  };
+
   const getProxiedImageUrl = (originalImageUrl: string): string => {
     const fullImageUrl = `https://api.finna.fi${originalImageUrl}`;
     return `/api/image-proxy?url=${encodeURIComponent(fullImageUrl)}`;
@@ -39,6 +64,7 @@ const ArtCard = ({ artwork, type }: ArtCardProps) => {
           {artwork.imageRights.copyright}
         </>
       }
+      onFavoriteSelect={handleFavoriteSelection}
     />
   );
 };

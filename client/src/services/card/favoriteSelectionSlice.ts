@@ -7,7 +7,6 @@ import {
 } from './cardService';
 
 type FavoriteSelectionState = {
-  selecting: boolean;
   book: bookForCard | null;
   artwork: artworkForCard | null;
   recipe: recipeForCard | null;
@@ -16,7 +15,6 @@ type FavoriteSelectionState = {
 };
 
 const initialState: FavoriteSelectionState = {
-  selecting: false,
   book: null,
   artwork: null,
   recipe: null,
@@ -46,23 +44,24 @@ const favoriteSelectionSlice = createSlice({
   name: 'favoriteSelection',
   initialState,
   reducers: {
-    setSelecting(state, action: PayloadAction<boolean>) {
-      state.selecting = action.payload;
-      if (!action.payload) { // Clear selection when exiting selecting mode
-        state.book = null;
-        state.artwork = null;
-        state.recipe = null;
-      }
-    },
     setBook(state, action: PayloadAction<bookForCard>) {
       state.book = action.payload;
+    },
+    unsetBook(state) {
+      state.book = null;
     },
     setArtwork(state, action: PayloadAction<artworkForCard>) {
       state.artwork = action.payload;
     },
+    unsetArtwork(state) {
+      state.artwork = null;
+    },
     setRecipe(state, action: PayloadAction<recipeForCard>) {
       state.recipe = action.payload;
     },
+    unsetRecipe(state) {
+      state.recipe = null;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -83,5 +82,12 @@ const favoriteSelectionSlice = createSlice({
   },
 });
 
-export const { setSelecting, setBook, setArtwork, setRecipe } = favoriteSelectionSlice.actions;
+export const {
+  setBook,
+  unsetBook,
+  setArtwork,
+  unsetArtwork,
+  setRecipe,
+  unsetRecipe
+} = favoriteSelectionSlice.actions;
 export default favoriteSelectionSlice.reducer;

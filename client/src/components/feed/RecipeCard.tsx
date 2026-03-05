@@ -1,4 +1,6 @@
 import type { Recipe } from "../../../../shared/types/recipe";
+import { useAppDispatch } from "../../hooks/useAppStore";
+import { setRecipe } from "../../services/card/favoriteSelectionSlice";
 import FeedCard from "./FeedCard";
 
 interface RecipeCardProps {
@@ -7,6 +9,17 @@ interface RecipeCardProps {
 }
 
 const RecipeCard = ({ recipe, type }: RecipeCardProps) => {
+  const dispatch = useAppDispatch();
+
+  const handleFavoriteSelection = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    dispatch(setRecipe({
+      id: recipe.id,
+      title: recipe.title,
+      sourceUrl: recipe.sourceUrl,
+    }));
+  };
+
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     console.error('Failed to load image for:', recipe.title);
     e.currentTarget.style.display = 'none';
@@ -48,6 +61,7 @@ const RecipeCard = ({ recipe, type }: RecipeCardProps) => {
           {specialDietLabels}
         </>
       }
+      onFavoriteSelect={handleFavoriteSelection}
     />
   );
 };

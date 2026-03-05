@@ -12,6 +12,7 @@ import { useGeoLocation } from '../../hooks/useGeoLocation';
 import type { Item } from '../../../../shared/types/feed';
 import { updateColorRange } from '../../utils/colorManager';
 import FeedItem from '../../components/feed/FeedItem';
+import { useAppSelector } from '../../hooks/useAppStore';
 
 const SuggestionsFeed = () => {
   const coords = useGeoLocation();
@@ -33,10 +34,14 @@ const SuggestionsFeed = () => {
     }
   }, [palette]);
 
+  const { book, artwork, recipe } = useAppSelector(state => state.favoriteSelection);
+
   const itemList: Item[] = [
-    ...(artworks?.map(artwork => ({ type: 'artwork' as const, data: artwork })) ?? []),
-    ...(books?.map(book => ({ type: 'book' as const, data: book })) ?? []),
-    ...(recipes?.map(recipe => ({ type: 'recipe' as const, data: recipe })) ?? [])
+    ...(artwork
+      ? []
+      : artworks?.map(artwork => ({ type: 'artwork' as const, data: artwork })) ?? []),
+    ...(book ? [] : books?.map(book => ({ type: 'book' as const, data: book })) ?? []),
+    ...(recipe ? [] : recipes?.map(recipe => ({ type: 'recipe' as const, data: recipe })) ?? [])
   ];
 
   itemList.sort(() => Math.random() - 0.5); // Shuffle items
