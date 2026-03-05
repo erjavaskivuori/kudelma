@@ -13,6 +13,7 @@ import type { Item } from '../../../../shared/types/feed';
 import { updateColorRange } from '../../utils/colorManager';
 import FeedItem from '../../components/feed/FeedItem';
 import { useAppSelector } from '../../hooks/useAppStore';
+import Selection from '../../components/feed/Selection';
 
 const SuggestionsFeed = () => {
   const coords = useGeoLocation();
@@ -47,13 +48,18 @@ const SuggestionsFeed = () => {
   itemList.sort(() => Math.random() - 0.5); // Shuffle items
 
   return (
-    <Masonry columns={{ xs: 2, sm: 3, lg: 4 }} spacing={2}>
-      {itemList.map((item) => (
-        <div key={item.data.id} className="break-inside-avoid">
-          <FeedItem item={item} />
-        </div>
-      ))}
-    </Masonry>
+    <>
+      <Masonry columns={{ xs: 2, sm: 3, lg: 4 }} spacing={2}>
+        {itemList.map((item) => (
+          <div key={item.data.id} className="break-inside-avoid">
+            <FeedItem item={item} />
+          </div>
+        ))}
+      </Masonry>
+      <div className="flex sticky bottom-4 justify-center ">
+        <Selection />
+      </div>
+    </>
   );
 };
 
