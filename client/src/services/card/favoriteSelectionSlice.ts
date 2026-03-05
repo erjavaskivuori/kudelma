@@ -1,15 +1,13 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
-import {
-  createCard,
-  type bookForCard,
-  type artworkForCard,
-  type recipeForCard
-} from './cardService';
+import { createCard } from './cardService';
+import type { Book } from '../../../../shared/types/books';
+import type { Artwork } from '../../../../shared/types/art';
+import type { Recipe } from '../../../../shared/types/recipe';
 
 type FavoriteSelectionState = {
-  book: bookForCard | null;
-  artwork: artworkForCard | null;
-  recipe: recipeForCard | null;
+  book: Book | null;
+  artwork: Artwork | null;
+  recipe: Recipe | null;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
 };
@@ -25,7 +23,7 @@ const initialState: FavoriteSelectionState = {
 export const createCardAsync = createAsyncThunk(
   'cards/create',
   async (
-    selection: { book: bookForCard; artwork: artworkForCard; recipe: recipeForCard },
+    selection: { book: Book; artwork: Artwork; recipe: Recipe },
     { rejectWithValue }
   ) => {
     try {
@@ -44,19 +42,19 @@ const favoriteSelectionSlice = createSlice({
   name: 'favoriteSelection',
   initialState,
   reducers: {
-    setBook(state, action: PayloadAction<bookForCard>) {
+    setBook(state, action: PayloadAction<Book>) {
       state.book = action.payload;
     },
     unsetBook(state) {
       state.book = null;
     },
-    setArtwork(state, action: PayloadAction<artworkForCard>) {
+    setArtwork(state, action: PayloadAction<Artwork>) {
       state.artwork = action.payload;
     },
     unsetArtwork(state) {
       state.artwork = null;
     },
-    setRecipe(state, action: PayloadAction<recipeForCard>) {
+    setRecipe(state, action: PayloadAction<Recipe>) {
       state.recipe = action.payload;
     },
     unsetRecipe(state) {

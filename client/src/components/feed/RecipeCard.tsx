@@ -1,23 +1,24 @@
 import type { Recipe } from "../../../../shared/types/recipe";
-import { useAppDispatch } from "../../hooks/useAppStore";
-import { setRecipe } from "../../services/card/favoriteSelectionSlice";
+import { useAppDispatch, useAppSelector } from "../../hooks/useAppStore";
+import { setRecipe, unsetRecipe } from "../../services/card/favoriteSelectionSlice";
 import FeedCard from "./FeedCard";
 
 interface RecipeCardProps {
   recipe: Recipe;
-  type: string;
 }
 
-const RecipeCard = ({ recipe, type }: RecipeCardProps) => {
+const RecipeCard = ({ recipe }: RecipeCardProps) => {
   const dispatch = useAppDispatch();
+  const selectedRecipe = useAppSelector(state => state.favoriteSelection.recipe);
+  const isSelected = selectedRecipe?.id === recipe.id;
 
   const handleFavoriteSelection = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    dispatch(setRecipe({
-      id: recipe.id,
-      title: recipe.title,
-      sourceUrl: recipe.sourceUrl,
-    }));
+    if (isSelected) {
+          dispatch(unsetRecipe());
+        } else {
+          dispatch(setRecipe(recipe));
+        }
   };
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -34,7 +35,6 @@ const RecipeCard = ({ recipe, type }: RecipeCardProps) => {
 
   return (
     <FeedCard
-      type={type}
       image={
         <>
           <a href={recipe.sourceUrl} target="_blank" rel="noopener noreferrer">
@@ -62,6 +62,7 @@ const RecipeCard = ({ recipe, type }: RecipeCardProps) => {
         </>
       }
       onFavoriteSelect={handleFavoriteSelection}
+      selected={isSelected}
     />
   );
 };

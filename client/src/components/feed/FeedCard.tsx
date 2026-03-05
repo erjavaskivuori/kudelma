@@ -1,16 +1,23 @@
 import { useState, type ReactNode } from "react";
-import { PiHeart } from "react-icons/pi";
+import { PiHeart, PiHeartFill } from "react-icons/pi";
 
 interface FeedCardProps {
-  type: string;
   image: ReactNode;
   title: ReactNode;
   details: ReactNode;
   overlayDetails?: ReactNode;
   onFavoriteSelect: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  selected?: boolean;
 }
 
-const FeedCard = ({ image, title, details, overlayDetails, onFavoriteSelect }: FeedCardProps) => {
+const FeedCard = ({
+  image,
+  title,
+  details,
+  overlayDetails,
+  onFavoriteSelect,
+  selected
+}: FeedCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -27,8 +34,13 @@ const FeedCard = ({ image, title, details, overlayDetails, onFavoriteSelect }: F
           className="inline-flex items-center justify-center text-white bg-[var(--color-popup)]/60
             hover:bg-[var(--color-dark)]/90 shadow-xs rounded-lg w-8 h-8"
           onClick={onFavoriteSelect}
+          aria-pressed={selected}
         >
-          <PiHeart className="w-5 h-5" />
+          {selected ? (
+            <PiHeartFill className="w-5 h-5" />
+          ) : (
+            <PiHeart className="w-5 h-5" />
+          )}
           <span className="sr-only">Heart icon, select this card as a favorite</span>
         </button>
       </div>

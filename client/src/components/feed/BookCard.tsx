@@ -5,10 +5,9 @@ import { useAppDispatch, useAppSelector } from "../../hooks/useAppStore";
 
 interface BookCardProps {
   book: Book;
-  type: string;
 }
 
-const BookCard = ({ book, type }: BookCardProps) => {
+const BookCard = ({ book }: BookCardProps) => {
   const dispatch = useAppDispatch();
   const selectedBook = useAppSelector(state => state.favoriteSelection.book);
   const isSelected = selectedBook?.id === book.id;
@@ -18,12 +17,7 @@ const BookCard = ({ book, type }: BookCardProps) => {
     if (isSelected) {
       dispatch(unsetBook());
     } else {
-      dispatch(setBook({
-        id: book.id,
-        title: book.title,
-        year: book.year,
-        authors: book.authors,
-      }));
+      dispatch(setBook(book));
     }
   };
 
@@ -36,17 +30,16 @@ const BookCard = ({ book, type }: BookCardProps) => {
 
   return (
     <FeedCard
-      type={type}
       image={
         <>
-        <a href={`https://openlibrary.org${book.id}`} target="_blank" rel="noopener noreferrer">
-          <img
-            className="rounded-t-2xl object-cover w-full"
-            src={proxiedImageUrl}
-        alt={book.title}
-        onError={handleImageError}
-      />
-      </a>
+          <a href={`https://openlibrary.org${book.id}`} target="_blank" rel="noopener noreferrer">
+            <img
+              className="rounded-t-2xl object-cover w-full"
+              src={proxiedImageUrl}
+              alt={book.title}
+              onError={handleImageError}
+            />
+        </a>
       </>
       }
       title={
@@ -56,6 +49,7 @@ const BookCard = ({ book, type }: BookCardProps) => {
         <>{book.authors.join(', ')}, {book.year}</>
         }
       onFavoriteSelect={handleFavoriteSelection}
+      selected={isSelected}
       />
   );
 };

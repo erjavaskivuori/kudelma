@@ -5,10 +5,9 @@ import { useAppDispatch, useAppSelector } from "../../hooks/useAppStore";
 
 interface ArtCardProps {
   artwork: Artwork;
-  type: string;
 }
 
-const ArtCard = ({ artwork, type }: ArtCardProps) => {
+const ArtCard = ({ artwork }: ArtCardProps) => {
   const dispatch = useAppDispatch();
   const selectedArtwork = useAppSelector(state => state.favoriteSelection.artwork);
   const isSelected = selectedArtwork?.id === artwork.id;
@@ -18,17 +17,7 @@ const ArtCard = ({ artwork, type }: ArtCardProps) => {
     if (isSelected) {
       dispatch(unsetArtwork());
     } else {
-      dispatch(setArtwork({
-        id: artwork.id,
-        title: artwork.title,
-        year: artwork.year,
-        imageUrl: artwork.imageUrl,
-        authors: artwork.authors.map(author => author.name),
-        buildings: artwork.buildings
-          ? artwork.buildings.map(building => building.translated)
-          : null,
-        copyright: artwork.imageRights.copyright
-      }));
+      dispatch(setArtwork(artwork));
     };
   };
 
@@ -44,7 +33,6 @@ const ArtCard = ({ artwork, type }: ArtCardProps) => {
 
   return (
     <FeedCard
-      type={type}
       image={
       <img
         className="rounded-t-2xl w-full"
@@ -65,6 +53,7 @@ const ArtCard = ({ artwork, type }: ArtCardProps) => {
         </>
       }
       onFavoriteSelect={handleFavoriteSelection}
+      selected={isSelected}
     />
   );
 };
