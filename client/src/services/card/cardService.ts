@@ -4,17 +4,16 @@ export type bookForCard = {
   id: string;
   title: string;
   authors: string[];
-  year?: number;
+  year: number | null;
 };
 
 export type artworkForCard = {
   id: string;
   title: string;
-  artist: string;
-  year?: number;
+  year: number | null;
   imageUrl: string;
   authors: string[];
-  buildings: string[];
+  buildings: string[] | null;
   copyright: string;
 };
 
