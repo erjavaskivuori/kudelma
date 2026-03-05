@@ -50,6 +50,8 @@ export const fetchBooksByKeywords = async (keywords: string[]) => {
 
     // If no works found for this keyword, continue to next
     if (data.work_count === 0) {
+      keywords.splice(randomIndex, 1); // Remove keyword with no results
+      i--; // Adjust index to account for removed keyword
       continue;
     }
 
@@ -62,6 +64,8 @@ export const fetchBooksByKeywords = async (keywords: string[]) => {
 
     // If less than 10 books found, try next keyword
     if (data.work_count < 10 && i < keywords.length - 1) {
+      keywords.splice(randomIndex, 1); // Remove keyword with no results
+      i--; // Adjust index to account for removed keyword
       continue;
     }
 

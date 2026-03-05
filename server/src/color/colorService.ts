@@ -40,6 +40,9 @@ export const fetchColorsByKeywords = async (keywords: string[]): Promise<string[
       );
       return palette;
     }
+
+    keywords.splice(randomIndex, 1); // Remove keyword with no results
+    i--; // Adjust index to account for removed keyword
   }
 
   throw new HttpError('No colors found for the given keywords', 404);
