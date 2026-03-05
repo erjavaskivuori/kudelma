@@ -5,6 +5,6 @@ import { requireAuth } from '../utils/middleware.js';
 
 const cardRouter = express.Router();
 
-cardRouter.post('/', requireAuth, asyncWrapper(createCardController));
+cardRouter.post('/create', requireAuth, asyncWrapper(createCardController));
 
 export default cardRouter;
