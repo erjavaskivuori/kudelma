@@ -43,5 +43,4 @@ export type Recipe = {
   creditsText: string;
   sourceUrl: string;
   summary: string;
-  analyzedInstructions: AnalyzedInstruction[];
 }

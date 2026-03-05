@@ -19,7 +19,6 @@ const transformRecipe = (recipe: SpoonacularRecipe): Recipe => {
     creditsText: recipe.creditsText,
     sourceUrl: recipe.sourceUrl,
     summary: recipe.summary,
-    analyzedInstructions: recipe.analyzedInstructions,
   };
   return transformed;
 };
@@ -45,7 +44,6 @@ export const fetchRecipes = async (keywords: string[]): Promise<Recipe[]> => {
       query: keyword.replace(/ /g, '_'),
       number: '4',
       addRecipeInformation: 'true',
-      addRecipeInstructions: 'true',
     });
 
     const response: Response = await fetch(`${SPOONACULAR_API_URL}?${queryParams.toString()}`);
