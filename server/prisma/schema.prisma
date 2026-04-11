@@ -38,7 +38,6 @@ model Book {
 model Artwork {
   id        String   @id
   title     String
-  artist    String
   year      Int?
   imageUrl  String
   authors   String[]
