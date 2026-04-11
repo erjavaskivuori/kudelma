@@ -24,6 +24,7 @@ export const loginUser = async (name: string, password: string): Promise<User> =
   return response.data;
 };
 
+// TODO: error handling???
 export const logoutUser = async (): Promise<void> => {
   await apiClient.post('/auth/logout');
 };
