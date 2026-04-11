@@ -52,11 +52,11 @@ const Selection = () => {
           {selectedCards.map((card, index) => (
             <div
               key={card?.type}
+              style={{ zIndex: index + 1 }}
               className={`
                 ${card?.rotation}
                 transition-transform duration-300 ease-in-out
                 ${index > 0 ? '-ml-10' : ''}
-                z-${index}
                 w-35
                 text-xs
               `}

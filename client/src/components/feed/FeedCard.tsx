@@ -22,7 +22,7 @@ const FeedCard = ({
 
   return (
     <div
-      className="relative bg-[var(--color-dark)] block max-w-sm rounded-2xl shadow-xs
+      className="relative isolate bg-[var(--color-dark)] block max-w-sm rounded-2xl shadow-xs
         overflow-hidden cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
