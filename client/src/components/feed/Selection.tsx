@@ -1,12 +1,16 @@
-import { useAppSelector } from '../../hooks/useAppStore';
+import { useNavigate } from 'react-router';
+import { useAppSelector, useAppDispatch } from '../../hooks/useAppStore';
 import ArtCard from './ArtCard';
 import BookCard from './BookCard';
 import RecipeCard from './RecipeCard';
+import { createCardAsync } from '../../services/card/favoriteSelectionSlice';
 
 const Selection = () => {
-  const { book, artwork, recipe } = useAppSelector(
+  const { status, error, book, artwork, recipe } = useAppSelector(
     state => state.favoriteSelection
   );
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const allSelected = book && artwork && recipe;
   const noneSelected = !book && !artwork && !recipe;
@@ -27,6 +31,18 @@ const Selection = () => {
     book && { type: 'book' as const, data: book, rotation: 'rotate-0' },
     recipe && { type: 'recipe' as const, data: recipe, rotation: 'rotate-6' },
   ].filter(Boolean);
+
+  const handleCreateCard = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (allSelected) {
+      try {
+        await dispatch(createCardAsync({ book: book, artwork: artwork, recipe: recipe })).unwrap();
+        void navigate("/?mode=community");
+      } catch {
+        alert(`Failed to create card. ${error || 'Unknown error occurred.'}`);
+      }
+    }
+  };
 
   return (
     <div className="flex items-end gap-4 p-4">
@@ -74,11 +90,13 @@ const Selection = () => {
         <p>{guideText}</p>
         {allSelected && (
           <button
+            disabled={status === 'loading'}
             type="button"
             className="mt-2 px-4 py-1.5 rounded-xl text-sm font-semibold
               bg-[var(--color-popup)] text-white
               hover:bg-[var(--color-extra-dark)]
               transition-colors duration-200"
+            onClick={(e) => void handleCreateCard(e)}
           >
             Create card
           </button>

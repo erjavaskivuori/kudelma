@@ -35,5 +35,5 @@ export const createCard = async (selection: FavoriteSelection): Promise<void> =>
       sourceUrl: recipe.sourceUrl,
     },
   };
-  await apiClient.post('/cards', payload);
+  await apiClient.post('/cards/create', payload);
 };
