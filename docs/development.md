@@ -24,6 +24,8 @@ This file provides guiding to setup development environment with Docker.
     GEMINI_API_KEY=<your-api-key>
     SPOONACULAR_API_KEY=<your-api-key>
     DATABASE_URL="postgresql://postgres:prisma@postgres:5432/postgres"
+    REDIS_URL=<your-redis-url>
+    JWT_SECRET=<your-jwt-secret>
 
     GENAI_PROMPT=""
     ```
