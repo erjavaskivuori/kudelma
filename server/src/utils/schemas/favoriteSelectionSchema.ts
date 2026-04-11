@@ -27,6 +27,7 @@ export const favoriteSelectionSchema = z.object({
   book: bookSchema,
   artwork: artworkSchema,
   recipe: recipeSchema,
-});
+}).refine((data) => !!data.book && !!data.artwork && !!data.recipe,
+  { message: 'You must select exactly one book, one artwork, and one recipe.' });
 
 export type FavoriteSelection = z.infer<typeof favoriteSelectionSchema>;
