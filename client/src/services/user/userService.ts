@@ -29,6 +29,7 @@ export const logoutUser = async (): Promise<void> => {
   await apiClient.post('/auth/logout');
 };
 
-export const refreshAccessToken = async (): Promise<void> => {
-  await apiClient.post('/auth/refresh');
+export const refreshAccessToken = async (): Promise<User> => {
+  const response = await apiClient.post<User>('/auth/refresh');
+  return response.data;
 };

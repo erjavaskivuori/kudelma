@@ -1,10 +1,19 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router';
 import MainLayout from './layouts/MainLayout';
 import HomePage from './pages/home/HomePage';
 import RegisterPage from './pages/auth/RegisterPage';
 import LoginPage from './pages/auth/LoginPage';
+import { useAppDispatch } from './hooks/useAppStore';
+import { refresh } from './services/user/userSlice';
 
 const App = () => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    void dispatch(refresh());
+  }, [dispatch]);
+
   return (
     <BrowserRouter>
       <Routes>

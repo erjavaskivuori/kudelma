@@ -88,10 +88,15 @@ export const refreshAccessToken = async (refreshToken: string) => {
     throw new HttpError('User not found', 401);
   }
 
-  return createAccessToken({
+  const newAccessToken = createAccessToken({
     id: user.id,
     name: user.name,
   });
+
+  return {
+    accessToken: newAccessToken,
+    user: { id: user.id, name: user.name, email: user.email }
+  };
 };
 
 export const revokeToken = async (tokenHash: string) => {

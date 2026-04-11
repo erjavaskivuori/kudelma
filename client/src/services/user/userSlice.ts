@@ -71,7 +71,7 @@ export const refresh = createAsyncThunk(
   'user/refresh',
   async (_, { rejectWithValue }) => {
     try {
-      await refreshAccessToken();
+      return await refreshAccessToken();
     } catch (error: unknown) {
       if (error instanceof Error && 'response' in error) {
         const axiosError = error as { response?: { data?: { error?: string } } };
@@ -131,8 +131,9 @@ const userSlice = createSlice({
 
     // Refresh
     builder
-      .addCase(refresh.fulfilled, (state) => {
+      .addCase(refresh.fulfilled, (state, action) => {
         state.status = 'succeeded';
+        state.user = action.payload;
       })
       .addCase(refresh.rejected, (state) => {
         state.user = null;

@@ -50,10 +50,10 @@ export const refresh = async (req: Request, res: Response) => {
     return res.status(401).json({ error: 'Missing refresh token' });
   }
 
-  const newAccessToken = await refreshAccessToken(refreshToken);
+  const { accessToken: newAccessToken, user } = await refreshAccessToken(refreshToken);
 
   res.cookie('accessToken', newAccessToken, accessTokenCookie);
-  return res.sendStatus(204);
+  return res.status(200).json(user);
 };
 
 export const logout = async (req: Request, res: Response) => {
