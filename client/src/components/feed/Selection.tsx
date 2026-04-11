@@ -1,16 +1,19 @@
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import { useAppSelector, useAppDispatch } from '../../hooks/useAppStore';
 import ArtCard from './ArtCard';
 import BookCard from './BookCard';
 import RecipeCard from './RecipeCard';
 import { createCardAsync } from '../../services/card/favoriteSelectionSlice';
+import { showModal } from '../../services/notifications/notificationSlice';
 
 const Selection = () => {
   const { status, error, book, artwork, recipe } = useAppSelector(
     state => state.favoriteSelection
   );
+  const user = useAppSelector((state) => state.user.user);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const allSelected = book && artwork && recipe;
   const noneSelected = !book && !artwork && !recipe;
@@ -34,12 +37,32 @@ const Selection = () => {
 
   const handleCreateCard = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    if (!user) {
+      const redirect = `${location.pathname}${location.search}`;
+      dispatch(showModal({
+        title: 'Login required',
+        message: 'You need to log in or create an account before creating a card.',
+        primaryAction: {
+          label: 'Login',
+          to: `/login?redirect=${encodeURIComponent(redirect)}`,
+        },
+        secondaryAction: {
+          label: 'Register',
+          to: `/register?redirect=${encodeURIComponent(redirect)}`,
+        },
+      }));
+      return;
+    }
+
     if (allSelected) {
       try {
         await dispatch(createCardAsync({ book: book, artwork: artwork, recipe: recipe })).unwrap();
         void navigate("/?mode=community");
       } catch {
-        alert(`Failed to create card. ${error || 'Unknown error occurred.'}`);
+        dispatch(showModal({
+          title: 'Could not create a card',
+          message: error || 'Unknown error occurred.',
+        }));
       }
     }
   };
