@@ -6,6 +6,7 @@ import RegisterPage from './pages/auth/RegisterPage';
 import LoginPage from './pages/auth/LoginPage';
 import { useAppDispatch } from './hooks/useAppStore';
 import { refresh } from './services/user/userSlice';
+import NotificationModal from './components/notifications/NotificationModal';
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -16,6 +17,7 @@ const App = () => {
 
   return (
     <BrowserRouter>
+      <NotificationModal />
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<HomePage />} />
