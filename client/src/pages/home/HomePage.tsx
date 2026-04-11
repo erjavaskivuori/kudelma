@@ -29,7 +29,7 @@ const HomePage = () => {
           text-[var(--color-extra-light)]">
         <button
           onClick={() => handleModeChange('suggestions')}
-          className={`$${
+          className={`${
               mode === 'suggestions'
                 ? 'border-b-4 border-[var(--color-popup)]'
                 : 'border-b-4 border-transparent'
@@ -39,7 +39,7 @@ const HomePage = () => {
         </button>
         <button
           onClick={() => handleModeChange('community')}
-          className={`$${
+          className={`${
               mode === 'community'
                 ? 'border-b-4 border-[var(--color-popup)]'
                 : 'border-b-4 border-transparent'
