@@ -5,8 +5,11 @@ export const validate = <T>(schema: ZodType<T>, data: unknown): T => {
   const parseResult = schema.safeParse(data);
 
   if (!parseResult.success) {
-    const errorMessage = parseResult.error.issues[0]?.message ?? 'Validation failed';
-    throw new HttpError(errorMessage, 400);
+    const issues = parseResult.error.issues;
+    const errorMessage = issues
+      .map((issue) => `${issue.path.join('.')}: ${issue.message}`)
+      .join(', ');
+    throw new HttpError(`Invalid input: ${errorMessage}`, 400);
   }
 
   return parseResult.data;

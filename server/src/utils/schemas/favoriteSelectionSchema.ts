@@ -4,17 +4,16 @@ const bookSchema = z.object({
   id: z.string(),
   title: z.string(),
   authors: z.string().array(),
-  year: z.number().optional(),
+  year: z.number().nullable().optional(),
 });
 
 const artworkSchema = z.object({
   id: z.string(),
   title: z.string(),
-  artist: z.string(),
-  year: z.number().optional(),
+  year: z.number().nullable().optional(),
   imageUrl: z.string(),
   authors: z.string().array(),
-  buildings: z.string().array(),
+  buildings: z.string().array().nullable().optional(),
   copyright: z.string(),
 });
 
