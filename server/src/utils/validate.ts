@@ -7,9 +7,9 @@ export const validate = <T>(schema: ZodType<T>, data: unknown): T => {
   if (!parseResult.success) {
     const issues = parseResult.error.issues;
     const errorMessage = issues
-      .map((issue) => `${issue.path.join('.')}: ${issue.message}`)
+      .map((issue) => `${issue.message}`)
       .join(', ');
-    throw new HttpError(`Invalid input: ${errorMessage}`, 400);
+    throw new HttpError(`${errorMessage}`, 400);
   }
 
   return parseResult.data;
