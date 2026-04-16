@@ -23,10 +23,17 @@ const recipeSchema = z.object({
   sourceUrl: z.string(),
 });
 
+const postcardMetaSchema = z.object({
+  city: z.string().optional(),
+  weatherMain: z.string().optional(),
+  temperatureCelsius: z.number().optional(),
+});
+
 export const favoriteSelectionSchema = z.object({
   book: bookSchema,
   artwork: artworkSchema,
   recipe: recipeSchema,
+  postcardMeta: postcardMetaSchema.optional(),
 }).refine((data) => !!data.book && !!data.artwork && !!data.recipe,
   { message: 'You must select exactly one book, one artwork, and one recipe.' });
 
