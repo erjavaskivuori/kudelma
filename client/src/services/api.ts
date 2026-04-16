@@ -3,13 +3,15 @@ import type { WeatherData, Coordinates } from '../../../shared/types/weather';
 import type { Artwork } from '../../../shared/types/art';
 import type { Book } from '../../../shared/types/books';
 import type { Recipe } from '../../../shared/types/recipe';
+import type { ProfileCardsResponse } from '../../../shared/types/profile';
 
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
     baseUrl: String(import.meta.env.VITE_BACKEND_URL),
+    credentials: 'include',
   }),
-  tagTypes: ['Colors', 'Keywords', 'Weather', 'Artworks', 'Books', 'Recipes'],
+  tagTypes: ['Colors', 'Keywords', 'Weather', 'Artworks', 'Books', 'Recipes', 'ProfileCards'],
   endpoints: (builder) => ({
     getColors: builder.query<string[], string[]>({
       query: (keywords) => ({
@@ -63,6 +65,12 @@ export const api = createApi({
       transformResponse: (response: { recipes: Recipe[] }) => response.recipes,
       providesTags: ['Recipes'],
     }),
+    getProfileCards: builder.query<ProfileCardsResponse, number>({
+      query: (userId) => ({
+        url: `/cards/profile/${userId}`,
+      }),
+      providesTags: (_result, _error, userId) => [{ type: 'ProfileCards', id: userId }],
+    }),
   }),
 });
 
@@ -72,5 +80,6 @@ export const {
   useGetWeatherQuery,
   useGetArtworksQuery,
   useGetBooksQuery,
-  useGetRecipesQuery
+  useGetRecipesQuery,
+  useGetProfileCardsQuery,
 } = api;
