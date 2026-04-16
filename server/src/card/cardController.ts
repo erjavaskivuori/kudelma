@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { createCard } from './cardService.js';
+import { createCard, getCardsForProfile } from './cardService.js';
 import {
   favoriteSelectionSchema,
   type FavoriteSelection
@@ -17,4 +17,20 @@ export const createCardController = async (req: Request, res: Response) => {
   const card = await createCard({ book, artwork, recipe }, userId);
 
   res.status(201).json(card);
+};
+
+export const getProfileCardsController = async (req: Request, res: Response) => {
+  const userId = Number(req.params.userId);
+
+  if (Number.isNaN(userId)) {
+    res.status(400).json({ error: 'Invalid user id' });
+    return;
+  }
+
+  const parsedViewer = jwtPayloadSchema.safeParse(req.user);
+  const viewerId = parsedViewer.success ? parsedViewer.data.id : undefined;
+
+  const profileCards = await getCardsForProfile(userId, viewerId);
+
+  res.status(200).json(profileCards);
 };
