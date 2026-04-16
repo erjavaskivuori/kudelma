@@ -7,14 +7,20 @@ datasource db {
   provider = "postgresql"
 }
 
+enum CardVisibility {
+  PRIVATE
+  PUBLIC
+}
+
 model User {
-  id            Int            @id @default(autoincrement())
-  createdAt     DateTime       @default(now())
-  email         String?        @unique
-  name          String         @unique
-  password      String
-  refreshTokens RefreshToken[]
-  cards         Card[]
+  id              Int            @id @default(autoincrement())
+  createdAt       DateTime       @default(now())
+  email           String?        @unique
+  name            String         @unique
+  password        String
+  cardsVisibility CardVisibility @default(PRIVATE)
+  refreshTokens   RefreshToken[]
+  cards           Card[]
 }
 
 model RefreshToken {
@@ -54,11 +60,15 @@ model Recipe {
 }
 
 model Card {
-  id        Int    @id @default(autoincrement())
-  userId    Int
-  artworkId String
-  recipeId  Int
-  bookId    String
+  id                 Int      @id @default(autoincrement())
+  createdAt          DateTime @default(now())
+  userId             Int
+  artworkId          String
+  recipeId           Int
+  bookId             String
+  city               String?
+  weatherMain        String?
+  temperatureCelsius Float?
 
   user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   art    Artwork @relation(fields: [artworkId], references: [id], onDelete: Cascade)
