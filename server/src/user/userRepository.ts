@@ -1,5 +1,14 @@
 import prisma from '../infra/prisma.js';
-import type { User } from '../../generated/prisma/client.js';
+import type { Prisma, User } from '../../generated/prisma/client.js';
+
+export type UserProfileRecord = Prisma.UserGetPayload<{
+  select: {
+    id: true;
+    name: true;
+    createdAt: true;
+    cardsVisibility: true;
+  };
+}>;
 
 export const findByName = async (name: string): Promise<User | null> => {
   return prisma.user.findUnique({
@@ -10,6 +19,18 @@ export const findByName = async (name: string): Promise<User | null> => {
 export const findUserById = async (id: number): Promise<User | null> => {
   return prisma.user.findUnique({
     where: { id },
+  });
+};
+
+export const findProfileById = async (id: number): Promise<UserProfileRecord | null> => {
+  return prisma.user.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      name: true,
+      createdAt: true,
+      cardsVisibility: true,
+    },
   });
 };
 
