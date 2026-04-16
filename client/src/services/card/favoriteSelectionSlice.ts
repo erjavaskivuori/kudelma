@@ -23,7 +23,16 @@ const initialState: FavoriteSelectionState = {
 export const createCardAsync = createAsyncThunk(
   'cards/create',
   async (
-    selection: { book: Book; artwork: Artwork; recipe: Recipe },
+    selection: {
+      book: Book;
+      artwork: Artwork;
+      recipe: Recipe;
+      postcardMeta?: {
+        city?: string;
+        weatherMain?: string;
+        temperatureCelsius?: number;
+      };
+    },
     { rejectWithValue }
   ) => {
     try {

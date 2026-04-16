@@ -5,8 +5,13 @@ import BookCard from './BookCard';
 import RecipeCard from './RecipeCard';
 import { createCardAsync } from '../../services/card/favoriteSelectionSlice';
 import { showModal } from '../../services/notifications/notificationSlice';
+import type { WeatherData } from '../../../../shared/types/weather';
 
-const Selection = () => {
+type SelectionProps = {
+  weather?: WeatherData;
+};
+
+const Selection = ({ weather }: SelectionProps) => {
   const { status, error, book, artwork, recipe } = useAppSelector(
     state => state.favoriteSelection
   );
@@ -56,7 +61,16 @@ const Selection = () => {
 
     if (allSelected) {
       try {
-        await dispatch(createCardAsync({ book: book, artwork: artwork, recipe: recipe })).unwrap();
+        await dispatch(createCardAsync({
+          book: book,
+          artwork: artwork,
+          recipe: recipe,
+          postcardMeta: {
+            city: weather?.city,
+            weatherMain: weather?.main,
+            temperatureCelsius: weather?.temperature,
+          },
+        })).unwrap();
         void navigate("/?mode=community");
       } catch {
         dispatch(showModal({

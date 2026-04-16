@@ -7,10 +7,15 @@ export type FavoriteSelection = {
   book: Book;
   artwork: Artwork;
   recipe: Recipe;
+  postcardMeta?: {
+    city?: string;
+    weatherMain?: string;
+    temperatureCelsius?: number;
+  };
 };
 
 export const createCard = async (selection: FavoriteSelection): Promise<void> => {
-  const { book, artwork, recipe } = selection;
+  const { book, artwork, recipe, postcardMeta } = selection;
   const payload = {
     book: {
       id: book.id,
@@ -34,6 +39,7 @@ export const createCard = async (selection: FavoriteSelection): Promise<void> =>
       title: recipe.title,
       sourceUrl: recipe.sourceUrl,
     },
+    postcardMeta,
   };
   await apiClient.post('/cards/create', payload);
 };

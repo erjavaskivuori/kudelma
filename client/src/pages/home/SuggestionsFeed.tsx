@@ -57,7 +57,7 @@ const SuggestionsFeed = () => {
         ))}
       </Masonry>
       <div className="flex sticky bottom-4 justify-center ">
-        <Selection />
+        <Selection weather={weather} />
       </div>
     </>
   );
