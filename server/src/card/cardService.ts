@@ -1,6 +1,11 @@
 import { HttpError } from '../utils/errors/HttpError.js';
 import type { FavoriteSelection } from '../utils/schemas/favoriteSelectionSchema.js';
-import { createCard as createCardInDb } from './cardRepository.js';
+import {
+  createCard as createCardInDb,
+  getCardsByUserId,
+} from './cardRepository.js';
+import { findProfileById } from '../user/userRepository.js';
+import type { ProfileCardsResponse } from '../../../shared/types/profile.js';
 
 type PrismaError = {
   code?: string;
@@ -20,4 +25,55 @@ export const createCard = async (selection: FavoriteSelection, userId: number) =
 
     throw error;
   }
+};
+
+export const getCardsForProfile = async (
+  profileUserId: number,
+  viewerUserId?: number
+): Promise<ProfileCardsResponse> => {
+  const profile = await findProfileById(profileUserId);
+
+  if (!profile) {
+    throw new HttpError('Profile not found', 404);
+  }
+
+  const cardsVisible = profile.cardsVisibility === 'PUBLIC' || viewerUserId === profile.id;
+
+  if (!cardsVisible) {
+    return {
+      profile: {
+        id: profile.id,
+        name: profile.name,
+        createdAt: profile.createdAt.toISOString(),
+        cardsVisibility: profile.cardsVisibility,
+      },
+      cardsVisible,
+      cards: [],
+    };
+  }
+
+  const cards = await getCardsByUserId(profileUserId);
+
+  return {
+    profile: {
+      id: profile.id,
+      name: profile.name,
+      createdAt: profile.createdAt.toISOString(),
+      cardsVisibility: profile.cardsVisibility,
+    },
+    cardsVisible,
+    cards: cards.map((card) => ({
+      id: card.id,
+      userId: card.userId,
+      artwork: {...card.art},
+      book: {...card.book},
+      recipe: {...card.recipe},
+      postcardMeta: {
+        city: card.city,
+        weatherMain: card.weatherMain,
+        temperatureCelsius: card.temperatureCelsius,
+        createdAt: card.createdAt.toISOString(),
+      },
+    })),
+  };
 };
