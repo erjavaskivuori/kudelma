@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router';
 import { useGetProfileCardsQuery } from '../../services/api';
+import PostcardCard from '../../components/postcard/PostcardCard';
 
 const ProfilePage = () => {
   const params = useParams();
@@ -48,7 +49,7 @@ const ProfilePage = () => {
     );
   }
 
-  const profileDate = new Date(data.profile.createdAt).toLocaleDateString();
+  const profileDate = new Date(data.profile.createdAt).toLocaleDateString("fi-FI");
 
   return (
     <section className="mx-auto max-w-6xl text-white">
@@ -83,7 +84,9 @@ const ProfilePage = () => {
 
       {data.cardsVisible && data.cards.length > 0 && (
         <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {data.cards[0].id}
+          {data.cards.map((card) => (
+            <PostcardCard key={card.id} card={card} />
+          ))}
         </div>
       )}
     </section>
