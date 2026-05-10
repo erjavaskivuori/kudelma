@@ -9,12 +9,15 @@ import { validate } from '../utils/validate.js';
 import type { JwtPayload } from '../utils/token.js';
 
 export const createCardController = async (req: Request, res: Response) => {
-  const { book, artwork, recipe } = validate<FavoriteSelection>(favoriteSelectionSchema, req.body);
+  const { book, artwork, recipe, postcardMeta } = validate<FavoriteSelection>(
+    favoriteSelectionSchema,
+    req.body
+  );
 
   const user = validate<JwtPayload>(jwtPayloadSchema, req.user);
   const userId = user.id;
 
-  const card = await createCard({ book, artwork, recipe }, userId);
+  const card = await createCard({ book, artwork, recipe, postcardMeta }, userId);
 
   res.status(201).json(card);
 };
