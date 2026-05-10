@@ -35,7 +35,9 @@ const TopBar = () => {
         <div className="flex items-center gap-4 text-sm text-white">
           {user ? (
             <>
-              <span>{user.name}</span>
+              <Link to={`/profile/${user.id}`} className="hover:text-gray-300">
+                {user.name}
+              </Link>
               <button
                 onClick={() => void dispatch(logout())}
                 className="text-gray-400 hover:text-white"
