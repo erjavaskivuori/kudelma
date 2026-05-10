@@ -21,8 +21,6 @@ const BookCard = ({ book }: BookCardProps) => {
     }
   };
 
-  const proxiedImageUrl = `/api/image-proxy?url=${encodeURIComponent(book.coverUrl)}`;
-
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     console.error('Failed to load image for:', book.title);
     e.currentTarget.style.display = 'none';
@@ -35,7 +33,7 @@ const BookCard = ({ book }: BookCardProps) => {
           <a href={`https://openlibrary.org${book.id}`} target="_blank" rel="noopener noreferrer">
             <img
               className="rounded-t-2xl object-cover w-full"
-              src={proxiedImageUrl}
+              src={book.coverUrl}
               alt={book.title}
               onError={handleImageError}
             />

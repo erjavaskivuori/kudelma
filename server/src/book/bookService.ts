@@ -12,16 +12,20 @@ const transformBookToDisplayBook = (book: OpenLibraryBook) => {
     return null;
   }
 
+  const coverUrl = book.cover_id
+    ? `https://covers.openlibrary.org/b/id/${book.cover_id}-L.jpg`
+    : book.cover_edition_key
+      ? `https://covers.openlibrary.org/b/olid/${book.cover_edition_key}-L.jpg`
+      : '';
+
+  const proxiedCoverUrl = `/api/image-proxy?url=${encodeURIComponent(coverUrl)}`;
+
   const displayBook = {
     id: book.key,
     title: book.title,
     authors: book.authors ? book.authors.map(author => author.name) : [],
     year: book.first_publish_year || null,
-    coverUrl: book.cover_id
-      ? `https://covers.openlibrary.org/b/id/${book.cover_id}-L.jpg`
-      : book.cover_edition_key
-        ? `https://covers.openlibrary.org/b/olid/${book.cover_edition_key}-L.jpg`
-        : ''
+    coverUrl: proxiedCoverUrl
   };
   return displayBook;
 };

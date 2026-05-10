@@ -21,11 +21,6 @@ const ArtCard = ({ artwork }: ArtCardProps) => {
     };
   };
 
-  const getProxiedImageUrl = (originalImageUrl: string): string => {
-    const fullImageUrl = `https://api.finna.fi${originalImageUrl}`;
-    return `/api/image-proxy?url=${encodeURIComponent(fullImageUrl)}`;
-  };
-
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     console.error('Failed to load image for:', artwork.title);
     e.currentTarget.style.display = 'none';
@@ -36,7 +31,7 @@ const ArtCard = ({ artwork }: ArtCardProps) => {
       image={
       <img
         className="rounded-t-2xl w-full"
-        src={getProxiedImageUrl(artwork.imageUrl)}
+        src={artwork.imageUrl}
         alt={artwork.title}
         onError={handleImageError}
       />

@@ -60,6 +60,8 @@ const transformFinnaRecordToArtwork = (record: FinnaRecord): Artwork | null => {
   if (!imageUrl) {
     return null;
   }
+  const fullImageUrl = `https://api.finna.fi${imageUrl}`;
+  const proxiedImageUrl = `/api/image-proxy?url=${encodeURIComponent(fullImageUrl)}`;
 
   const uniqueAuthors = record.nonPresenterAuthors.filter((author, index, array) =>
     array.findIndex(a => a.name === author.name) === index
@@ -70,7 +72,7 @@ const transformFinnaRecordToArtwork = (record: FinnaRecord): Artwork | null => {
     title: record.title,
     year: record.year ? parseInt(record.year, 10) : null,
     authors: uniqueAuthors,
-    imageUrl: imageUrl,
+    imageUrl: proxiedImageUrl,
     buildings: record.buildings || null,
     imageRights: record.imageRights
   };
