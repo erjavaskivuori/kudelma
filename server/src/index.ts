@@ -1,7 +1,7 @@
-import app from './app.js';
 import dotenv from 'dotenv';
-
 dotenv.config();
+
+import app from './app.js';
 
 if (!process.env.PORT) {
   throw new Error('PORT is not defined in environment variables');

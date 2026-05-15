@@ -24,7 +24,12 @@ export const registerUser = async (
 
   try {
     const user = await createUser(name, email, passwordHash);
-    return { id: user.id, name: user.name, email: user.email };
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      spotifyConnected: !!user.spotifyAccessToken
+    };
   } catch (error) {
     const prismaError = error as PrismaError;
 
@@ -56,7 +61,12 @@ export const loginUser = async (name: string, password: string) => {
     throw new HttpError('Invalid username or password', 401);
   }
 
-  return { id: user.id, name: user.name, email: user.email };
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    spotifyConnected: !!user.spotifyAccessToken
+  };
 };
 
 export const issueTokens = async (user: { id: number; name: string }) => {
@@ -95,7 +105,12 @@ export const refreshAccessToken = async (refreshToken: string) => {
 
   return {
     accessToken: newAccessToken,
-    user: { id: user.id, name: user.name, email: user.email }
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      spotifyConnected: !!user.spotifyAccessToken
+    }
   };
 };
 
