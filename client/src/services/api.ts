@@ -4,6 +4,7 @@ import type { Artwork } from '../../../shared/types/art';
 import type { Book } from '../../../shared/types/books';
 import type { Recipe } from '../../../shared/types/recipe';
 import type { ProfileCardsResponse } from '../../../shared/types/profile';
+import type { MusicTrack } from '../../../shared/types/music';
 
 export const api = createApi({
   reducerPath: 'api',
@@ -11,7 +12,16 @@ export const api = createApi({
     baseUrl: String(import.meta.env.VITE_BACKEND_URL),
     credentials: 'include',
   }),
-  tagTypes: ['Colors', 'Keywords', 'Weather', 'Artworks', 'Books', 'Recipes', 'ProfileCards'],
+  tagTypes: [
+    'Colors',
+    'Keywords',
+    'Weather',
+    'Artworks',
+    'Books',
+    'Recipes',
+    'Music',
+    'ProfileCards'
+  ],
   endpoints: (builder) => ({
     getColors: builder.query<string[], string[]>({
       query: (keywords) => ({
@@ -57,6 +67,14 @@ export const api = createApi({
       transformResponse: (response: { books: Book[] }) => response.books,
       providesTags: ['Books'],
     }),
+    getMusicRecommendations: builder.query<MusicTrack[], { activity: string; moods: string[] }>({
+      query: ({ activity, moods }) => ({
+        url: '/music/recommendations',
+        params: { activity, moods: moods.join(',') },
+      }),
+      providesTags: ['Music'],
+    }),
+
     getRecipes: builder.query<Recipe[], string[]>({
       query: (keywords) => ({
         url: '/recipes',
@@ -80,6 +98,8 @@ export const {
   useGetWeatherQuery,
   useGetArtworksQuery,
   useGetBooksQuery,
+  useGetMusicRecommendationsQuery,
+  useLazyGetMusicRecommendationsQuery,
   useGetRecipesQuery,
   useGetProfileCardsQuery,
 } = api;
