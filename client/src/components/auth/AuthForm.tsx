@@ -61,7 +61,7 @@ const AuthForm = ({
 
       <div
         className="relative z-10 w-full max-w-md rounded-3xl border border-white/40
-          bg-[var(--color-medium)]/55 p-6 shadow-xl backdrop-blur-md sm:p-8"
+          bg-(--color-medium)/55 p-6 shadow-xl backdrop-blur-md sm:p-8"
       >
         <Link
           to="/"
@@ -143,10 +143,10 @@ const AuthForm = ({
             type="submit"
             disabled={status === 'loading'}
             className={clsx(
-              'w-full rounded-xl border border-transparent bg-[var(--color-popup)] px-4 py-2.5',
+              'w-full rounded-xl border border-transparent bg-(--color-popup) px-4 py-2.5',
               'text-sm font-semibold leading-5 text-white shadow-sm transition-colors duration-200',
-              'hover:bg-[var(--color-extra-dark)] focus:outline-none focus:ring-4',
-              'focus:ring-[var(--color-popup)]/35 disabled:opacity-50'
+              'hover:bg-(--color-extra-dark) focus:outline-none focus:ring-4',
+              'focus:ring-(--color-popup)/35 disabled:opacity-50'
             )}
           >
             {status === 'loading' ? loadingLabel : submitLabel}

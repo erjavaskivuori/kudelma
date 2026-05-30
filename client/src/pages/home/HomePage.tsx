@@ -13,7 +13,7 @@ const HomePage = () => {
   useEffect(() => {
     const urlMode = searchParams.get('mode');
     if (urlMode && urlMode !== mode && (urlMode === 'community' || urlMode === 'suggestions')) {
-      setMode(urlMode as FeedMode);
+      setMode(urlMode);
     }
   }, [searchParams, mode]);
 
@@ -26,12 +26,12 @@ const HomePage = () => {
     <>
       <header
         className="flex items-center justify-center gap-4 mb-6
-          text-[var(--color-extra-light)]">
+          text-(--color-extra-light)">
         <button
           onClick={() => handleModeChange('suggestions')}
           className={`${
               mode === 'suggestions'
-                ? 'border-b-4 border-[var(--color-popup)]'
+                ? 'border-b-4 border-(--color-popup)'
                 : 'border-b-4 border-transparent'
             }`}
           >
@@ -41,7 +41,7 @@ const HomePage = () => {
           onClick={() => handleModeChange('community')}
           className={`${
               mode === 'community'
-                ? 'border-b-4 border-[var(--color-popup)]'
+                ? 'border-b-4 border-(--color-popup)'
                 : 'border-b-4 border-transparent'
             }`}
         >
