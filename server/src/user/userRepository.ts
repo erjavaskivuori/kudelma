@@ -47,3 +47,19 @@ export const createUser = async (
     },
   });
 };
+
+export const syncSpotifyTokens = async (
+  userId: number,
+  accessToken: string,
+  refreshToken: string,
+  expiresAt: Date
+): Promise<User> => {
+  return prisma.user.update({
+    where: { id: userId },
+    data: {
+      spotifyAccessToken: accessToken,
+      spotifyRefreshToken: refreshToken,
+      spotifyTokenExpiresAt: expiresAt,
+    },
+  });
+};

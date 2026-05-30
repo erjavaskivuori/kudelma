@@ -1,16 +1,25 @@
 import axios from 'axios';
 import querystring from 'querystring';
 import { HttpError } from '../utils/errors/index.js';
+import { syncSpotifyTokens } from '../user/userRepository.js';
 
 const API_URL = process.env.API_URL || 'http://127.0.0.1:8080/api';
 const REDIRECT_URI = `${API_URL}/music/spotify/callback`;
+
+interface SpotifyTokenResponse {
+  access_token: string;
+  token_type: string;
+  expires_in: number;
+  refresh_token: string;
+  scope: string;
+}
 
 export const generateSpotifyAuthUrl = (): string => {
   if (!process.env.SPOTIFY_CLIENT_ID) {
     throw new HttpError('Spotify Client ID is not configured', 500);
   }
 
-  const scope = 'user-read-private user-read-email user-top-read';
+  const scope = 'user-read-private';
   const queryParams = querystring.stringify({
     response_type: 'code',
     client_id: process.env.SPOTIFY_CLIENT_ID,
@@ -20,14 +29,6 @@ export const generateSpotifyAuthUrl = (): string => {
 
   return `https://accounts.spotify.com/authorize?${queryParams}`;
 };
-
-interface SpotifyTokenResponse {
-  access_token: string;
-  token_type: string;
-  expires_in: number;
-  refresh_token: string;
-  scope: string;
-}
 
 const getSpotifyErrorMessage = (error: unknown): string => {
   if (axios.isAxiosError<{ message?: string; error?: string }>(error)) {
@@ -41,7 +42,7 @@ const getSpotifyErrorMessage = (error: unknown): string => {
   return 'Unknown Spotify error';
 };
 
-export const exchangeSpotifyCodeForTokens = async (code: string) => {
+export const exchangeSpotifyCodeForTokens = async (code: string, userId: number) => {
   if (!process.env.SPOTIFY_CLIENT_ID || !process.env.SPOTIFY_CLIENT_SECRET) {
     throw new HttpError('Spotify credentials are not configured', 500);
   }
@@ -65,11 +66,14 @@ export const exchangeSpotifyCodeForTokens = async (code: string) => {
       },
     });
 
-    return {
-      accessToken: response.data.access_token,
-      refreshToken: response.data.refresh_token,
-      expiresIn: response.data.expires_in,
-    };
+    const expiresAt = new Date(Date.now() + response.data.expires_in * 1000);
+
+    await syncSpotifyTokens(
+      userId,
+      response.data.access_token,
+      response.data.refresh_token,
+      expiresAt
+    );
   } catch (error: unknown) {
     console.error('Error exchanging spotify code for tokens:', getSpotifyErrorMessage(error));
     throw new HttpError('Failed to authenticate with Spotify', 500);

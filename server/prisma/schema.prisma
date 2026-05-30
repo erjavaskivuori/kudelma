@@ -13,14 +13,17 @@ enum CardVisibility {
 }
 
 model User {
-  id              Int            @id @default(autoincrement())
-  createdAt       DateTime       @default(now())
-  email           String?        @unique
-  name            String         @unique
-  password        String
-  cardsVisibility CardVisibility @default(PRIVATE)
-  refreshTokens   RefreshToken[]
-  cards           Card[]
+  id                    Int            @id @default(autoincrement())
+  createdAt             DateTime       @default(now())
+  email                 String?        @unique
+  name                  String         @unique
+  password              String
+  cardsVisibility       CardVisibility @default(PRIVATE)
+  spotifyAccessToken    String?
+  spotifyRefreshToken   String?
+  spotifyTokenExpiresAt DateTime?
+  refreshTokens         RefreshToken[]
+  cards                 Card[]
 }
 
 model RefreshToken {
