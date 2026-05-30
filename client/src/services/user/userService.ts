@@ -4,6 +4,7 @@ export type User = {
   id: number;
   name: string;
   email?: string;
+  spotifyConnected?: boolean;
 };
 
 export const registerUser = async (
@@ -33,3 +34,9 @@ export const refreshAccessToken = async (): Promise<User> => {
   const response = await apiClient.post<User>('/auth/refresh');
   return response.data;
 };
+
+export const getSpotifyAuthUrl = async (): Promise<{ url: string }> => {
+  const response = await apiClient.get<{ url: string }>('/music/spotify/connect');
+  return response.data;
+};
+
