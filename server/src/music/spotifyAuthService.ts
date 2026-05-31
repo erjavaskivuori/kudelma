@@ -47,7 +47,7 @@ export const generateSpotifyAuthUrl = (userId: number): string => {
     throw new HttpError('Spotify Client ID is not configured', 500);
   }
 
-  const scope = 'user-read-private';
+  const scope = 'user-read-private user-top-read';
   const queryParams = querystring.stringify({
     response_type: 'code',
     client_id: process.env.SPOTIFY_CLIENT_ID,
