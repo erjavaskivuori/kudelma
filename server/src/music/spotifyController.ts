@@ -1,33 +1,41 @@
-import type { Request, Response, NextFunction } from 'express';
-import { generateSpotifyAuthUrl, exchangeSpotifyCodeForTokens } from './spotifyAuthService.js';
+import type { Request, Response } from 'express';
+import {
+  generateSpotifyAuthUrl,
+  exchangeSpotifyCodeForTokens,
+  verifySpotifyState,
+} from './spotifyAuthService.js';
 
-export const connectSpotify = (_req: Request, res: Response, next: NextFunction) => {
-  try {
-    const authUrl = generateSpotifyAuthUrl();
-    res.json({ url: authUrl });
-  } catch (error) {
-    next(error);
+export const connectSpotify = (req: Request, res: Response) => {
+  const userId = req.user?.id;
+
+  if (!userId) {
+    return res.status(401).json({ error: 'Not authenticated' });
   }
+
+  const authUrl = generateSpotifyAuthUrl(userId);
+  return res.json({ url: authUrl });
 };
 
-export const spotifyCallback = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const code = req.query.code as string;
-    const errorParam = req.query.error as string;
+export const spotifyCallback = async (req: Request, res: Response) => {
+  const code = typeof req.query.code === 'string' ? req.query.code : undefined;
+  const state = typeof req.query.state === 'string' ? req.query.state : undefined;
+  const errorParam = typeof req.query.error === 'string' ? req.query.error : undefined;
 
-    const userId = req.user?.id;
-    if (!userId) {
-      return res.status(401).json({ error: 'Not authenticated' });
-    }
-
-    if (errorParam) {
-      return res.redirect(`/profile/${userId}?error=spotify_auth_failed`);
-    }
-
-    await exchangeSpotifyCodeForTokens(code, userId);
-
-    res.redirect(`/profile/${userId}?spotify_connected=true`);
-  } catch (error) {
-    next(error);
+  if (!state) {
+    return res.status(400).json({ error: 'Missing Spotify state' });
   }
+
+  const userId = verifySpotifyState(state);
+
+  if (errorParam) {
+    return res.redirect(`/profile/${userId}?error=spotify_auth_failed`);
+  }
+
+  if (!code) {
+    return res.status(400).json({ error: 'Missing Spotify authorization code' });
+  }
+
+  await exchangeSpotifyCodeForTokens(code, userId);
+
+  return res.redirect(`/profile/${userId}?spotify_connected=true`);
 };
