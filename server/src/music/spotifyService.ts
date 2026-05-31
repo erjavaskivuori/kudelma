@@ -23,6 +23,44 @@ interface UserTopItems {
   artists: ArtistResult[];
 }
 
+const dedupeById = <T extends { id: string }>(items: T[]): T[] => {
+  const seen = new Set<string>();
+
+  return items.filter((item) => {
+    if (seen.has(item.id)) {
+      return false;
+    }
+
+    seen.add(item.id);
+    return true;
+  });
+};
+
+const normalizeQueries = (queries: string[]): string[] => {
+  return [...new Set(queries.map((query) => query.trim()).filter(Boolean))];
+};
+
+const collectSearchResults = async <T extends { id: string }>(
+  queries: string[],
+  search: (query: string) => Promise<T[]>,
+  label: string
+): Promise<T[]> => {
+  const settledResults = await Promise.allSettled(queries.map((query) => search(query)));
+
+  const collectedResults = settledResults.flatMap((result, index) => {
+    if (result.status === 'fulfilled') {
+      return result.value;
+    }
+
+    console.warn(
+      `Ignoring failed Spotify ${label} search for query: ${queries[index]}`, result.reason
+    );
+    return [];
+  });
+
+  return dedupeById(collectedResults);
+};
+
 const searchSpotifyTracks = async (query: string, accessToken: string): Promise<TrackResult[]> => {
   const queryparameters = querystring.stringify({
     q: query,
@@ -113,26 +151,33 @@ const getUserTopItems = async (accessToken: string): Promise<UserTopItems> => {
     time_range: 'long_term',
     limit: '50',
   });
-  const tracksResponse = await axios.get<SpotifyTrackSearchResponse>(
-    'https://api.spotify.com/v1/me/top/tracks?'+ queryparameters, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+  const [tracksResponse, artistsResponse] = await Promise.allSettled([
+    axios.get<SpotifyTrackSearchResponse>(
+      'https://api.spotify.com/v1/me/top/tracks?' + queryparameters, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    ),
+    axios.get<SpotifyArtistSearchResponse>(
+      'https://api.spotify.com/v1/me/top/artists?' + queryparameters, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    ),
+  ]);
 
-  if (!tracksResponse.data) {
-    throw new HttpError(`Spotify API error: ${tracksResponse.statusText}`);
+  const allTracks = tracksResponse.status === 'fulfilled'
+    ? tracksResponse.value.data?.tracks.items ?? []
+    : [];
+  const allArtists = artistsResponse.status === 'fulfilled'
+    ? artistsResponse.value.data?.artists.items ?? []
+    : [];
+
+  if (tracksResponse.status === 'rejected') {
+    console.warn('Ignoring failed Spotify top tracks lookup', tracksResponse.reason);
   }
 
-  const artistsResponse = await axios.get<SpotifyArtistSearchResponse>(
-    'https://api.spotify.com/v1/me/top/artists?' + queryparameters, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-
-  if (!artistsResponse.data) {
-    throw new HttpError(`Spotify API error: ${artistsResponse.statusText}`);
+  if (artistsResponse.status === 'rejected') {
+    console.warn('Ignoring failed Spotify top artists lookup', artistsResponse.reason);
   }
-
-  const allTracks = tracksResponse.data.tracks.items;
-  const allArtists = artistsResponse.data.artists.items;
 
   return {
     tracks: allTracks.map((item) => ({
@@ -188,25 +233,20 @@ export const getSpotifyRecommendations = async (
       // Fall through to regeneration.
     }
   }
-  let trackResults: TrackResult[] = [];
-  let playlistResults: PlaylistResult[] = [];
-  let artistResults: ArtistResult[] = [];
+  const trackQueries = normalizeQueries(queries.track);
+  const playlistQueries = normalizeQueries(queries.playlist);
 
-  for ( const q of queries.track) {
-    console.log('Spotify track query:', q);
-    trackResults = await searchSpotifyTracks(queries.track.join(' '), accessToken);
-    artistResults = await searchSpotifyArtists(queries.track.join(' '), accessToken);
-  }
+  const [trackResults, artistResults, playlistResults] = await Promise.all([
+    collectSearchResults(trackQueries, (query) => searchSpotifyTracks(query, accessToken), 'track'),
+    collectSearchResults(
+      trackQueries, (query) => searchSpotifyArtists(query, accessToken), 'artist'
+    ),
+    collectSearchResults(
+      playlistQueries, (query) => searchSpotifyPlaylists(query, accessToken), 'playlist'
+    ),
+  ]);
 
-  for ( const q of queries.playlist) {
-    console.log('Spotify playlist query:', q);
-    playlistResults = await searchSpotifyPlaylists(queries.playlist.join(' '), accessToken);
-  }
   const topItems = await getUserTopItems(accessToken);
-
-  // note ratelimit handling and error handling for each search?
-
-  // Deduplicate and normalize results
 
   // Rank results based on relevance to the queries and user's listening history
   const rankedResults = rankResultsByRelevance(
