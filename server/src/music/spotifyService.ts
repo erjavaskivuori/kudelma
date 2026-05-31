@@ -193,13 +193,13 @@ export const getSpotifyRecommendations = async (
   let artistResults: ArtistResult[] = [];
 
   for ( const q of queries.track) {
-    console.log('Spotify track query:', queries.track[q]);
+    console.log('Spotify track query:', q);
     trackResults = await searchSpotifyTracks(queries.track.join(' '), accessToken);
     artistResults = await searchSpotifyArtists(queries.track.join(' '), accessToken);
   }
 
   for ( const q of queries.playlist) {
-    console.log('Spotify playlist query:', queries.playlist[q]);
+    console.log('Spotify playlist query:', q);
     playlistResults = await searchSpotifyPlaylists(queries.playlist.join(' '), accessToken);
   }
   const topItems = await getUserTopItems(accessToken);
