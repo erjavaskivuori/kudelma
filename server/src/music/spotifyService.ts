@@ -180,19 +180,21 @@ const getUserTopItems = async (accessToken: string): Promise<UserTopItems> => {
   }
 
   return {
-    tracks: allTracks.map((item) => ({
+    tracks: allTracks.map((item, index) => ({
       id: item.id,
       name: item.name,
       artists: item.artists.map((artist) => artist.name),
       album: item.album.name,
       imageUrl: item.album.images[0]?.url || '',
       spotifyUrl: item.external_urls.spotify,
+      rank: index + 1, // Add rank based on position in the list
     })),
-    artists: allArtists.map((item) => ({
+    artists: allArtists.map((item, index) => ({
       id: item.id,
       name: item.name,
       imageUrl: item.images[0]?.url || '',
       spotifyUrl: item.external_urls.spotify,
+      rank: index + 1, // Add rank based on position in the list
     })),
   };
 };
