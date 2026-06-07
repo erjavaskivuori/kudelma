@@ -26,13 +26,13 @@ const HomePage = () => {
     <>
       <header
         className="flex items-center justify-center gap-4 mb-6
-          text-(--color-extra-light)">
+          text-white/50">
         <button
           onClick={() => handleModeChange('suggestions')}
           className={`${
               mode === 'suggestions'
-                ? 'border-b-4 border-(--color-popup)'
-                : 'border-b-4 border-transparent'
+                ? 'border-b-4 font-bold border-(--color-popup)'
+                : 'border-b-4 font-bold border-transparent'
             }`}
           >
           For you
@@ -41,8 +41,8 @@ const HomePage = () => {
           onClick={() => handleModeChange('community')}
           className={`${
               mode === 'community'
-                ? 'border-b-4 border-(--color-popup)'
-                : 'border-b-4 border-transparent'
+                ? 'border-b-4 font-bold border-(--color-popup)'
+                : 'border-b-4 font-bold border-transparent'
             }`}
         >
           Community

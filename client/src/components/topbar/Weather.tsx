@@ -59,7 +59,7 @@ const WeatherCompact = ({ weather }: WeatherCompactProps) => {
       {/* Expanded — overlays the compact info */}
       {showDetails && (
         <div className="absolute -top-3 -left-3 p-4 rounded-xl shadow-xl z-50 min-w-72
-          animate-weather-in bg-[var(--color-popup)] border border-[var(--color-popup-border)]"
+          animate-weather-in bg-(--color-popup) border border-(--color-popup-border)"
         >
           {/* Top row: header + icon/temp side by side */}
           <div className="flex items-center justify-between gap-6">
@@ -78,7 +78,7 @@ const WeatherCompact = ({ weather }: WeatherCompactProps) => {
           </div>
 
           {/* Divider */}
-          <div className="border-t border-[var(--color-popup-border)] my-3" />
+          <div className="border-t border-(--color-popup-border) my-3" />
 
           {/* Bottom row: sunrise & sunset horizontal */}
           <div className="flex justify-around text-white/70 text-sm">

@@ -16,7 +16,7 @@ const TopBar = () => {
 
   return (
     <header className="sticky top-0 z-50 flex items-center justify-between px-3 py-4
-    bg-[var(--color-extra-dark)]/80 backdrop-blur-sm"
+    bg-(--color-extra-dark)/80 backdrop-blur-sm"
     >
       <div className="flex items-center justify-between w-full px-10">
         {/* Left — weather */}

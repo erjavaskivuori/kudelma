@@ -16,7 +16,7 @@ const PostcardCard = ({ card }: PostcardCardProps) => {
   const [flipped, setFlipped] = useState(false);
 
   return (
-    <article className="group [perspective:1200px]">
+    <article className="group perspective-distant">
       <button
         type="button"
         className="w-full cursor-pointer text-left"
@@ -27,15 +27,15 @@ const PostcardCard = ({ card }: PostcardCardProps) => {
         }
       >
         <div
-          className="relative h-[21rem] w-full rounded-2xl shadow-lg
+          className="relative h-84 w-full rounded-2xl shadow-lg
             transition-transform duration-500
-            [transform-style:preserve-3d] group-focus-within:shadow-xl"
+            transform-3d group-focus-within:shadow-xl"
           style={{ transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}
         >
           <div
             className="absolute inset-0 overflow-hidden rounded-2xl border
-              border-white/40 bg-[var(--color-light)]
-              [backface-visibility:hidden]"
+              border-white/40 bg-(--color-light)
+              backface-hidden"
           >
             <img
               src={card.artwork.imageUrl}
@@ -59,7 +59,7 @@ const PostcardCard = ({ card }: PostcardCardProps) => {
           <div
             className="absolute inset-0 rounded-2xl border border-white/30
               bg-yellow-50 p-4
-              text-slate-800 [backface-visibility:hidden] [transform:rotateY(180deg)]"
+              text-slate-800 backface-hidden transform-[rotateY(180deg)]"
           >
             <div className="grid h-full grid-cols-[1fr_7rem] gap-4">
               <div className="flex flex-col">
@@ -73,7 +73,7 @@ const PostcardCard = ({ card }: PostcardCardProps) => {
                   My picks:
                 </p>
                 <div className="flex gap-2 mt-2">
-                  <LuChefHat className="mt-1 flex-shrink-0 text-lg" />
+                  <LuChefHat className="mt-1 shrink-0 text-lg" />
                   <a
                     href={card.recipe.sourceUrl}
                     target="_blank"
@@ -85,7 +85,7 @@ const PostcardCard = ({ card }: PostcardCardProps) => {
                 </div>
 
                 <div className="flex gap-2">
-                  <PiBooksFill className="mt-1 flex-shrink-0 text-lg" />
+                  <PiBooksFill className="mt-1 shrink-0 text-lg" />
                   <div>
                     <a href={`https://openlibrary.org${card.book.id}`} target="_blank" rel="noreferrer" className="text-sm font-medium hover:underline">
                       <p className="text-base font-semibold">{card.book.title}</p>
