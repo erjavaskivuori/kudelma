@@ -6,7 +6,12 @@ const error = (...params: unknown[]) => {
   console.error(new Date().toISOString(), '[ERROR]', ...params);
 };
 
+const warn = (...params: unknown[]) => {
+  console.warn(new Date().toISOString(), '[WARN]', ...params);
+};
+
 export default {
   info,
-  error
+  error,
+  warn
 };

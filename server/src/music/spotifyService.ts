@@ -1,8 +1,9 @@
 import axios from 'axios';
 import querystring from 'querystring';
+import logger from '../utils/logger.js';
 import { redis } from '../infra/redis.js';
 import { HttpError } from '../utils/errors/index.js';
-import type { SpotifySearchQueries } from '../genAI/genAITypes.js';
+import type { SpotifyQueries } from '../genAI/genAITypes.js';
 import { getNextChangeTimestamp } from '../utils/timeBuckets.js';
 import type {
   ArtistResult,
@@ -12,15 +13,18 @@ import type {
 } from '../../../shared/types/music.js';
 import type {
   SpotifyArtistSearchResponse,
+  SpotifyArtistSearchResult,
   SpotifyPlaylistSearchResponse,
-  SpotifyTrackSearchResponse
+  SpotifyTrackSearchResponse,
+  SpotifyTrackSearchResult
 } from './spotifyTypes.js';
+import { rankSpotifyResults } from './spotifyRanker.js';
 
 const EXPIRE_AT = getNextChangeTimestamp();
 
-interface UserTopItems {
-  tracks: TrackResult[];
-  artists: ArtistResult[];
+export interface UserTopItems {
+  tracks: Array<TrackResult & { rank?: number }>;
+  artists: Array<ArtistResult & { rank?: number }>;
 }
 
 const dedupeById = <T extends { id: string }>(items: T[]): T[] => {
@@ -52,7 +56,7 @@ const collectSearchResults = async <T extends { id: string }>(
       return result.value;
     }
 
-    console.warn(
+    logger.warn(
       `Ignoring failed Spotify ${label} search for query: ${queries[index]}`, result.reason
     );
     return [];
@@ -77,14 +81,16 @@ const searchSpotifyTracks = async (query: string, accessToken: string): Promise<
     throw new HttpError(`Spotify API error: ${response.statusText}`);
   }
   const allTracks = response.data.tracks.items;
+  const nonNullTracks = allTracks.filter(item => item);
 
-  return allTracks.map((item) => ({
+  return nonNullTracks.map((item, index) => ({
     id: item.id,
     name: item.name,
     artists: item.artists.map((artist) => artist.name),
     album: item.album.name,
     imageUrl: item.album.images[0]?.url || '',
     spotifyUrl: item.external_urls.spotify,
+    rank: index + 1, // Add rank based on position in the list
   }));
 };
 
@@ -108,12 +114,14 @@ const searchSpotifyArtists = async (
   }
 
   const allArtists = response.data.artists.items;
+  const nonNullArtists = allArtists.filter(item => item);
 
-  return allArtists.map((item) => ({
+  return nonNullArtists.map((item, index) => ({
     id: item.id,
     name: item.name,
     imageUrl: item.images[0]?.url || '',
     spotifyUrl: item.external_urls.spotify,
+    rank: index + 1, // Add rank based on position in the list
   }));
 };
 
@@ -134,15 +142,16 @@ const searchSpotifyPlaylists = async (
   if (!response.data) {
     throw new HttpError(`Spotify API error: ${response.statusText}`);
   }
-
   const allPlaylists = response.data.playlists.items;
+  const nonNullPlaylists = allPlaylists.filter(item => item);
 
-  return allPlaylists.map((item) => ({
+  return nonNullPlaylists.map((item, index) => ({
     id: item.id,
     name: item.name,
     description: item.description,
     imageUrl: item.images[0]?.url || '',
     spotifyUrl: item.external_urls.spotify,
+    rank: index + 1, // Add rank based on position in the list
   }));
 };
 
@@ -152,12 +161,12 @@ const getUserTopItems = async (accessToken: string): Promise<UserTopItems> => {
     limit: '50',
   });
   const [tracksResponse, artistsResponse] = await Promise.allSettled([
-    axios.get<SpotifyTrackSearchResponse>(
+    axios.get<SpotifyTrackSearchResult>(
       'https://api.spotify.com/v1/me/top/tracks?' + queryparameters, {
         headers: { Authorization: `Bearer ${accessToken}` },
       }
     ),
-    axios.get<SpotifyArtistSearchResponse>(
+    axios.get<SpotifyArtistSearchResult>(
       'https://api.spotify.com/v1/me/top/artists?' + queryparameters, {
         headers: { Authorization: `Bearer ${accessToken}` },
       }
@@ -165,22 +174,24 @@ const getUserTopItems = async (accessToken: string): Promise<UserTopItems> => {
   ]);
 
   const allTracks = tracksResponse.status === 'fulfilled'
-    ? tracksResponse.value.data?.tracks.items ?? []
+    ? tracksResponse.value.data?.items ?? []
     : [];
   const allArtists = artistsResponse.status === 'fulfilled'
-    ? artistsResponse.value.data?.artists.items ?? []
+    ? artistsResponse.value.data?.items ?? []
     : [];
 
   if (tracksResponse.status === 'rejected') {
-    console.warn('Ignoring failed Spotify top tracks lookup', tracksResponse.reason);
+    logger.warn('Ignoring failed Spotify top tracks lookup', tracksResponse.reason);
   }
 
   if (artistsResponse.status === 'rejected') {
-    console.warn('Ignoring failed Spotify top artists lookup', artistsResponse.reason);
+    logger.warn('Ignoring failed Spotify top artists lookup', artistsResponse.reason);
   }
+  const nonNullTracks = allTracks.filter(item => item);
+  const nonNullArtists = allArtists.filter(item => item);
 
   return {
-    tracks: allTracks.map((item, index) => ({
+    tracks: nonNullTracks.map((item, index) => ({
       id: item.id,
       name: item.name,
       artists: item.artists.map((artist) => artist.name),
@@ -189,7 +200,7 @@ const getUserTopItems = async (accessToken: string): Promise<UserTopItems> => {
       spotifyUrl: item.external_urls.spotify,
       rank: index + 1, // Add rank based on position in the list
     })),
-    artists: allArtists.map((item, index) => ({
+    artists: nonNullArtists.map((item, index) => ({
       id: item.id,
       name: item.name,
       imageUrl: item.images[0]?.url || '',
@@ -199,31 +210,9 @@ const getUserTopItems = async (accessToken: string): Promise<UserTopItems> => {
   };
 };
 
-const rankResultsByRelevance = (
-  queries: SpotifySearchQueries,
-  tracks: TrackResult[],
-  playlists: PlaylistResult[],
-  artists: ArtistResult[],
-  topItems: UserTopItems
-) => {
-  // Placeholder for a relevance ranking algorithm based on how well results match the queries
-  // This could involve checking for exact matches, partial matches, and other heuristics
-  // Could also utilise the gen AI service for natural language understanding of relevance
-  console.log('Used queries:', queries);
-  console.log('User\'s top tracks:', topItems.tracks.map(t => t.name));
-  console.log('User\'s top artists:', topItems.artists.map(a => a.name));
-
-  const results: RankedResults = {
-    tracks: tracks, // Placeholder - should be sorted/filtered by relevance
-    playlists: playlists, // Placeholder - should be sorted/filtered by relevance
-    artists: artists, // Placeholder - should be sorted/filtered by relevance
-  };
-
-  return results; // Return ranked results
-};
-
 export const getSpotifyRecommendations = async (
-  queries: SpotifySearchQueries, accessToken: string
+  queries: SpotifyQueries,
+  accessToken: string,
 ) => {
   const cacheKey = `spotify-recommendations:${JSON.stringify(queries)}`;
   const cachedData = await redis.get(cacheKey);
@@ -235,13 +224,13 @@ export const getSpotifyRecommendations = async (
       // Fall through to regeneration.
     }
   }
-  const trackQueries = normalizeQueries(queries.track);
-  const playlistQueries = normalizeQueries(queries.playlist);
+  const genreQueries = normalizeQueries(queries.genres);
+  const playlistQueries = normalizeQueries(queries.playlists);
 
   const [trackResults, artistResults, playlistResults] = await Promise.all([
-    collectSearchResults(trackQueries, (query) => searchSpotifyTracks(query, accessToken), 'track'),
+    collectSearchResults(genreQueries, (query) => searchSpotifyTracks(query, accessToken), 'track'),
     collectSearchResults(
-      trackQueries, (query) => searchSpotifyArtists(query, accessToken), 'artist'
+      genreQueries, (query) => searchSpotifyArtists(query, accessToken), 'artist'
     ),
     collectSearchResults(
       playlistQueries, (query) => searchSpotifyPlaylists(query, accessToken), 'playlist'
@@ -250,18 +239,22 @@ export const getSpotifyRecommendations = async (
 
   const topItems = await getUserTopItems(accessToken);
 
-  // Rank results based on relevance to the queries and user's listening history
-  const rankedResults = rankResultsByRelevance(
-    queries,
+  const rankedResults = rankSpotifyResults(
     trackResults,
     playlistResults,
     artistResults,
     topItems
   );
 
-  await redis.set(cacheKey, JSON.stringify(rankedResults), {
+  const limitedResults = {
+    tracks: rankedResults.tracks.slice(0, 10),
+    artists: rankedResults.artists.slice(0, 5),
+    playlists: rankedResults.playlists.slice(0, 10),
+  };
+
+  await redis.set(cacheKey, JSON.stringify(limitedResults), {
     expiration: { type:'EXAT', value: EXPIRE_AT }
   });
 
-  return rankedResults;
+  return limitedResults;
 };
