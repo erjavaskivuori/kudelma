@@ -4,6 +4,7 @@ export interface PlaylistResult {
   description: string;
   imageUrl: string;
   spotifyUrl: string;
+  rank: number;
 }
 
 export interface TrackResult {
@@ -13,6 +14,7 @@ export interface TrackResult {
   album: string;
   imageUrl: string;
   spotifyUrl: string;
+  rank: number;
 }
 
 export interface ArtistResult {
@@ -20,6 +22,7 @@ export interface ArtistResult {
   name: string;
   imageUrl: string;
   spotifyUrl: string;
+  rank: number;
 }
 
 export interface RankedResults {
