@@ -1,6 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
-import type { Keywords, SpotifySearchQueries } from './genAITypes.js';
+import type { Keywords, SpotifyQueries } from './genAITypes.js';
 import type { WeatherData } from '../../../shared/types/weather.js';
 import { redis } from '../infra/redis.js';
 import { getNextChangeTimestamp } from '../utils/timeBuckets.js';
@@ -11,7 +11,7 @@ dotenv.config();
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GENAI_PROMPT = process.env.GENAI_PROMPT;
 const GENAI_MUSIC_PROMPT = process.env.GENAI_MUSIC_PROMPT;
-const GENAI_MODEL = 'gemini-2.5-flash';
+const GENAI_MODEL = 'gemini-3.1-flash-lite';
 
 if (!GEMINI_API_KEY) {
   throw new Error('GEMINI_API_KEY is not defined in environment variables');
@@ -109,41 +109,41 @@ const sanitizeQueryList = (value: unknown): string[] => {
   );
 };
 
-const getFallbackSpotifyQueries = (
-  weather: WeatherData,
-  activity: string,
-  moods: string[]
-): SpotifySearchQueries => {
-  const moodSeed = moods.find((mood) => mood.trim().length > 0)?.trim() || 'chill';
-  const weatherSeed = weather.main?.trim() || weather.city.trim() || 'weather';
-  const activitySeed = activity.trim() || 'listening';
-  const seasonSeed = getSeason();
+const getFallbackQueries = (
+  weather?: string,
+  moods?: string[],
+  activity?: string,
+): SpotifyQueries => {
+  const timeOfDay = getTimeOfDay();
+  const season = getSeason();
 
   return {
-    playlist: dedupeQueries([
-      `${weatherSeed} ${activitySeed}`,
-      `${moodSeed} ${activitySeed}`,
-      `${seasonSeed} ${moodSeed} vibes`,
-      `${weather.city} ${moodSeed} mix`,
-      `${activitySeed} focus`,
-    ]),
-    track: dedupeQueries([
-      'genre:lofi',
-      'genre:ambient',
-      'genre:jazz',
-      `genre:${moodSeed}`,
-      `genre:${seasonSeed}`,
+    playlists: [
+      `${moods ? moods[0] : ''} ${activity || ''} ${season}`.trim(),
+      `${weather || ''} ${activity || ''}`.trim(),
+      `${moods ? moods[0] : ''} ${season}`.trim(),
+      `${moods ? moods[0] : ''} ${activity || ''}`.trim(),
+      `${timeOfDay} ${activity || ''}`.trim(),
+      `${moods ? moods[0] : ''} ${timeOfDay}`.trim(),
+      `${weather || ''} ${season}`.trim(),
+    ],
+    genres: dedupeQueries([
+      'pop',
+      'indie',
+      'jazz',
+      `${moods ? moods[0] : ''}`,
+      `${season}`,
     ]),
   };
 };
 
-const extractSpotifyQueriesFromText = (text: string): SpotifySearchQueries => {
+const extractQueriesFromText = (text: string): SpotifyQueries => {
   const jsonStr = extractJsonFromText(text);
-  const parsed = JSON.parse(jsonStr) as Partial<SpotifySearchQueries>;
+  const parsed = JSON.parse(jsonStr) as Partial<SpotifyQueries>;
 
   return {
-    playlist: sanitizeQueryList(parsed.playlist),
-    track: sanitizeQueryList(parsed.track),
+    playlists: sanitizeQueryList(parsed.playlists),
+    genres: sanitizeQueryList(parsed.genres)
   };
 };
 
@@ -204,18 +204,18 @@ export const generateKeywords = async (weather: WeatherData): Promise<Keywords> 
   }
 };
 
-export const generateSpotifySearchQueries = async (
+export const generateSpotifyQueries = async (
   weather: WeatherData,
   activity?: string,
   moods?: string[]
-): Promise<SpotifySearchQueries> => {
+): Promise<SpotifyQueries> => {
   const cacheKey = `spotify-queries:${JSON.stringify(
     { weather, activity: activity || '', moods: moods || [] }
   )}`;
   const cachedData = await redis.get(cacheKey);
   if (cachedData) {
     try {
-      const parsed = JSON.parse(cachedData) as SpotifySearchQueries;
+      const parsed = JSON.parse(cachedData) as SpotifyQueries;
       return parsed;
     } catch {
       // Fall through to regeneration.
@@ -232,29 +232,29 @@ export const generateSpotifySearchQueries = async (
     });
   } catch (error) {
     console.error('Error generating Spotify queries from GenAI:', error, 'using fallback queries');
-    return getFallbackSpotifyQueries(weather, activity || '', moods || []);
+    return getFallbackQueries(weather.main, moods, activity);
   }
 
   if (!response || !response.text) {
-    console.error('No Spotify query response from GenAI, using fallback queries');
-    return getFallbackSpotifyQueries(weather, activity || '', moods || []);
+    console.error('No Spotify queries response from GenAI, using fallback queries');
+    return getFallbackQueries(weather.main, moods, activity);
   }
 
   try {
-    const generatedQueries = extractSpotifyQueriesFromText(response.text);
+    const generatedGenres = extractQueriesFromText(response.text);
 
-    await redis.set(cacheKey, JSON.stringify(generatedQueries), {
+    await redis.set(cacheKey, JSON.stringify(generatedGenres), {
       expiration: { type: 'EXAT', value: EXPIRE_AT },
     });
 
-    return generatedQueries;
+    return generatedGenres;
   } catch (error) {
     if (error instanceof SyntaxError) {
-      console.error(`Spotify query parsing error: ${error.message}, using fallback queries`);
-      return getFallbackSpotifyQueries(weather, activity || '', moods || []);
+      console.error(`Spotify queries parsing error: ${error.message}, using fallback queries`);
+      return getFallbackQueries(weather.main, moods, activity);
     }
 
-    console.error('Failed to parse Spotify query response, using fallback queries');
-    return getFallbackSpotifyQueries(weather, activity || '', moods || []);
+    console.error('Failed to parse Spotify queries response, using fallback queries');
+    return getFallbackQueries(weather.main, moods, activity);
   }
 };

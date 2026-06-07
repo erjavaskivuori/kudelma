@@ -8,7 +8,7 @@ import {
   getUserSpotifyAccessToken,
   verifySpotifyState,
 } from './spotifyAuthService.js';
-import { generateSpotifySearchQueries } from '../genAI/genAIService.js';
+import { generateSpotifyQueries } from '../genAI/genAIService.js';
 import { getSpotifyRecommendations } from './spotifyService.js';
 
 export const connectSpotify = (req: Request, res: Response) => {
@@ -61,7 +61,7 @@ export const getRecommendations = async (req: Request, res: Response) => {
     return res.status(400).json({ error: 'Missing weatherData in request body' });
   }
 
-  const spotifyQueries = await generateSpotifySearchQueries(weatherData, activity, moods);
+  const spotifyQueries = await generateSpotifyQueries(weatherData, activity, moods);
 
   const recommendations = await getSpotifyRecommendations(spotifyQueries, accessToken);
 

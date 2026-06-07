@@ -6,7 +6,7 @@ export type Keywords = {
   recipes: string[];
 };
 
-export type SpotifySearchQueries = {
-  playlist: string[];
-  track: string[];
+export type SpotifyQueries = {
+  playlists: string[];
+  genres: string[];
 };
