@@ -27,7 +27,7 @@ export const fetchWeatherByCoordinates = async (
     city: data.name,
     id: data.weather[0]?.id,
     main: data.weather[0]?.main,
-    temperature: data.main.temp,
+    temperature: Math.round(data.main.temp),
     cloudiness: data.clouds.all,
     sunrise: new Date(data.sys.sunrise * 1000).toLocaleTimeString('fi-FI', {
       timeZone: 'Europe/Helsinki'
