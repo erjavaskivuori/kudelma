@@ -4,7 +4,7 @@ import type { Artwork } from '../../../shared/types/art';
 import type { Book } from '../../../shared/types/books';
 import type { Recipe } from '../../../shared/types/recipe';
 import type { ProfileCardsResponse } from '../../../shared/types/profile';
-import type { MusicTrack } from '../../../shared/types/music';
+import type { RankedResults } from '../../../shared/types/music';
 
 export const api = createApi({
   reducerPath: 'api',
@@ -67,11 +67,14 @@ export const api = createApi({
       transformResponse: (response: { books: Book[] }) => response.books,
       providesTags: ['Books'],
     }),
-    getMusicRecommendations: builder.query<MusicTrack[], { activity: string; moods: string[] }>({
-      query: ({ activity, moods }) => ({
-        url: '/music/recommendations',
-        params: { activity, moods: moods.join(',') },
+    getMusicRecommendations: builder
+    .query<RankedResults,{ activity: string; moods: string[]; weatherData: WeatherData }>({
+      query: ({ activity, moods, weatherData }) => ({
+        url: '/music/spotify/recommendations',
+        method: 'POST',
+        body: { activity, moods, weatherData },
       }),
+      transformResponse: (response: { recommendations: RankedResults }) => response.recommendations,
       providesTags: ['Music'],
     }),
 
