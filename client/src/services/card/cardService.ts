@@ -2,11 +2,14 @@ import apiClient from "../../utils/apiClient";
 import type { Book } from '../../../../shared/types/books';
 import type { Artwork } from '../../../../shared/types/art';
 import type { Recipe } from '../../../../shared/types/recipe';
+import type { SelectedMusic } from './musicSelection';
+import { serializeSelectedMusic } from './musicSelection';
 
 export type FavoriteSelection = {
   book: Book;
   artwork: Artwork;
   recipe: Recipe;
+  selectedMusic?: SelectedMusic | null;
   postcardMeta?: {
     city?: string;
     weatherMain?: string;
@@ -15,7 +18,7 @@ export type FavoriteSelection = {
 };
 
 export const createCard = async (selection: FavoriteSelection): Promise<void> => {
-  const { book, artwork, recipe, postcardMeta } = selection;
+  const { book, artwork, recipe, postcardMeta, selectedMusic } = selection;
   const payload = {
     book: {
       id: book.id,
@@ -40,6 +43,7 @@ export const createCard = async (selection: FavoriteSelection): Promise<void> =>
       sourceUrl: recipe.sourceUrl,
     },
     postcardMeta,
+    ...(selectedMusic ? serializeSelectedMusic(selectedMusic) : {}),
   };
   await apiClient.post('/cards/create', payload);
 };
