@@ -6,6 +6,10 @@ import RecipeCard from './RecipeCard';
 import { createCardAsync } from '../../services/card/favoriteSelectionSlice';
 import { showModal } from '../../services/notifications/notificationSlice';
 import type { WeatherData } from '../../../../shared/types/weather';
+import {
+  getSelectedMusicImageUrl,
+  getSelectedMusicLabel
+} from '../../services/card/musicSelection';
 
 type SelectionProps = {
   weather?: WeatherData;
@@ -15,6 +19,7 @@ const Selection = ({ weather }: SelectionProps) => {
   const { status, error, book, artwork, recipe } = useAppSelector(
     state => state.favoriteSelection
   );
+  const selectedMusic = useAppSelector((state) => state.favoriteSelection.selectedMusic);
   const user = useAppSelector((state) => state.user.user);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -38,6 +43,7 @@ const Selection = ({ weather }: SelectionProps) => {
     artwork && { type: 'artwork' as const, data: artwork, rotation: '-rotate-6' },
     book && { type: 'book' as const, data: book, rotation: 'rotate-0' },
     recipe && { type: 'recipe' as const, data: recipe, rotation: 'rotate-6' },
+    selectedMusic && { type: 'music' as const, data: selectedMusic, rotation: 'rotate-10' },
   ].filter(Boolean);
 
   const handleCreateCard = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -65,6 +71,7 @@ const Selection = ({ weather }: SelectionProps) => {
           book: book,
           artwork: artwork,
           recipe: recipe,
+          selectedMusic,
           postcardMeta: {
             city: weather?.city,
             weatherMain: weather?.main,
@@ -107,6 +114,17 @@ const Selection = ({ weather }: SelectionProps) => {
                 )}
                 {card?.type === 'recipe' && (
                   <RecipeCard recipe={card.data} />
+                )}
+                {card?.type === 'music' && (
+                  <div
+                  className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl
+                    shadow-lg">
+                    <img
+                      src={getSelectedMusicImageUrl(card.data)}
+                      alt={getSelectedMusicLabel(card.data)}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
                 )}
               </div>
             </div>

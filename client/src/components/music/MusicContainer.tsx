@@ -15,6 +15,8 @@ import MusicRecommendations from './MusicRecommendtions';
 import MusicPlaylistCard from './MusicPlaylistCard';
 import MusicTrackCard from './MusicTrackCard';
 import MusicArtistCard from './MusicArtistCard';
+import { clearSelectedMusic, setSelectedMusic } from '../../services/card/favoriteSelectionSlice';
+import type { SelectedMusic } from '../../services/card/musicSelection';
 
 interface RecommendationRequest {
   activity: string;
@@ -24,6 +26,7 @@ interface RecommendationRequest {
 const TopMusicSection = () => {
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector((state) => state.user.user);
+  const selectedMusic = useAppSelector((state) => state.favoriteSelection.selectedMusic);
   const [isConnecting, setIsConnecting] = useState(false);
   const coords = useGeoLocation();
   const { data: weather, isLoading: isWeatherLoading } = useGetWeatherQuery(
@@ -106,6 +109,30 @@ const TopMusicSection = () => {
     if (currentUser?.spotifyConnected) {
       requestRecommendations({ activity: cues.activity ?? '', moods: cues.moods });
     }
+  };
+
+  const isSelected = (candidate: SelectedMusic): boolean => {
+    if (!selectedMusic) {
+      return false;
+    }
+
+    switch (selectedMusic.kind) {
+      case 'playlist':
+        return candidate.kind === 'playlist' && selectedMusic.playlist.id === candidate.playlist.id;
+      case 'track':
+        return candidate.kind === 'track' && selectedMusic.track.id === candidate.track.id;
+      case 'artist':
+        return candidate.kind === 'artist' && selectedMusic.artist.id === candidate.artist.id;
+    }
+  };
+
+  const toggleMusicSelection = (candidate: SelectedMusic) => {
+    if (isSelected(candidate)) {
+      dispatch(clearSelectedMusic());
+      return;
+    }
+
+    dispatch(setSelectedMusic(candidate));
   };
   if (pendingRecommendationRequest && isWeatherLoading) {
     return (
@@ -265,7 +292,12 @@ const TopMusicSection = () => {
                 className="max-h-40 space-y-2 overflow-y-auto pr-1 scrollbar-thin
                   scrollbar-track-transparent scrollbar-thumb-white/20">
                 {recommendations.playlists.map((playlist) => (
-                  <MusicPlaylistCard key={playlist.id} playlist={playlist} />
+                  <MusicPlaylistCard
+                    key={playlist.id}
+                    playlist={playlist}
+                    selected={isSelected({ kind: 'playlist', playlist })}
+                    onSelect={(item) => toggleMusicSelection({ kind: 'playlist', playlist: item })}
+                  />
                 ))}
               </div>
             ) : null
@@ -281,7 +313,12 @@ const TopMusicSection = () => {
                   className="max-h-40 space-y-2 overflow-y-auto pr-1 scrollbar-thin
                     scrollbar-track-transparent scrollbar-thumb-white/20">
                   {recommendations.tracks.map((track) => (
-                    <MusicTrackCard key={track.id} track={track} />
+                    <MusicTrackCard
+                      key={track.id}
+                      track={track}
+                      selected={isSelected({ kind: 'track', track })}
+                      onSelect={(item) => toggleMusicSelection({ kind: 'track', track: item })}
+                    />
                   ))}
                 </div>
               ) : null
@@ -297,7 +334,12 @@ const TopMusicSection = () => {
                     className="max-h-40 flex flex-nowrap gap-2 overflow-x-auto overflow-y-hidden
                       pr-1 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20">
                   {recommendations.artists.map((artist) => (
-                    <MusicArtistCard key={artist.id} artist={artist} />
+                    <MusicArtistCard
+                      key={artist.id}
+                      artist={artist}
+                      selected={isSelected({ kind: 'artist', artist })}
+                      onSelect={(item) => toggleMusicSelection({ kind: 'artist', artist: item })}
+                    />
                   ))}
                 </div>
               ) : null
