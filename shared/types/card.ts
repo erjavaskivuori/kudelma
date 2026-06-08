@@ -1,4 +1,4 @@
-export type CardArtwork = {
+type CardArtwork = {
   id: string;
   title: string;
   year: number | null;
@@ -8,24 +8,43 @@ export type CardArtwork = {
   copyright: string;
 };
 
-export type CardBook = {
+type CardBook = {
   id: string;
   title: string;
   authors: string[];
   year: number | null;
 };
 
-export type CardRecipe = {
+type CardRecipe = {
   id: number;
   title: string;
   sourceUrl: string;
 };
 
-export type PostcardMeta = {
+type PostcardMeta = {
   city: string | null;
   weatherMain: string | null;
   temperatureCelsius: number | null;
   createdAt: string;
+};
+
+type Playlist = {
+  id: string;
+  title: string;
+  spotifyUrl: string;
+};
+
+type Track = {
+  id: string;
+  title: string;
+  artists: string[];
+  spotifyUrl: string;
+};
+
+type Artist = {
+  id: string;
+  name: string;
+  spotifyUrl: string;
 };
 
 export type PostCard = {
@@ -35,4 +54,7 @@ export type PostCard = {
   book: CardBook;
   recipe: CardRecipe;
   postcardMeta: PostcardMeta;
+  playlist?: Playlist;
+  track?: Track;
+  artist?: Artist;
 };

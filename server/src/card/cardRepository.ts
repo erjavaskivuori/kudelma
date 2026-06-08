@@ -29,13 +29,29 @@ export type CardWithRelations = {
     title: string;
     sourceUrl: string;
   };
+  playlist?: {
+    id: string;
+    title: string;
+    spotifyUrl: string;
+  };
+  track?: {
+    id: string;
+    title: string;
+    artists: string[];
+    spotifyUrl: string;
+  };
+  artist?: {
+    id: string;
+    name: string;
+    spotifyUrl: string;
+  };
 };
 
 export const createCard = async (
   selection: FavoriteSelection,
   userId: number
 ): Promise<Card> => {
-  const { book, artwork, recipe, postcardMeta } = selection;
+  const { book, artwork, recipe, postcardMeta, playlist, track, artist } = selection;
 
   return prisma.card.create({
     data: {
@@ -67,6 +83,30 @@ export const createCard = async (
           create: { ...book, year: book.year ?? null },
         },
       },
+      ...(playlist && {
+        playlist: {
+          connectOrCreate: {
+            where: { id: playlist.id },
+            create: playlist,
+          },
+        },
+      }),
+      ...(track && {
+        track: {
+          connectOrCreate: {
+            where: { id: track.id },
+            create: track,
+          },
+        },
+      }),
+      ...(artist && {
+        artist: {
+          connectOrCreate: {
+            where: { id: artist.id },
+            create: artist,
+          },
+        },
+      }),
     },
   });
 };
@@ -78,6 +118,9 @@ export const getCardsByUserId = async (userId: number): Promise<CardWithRelation
       art: true,
       book: true,
       recipe: true,
+      playlist: true,
+      track: true,
+      artist: true,
     },
     orderBy: {
       createdAt: 'desc',

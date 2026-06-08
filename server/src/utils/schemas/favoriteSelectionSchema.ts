@@ -29,11 +29,33 @@ const postcardMetaSchema = z.object({
   temperatureCelsius: z.number().optional(),
 });
 
+const playlistSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  spotifyUrl: z.string(),
+});
+
+const trackSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  artists: z.string().array(),
+  spotifyUrl: z.string(),
+});
+
+const artistSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  spotifyUrl: z.string(),
+});
+
 export const favoriteSelectionSchema = z.object({
   book: bookSchema,
   artwork: artworkSchema,
   recipe: recipeSchema,
   postcardMeta: postcardMetaSchema.optional(),
+  playlist: playlistSchema.optional(),
+  track: trackSchema.optional(),
+  artist: artistSchema.optional(),
 }).refine((data) => !!data.book && !!data.artwork && !!data.recipe,
   { message: 'You must select exactly one book, one artwork, and one recipe.' });
 
