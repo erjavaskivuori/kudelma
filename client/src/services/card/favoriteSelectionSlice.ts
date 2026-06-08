@@ -3,11 +3,13 @@ import { createCard } from './cardService';
 import type { Book } from '../../../../shared/types/books';
 import type { Artwork } from '../../../../shared/types/art';
 import type { Recipe } from '../../../../shared/types/recipe';
+import type { SelectedMusic } from './musicSelection';
 
 type FavoriteSelectionState = {
   book: Book | null;
   artwork: Artwork | null;
   recipe: Recipe | null;
+  selectedMusic: SelectedMusic | null;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
 };
@@ -16,6 +18,7 @@ const initialState: FavoriteSelectionState = {
   book: null,
   artwork: null,
   recipe: null,
+  selectedMusic: null,
   status: 'idle',
   error: null,
 };
@@ -27,6 +30,7 @@ export const createCardAsync = createAsyncThunk(
       book: Book;
       artwork: Artwork;
       recipe: Recipe;
+      selectedMusic?: SelectedMusic | null;
       postcardMeta?: {
         city?: string;
         weatherMain?: string;
@@ -68,6 +72,12 @@ const favoriteSelectionSlice = createSlice({
     },
     unsetRecipe(state) {
       state.recipe = null;
+    },
+    setSelectedMusic(state, action: PayloadAction<SelectedMusic>) {
+      state.selectedMusic = action.payload;
+    },
+    clearSelectedMusic(state) {
+      state.selectedMusic = null;
     }
   },
   extraReducers: (builder) => {
@@ -81,6 +91,7 @@ const favoriteSelectionSlice = createSlice({
         state.book = null;
         state.artwork = null;
         state.recipe = null;
+        state.selectedMusic = null;
       })
       .addCase(createCardAsync.rejected, (state, action) => {
         state.status = 'failed';
@@ -95,6 +106,8 @@ export const {
   setArtwork,
   unsetArtwork,
   setRecipe,
-  unsetRecipe
+  unsetRecipe,
+  setSelectedMusic,
+  clearSelectedMusic,
 } = favoriteSelectionSlice.actions;
 export default favoriteSelectionSlice.reducer;
