@@ -74,6 +74,9 @@ export const getCardsForProfile = async (
         temperatureCelsius: card.temperatureCelsius,
         createdAt: card.createdAt.toISOString(),
       },
+      ...(card.playlist && { playlist: { ...card.playlist } }),
+      ...(card.track && { track: { ...card.track } }),
+      ...(card.artist && { artist: { ...card.artist } }),
     })),
   };
 };
