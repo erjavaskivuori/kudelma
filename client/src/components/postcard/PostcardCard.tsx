@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { LuChefHat } from "react-icons/lu";
-import { PiBooksFill } from "react-icons/pi";
+import { PiBooksFill, PiMusicNotesFill } from "react-icons/pi";
 import type { PostCard } from '../../../../shared/types/card';
 
 type PostcardCardProps = {
@@ -14,6 +14,9 @@ const formatDate = (dateIso: string) => {
 
 const PostcardCard = ({ card }: PostcardCardProps) => {
   const [flipped, setFlipped] = useState(false);
+  const hasPlaylist = card.playlist !== undefined;
+  const hasTrack = card.track !== undefined;
+  const hasArtist = card.artist !== undefined;
 
   return (
     <article className="group perspective-distant">
@@ -87,12 +90,53 @@ const PostcardCard = ({ card }: PostcardCardProps) => {
                 <div className="flex gap-2">
                   <PiBooksFill className="mt-1 shrink-0 text-lg" />
                   <div>
-                    <a href={`https://openlibrary.org${card.book.id}`} target="_blank" rel="noreferrer" className="text-sm font-medium hover:underline">
+                    <a
+                    href={`https://openlibrary.org${card.book.id}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-sm font-medium hover:underline">
                       <p className="text-base font-semibold">{card.book.title}</p>
                     </a>
                     <p className="text-sm text-slate-600">{card.book.authors.join(', ')}</p>
                   </div>
                 </div>
+                {(hasPlaylist || hasTrack || hasArtist) && (
+                  <div className="flex gap-2">
+                    <PiMusicNotesFill className="mt-1 shrink-0 text-lg" />
+                    <div>
+                        {hasArtist && (
+                            <a
+                            href={card.artist?.spotifyUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-sm font-medium hover:underline">
+                              <p className="text-base font-semibold">{card.artist?.name}</p>
+                            </a>
+                        )}
+                        {hasTrack && (
+                            <a
+                            href={card.track?.spotifyUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-sm font-medium hover:underline">
+                              <p className="text-base font-semibold">
+                                {card.track?.title} by&nbsp;
+                                {card.track?.artists?.map((a) => a).join(', ')}
+                              </p>
+                            </a>
+                        )}
+                        {hasPlaylist && (
+                          <a
+                            href={card.playlist?.spotifyUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-sm font-medium hover:underline">
+                            <p className="text-base font-semibold">{card.playlist?.title}</p>
+                          </a>
+                        )}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="flex flex-col items-end justify-between">
