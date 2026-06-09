@@ -1,4 +1,5 @@
 import type { Request, Response } from 'express';
+import { z } from 'zod';
 import { createCard, getCardsForProfile } from './cardService.js';
 import {
   favoriteSelectionSchema,
@@ -7,6 +8,7 @@ import {
 import { jwtPayloadSchema } from '../utils/schemas/jwtPayloadSchema.js';
 import { validate } from '../utils/validate.js';
 import type { JwtPayload } from '../utils/token.js';
+import { updateCardsVisibility } from '../user/userRepository.js';
 
 export const createCardController = async (req: Request, res: Response) => {
   const {
@@ -46,4 +48,22 @@ export const getProfileCardsController = async (req: Request, res: Response) => 
   const profileCards = await getCardsForProfile(userId, viewerId);
 
   res.status(200).json(profileCards);
+};
+
+export const updateCardsVisibilityController = async (req: Request, res: Response) => {
+  const user = validate<JwtPayload>(jwtPayloadSchema, req.user);
+  const userId = user.id;
+
+  const { visibility } = validate<{ visibility: 'PRIVATE' | 'PUBLIC' }>(
+    z.object({ visibility: z.enum(['PRIVATE', 'PUBLIC']) }),
+    req.body
+  );
+
+  const updatedProfile = await updateCardsVisibility(userId, visibility);
+
+  res.status(200).json({
+    id: updatedProfile.id,
+    name: updatedProfile.name,
+    cardsVisibility: updatedProfile.cardsVisibility,
+  });
 };

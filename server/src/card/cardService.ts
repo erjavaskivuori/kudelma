@@ -2,9 +2,9 @@ import { HttpError } from '../utils/errors/HttpError.js';
 import type { FavoriteSelection } from '../utils/schemas/favoriteSelectionSchema.js';
 import {
   createCard as createCardInDb,
-  getCardsByUserId,
+  getCardsByUserId
 } from './cardRepository.js';
-import { findProfileById } from '../user/userRepository.js';
+import { findProfileById, updateCardsVisibility } from '../user/userRepository.js';
 import type { ProfileCardsResponse } from '../../../shared/types/profile.js';
 
 type PrismaError = {
@@ -44,7 +44,6 @@ export const getCardsForProfile = async (
       profile: {
         id: profile.id,
         name: profile.name,
-        createdAt: profile.createdAt.toISOString(),
         cardsVisibility: profile.cardsVisibility,
       },
       cardsVisible,
@@ -58,7 +57,6 @@ export const getCardsForProfile = async (
     profile: {
       id: profile.id,
       name: profile.name,
-      createdAt: profile.createdAt.toISOString(),
       cardsVisibility: profile.cardsVisibility,
     },
     cardsVisible,
@@ -78,5 +76,18 @@ export const getCardsForProfile = async (
       ...(card.track && { track: { ...card.track } }),
       ...(card.artist && { artist: { ...card.artist } }),
     })),
+  };
+};
+
+export const toggleCardsVisibility = async (userId: number, visibility: 'PRIVATE' | 'PUBLIC') => {
+  const profile = await findProfileById(userId);
+
+  if (!profile) {
+    throw new HttpError('Profile not found', 404);
+  }
+
+  const updatedProfile = await updateCardsVisibility(userId, visibility);
+  return {
+    cardsVisibility: updatedProfile.cardsVisibility,
   };
 };

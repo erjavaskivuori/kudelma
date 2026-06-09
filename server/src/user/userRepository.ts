@@ -5,7 +5,6 @@ export type UserProfileRecord = Prisma.UserGetPayload<{
   select: {
     id: true;
     name: true;
-    createdAt: true;
     cardsVisibility: true;
   };
 }>;
@@ -28,7 +27,6 @@ export const findProfileById = async (id: number): Promise<UserProfileRecord | n
     select: {
       id: true,
       name: true,
-      createdAt: true,
       cardsVisibility: true,
     },
   });
@@ -76,6 +74,23 @@ export const updateSpotifyTokens = async (
       spotifyAccessToken: accessToken,
       spotifyRefreshToken: refreshToken,
       spotifyTokenExpiresAt: expiresAt,
+    },
+  });
+};
+
+export const updateCardsVisibility = async (
+  userId: number,
+  visibility: 'PRIVATE' | 'PUBLIC'
+): Promise<UserProfileRecord> => {
+  return prisma.user.update({
+    where: { id: userId },
+    data: {
+      cardsVisibility: visibility,
+    },
+    select: {
+      id: true,
+      name: true,
+      cardsVisibility: true,
     },
   });
 };

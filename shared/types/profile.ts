@@ -5,7 +5,6 @@ export type CardVisibility = 'PRIVATE' | 'PUBLIC';
 export type ProfileUser = {
   id: number;
   name: string;
-  createdAt: string;
   cardsVisibility: CardVisibility;
 };
 
