@@ -47,3 +47,7 @@ export const createCard = async (selection: FavoriteSelection): Promise<void> =>
   };
   await apiClient.post('/cards/create', payload);
 };
+
+export const changeCardVisibility = async (visibility: 'PRIVATE' | 'PUBLIC'): Promise<void> => {
+  await apiClient.patch('/cards/visibility', { visibility });
+};

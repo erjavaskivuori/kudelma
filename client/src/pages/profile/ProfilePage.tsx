@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router';
+import { TbSettings } from "react-icons/tb";
 import { useGetProfileCardsQuery } from '../../services/api';
 import PostcardCard from '../../components/postcard/PostcardCard';
 import { useAppSelector, useAppDispatch } from '../../hooks/useAppStore';
@@ -115,30 +116,44 @@ const ProfilePage = () => {
             <p className="text-xs uppercase tracking-[0.15em] text-white/70">Profile</p>
             <h1 className="mt-1 text-3xl font-semibold">{data.profile.name}</h1>
           </div>
+          <div>
+            {isOwnProfile && (
+              <div>
+                {currentUser?.spotifyConnected ? (
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-green-500/20
+                    px-3 py-1 text-sm font-medium text-green-300 ring-1 ring-inset
+                    ring-green-500/20">
+                    <span className="h-1.5 w-1.5 rounded-full bg-green-400"></span>
+                    Spotify Connected
+                  </span>
+                ) : (
+                  <button
+                    onClick={() => { void handleConnectSpotify(); }}
+                    disabled={isConnecting}
+                    className={
+                      "rounded-full bg-[#1DB954] px-4 py-2 text-sm font-semibold " +
+                      "text-black transition hover:bg-[#1ed760] disabled:opacity-50 " +
+                      "disabled:cursor-not-allowed"
+                    }
+                  >
+                    {isConnecting ? 'Connecting...' : 'Connect Spotify'}
+                  </button>
+                )}
+              </div>
+          )}
           {isOwnProfile && (
-            <div className="text-right">
-              {currentUser?.spotifyConnected ? (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-green-500/20
-                  px-3 py-1 text-sm font-medium text-green-300 ring-1 ring-inset
-                  ring-green-500/20">
-                  <span className="h-1.5 w-1.5 rounded-full bg-green-400"></span>
-                  Spotify Connected
-                </span>
-              ) : (
-                <button
-                  onClick={() => { void handleConnectSpotify(); }}
-                  disabled={isConnecting}
-                  className={
-                    "rounded-full bg-[#1DB954] px-4 py-2 text-sm font-semibold " +
-                    "text-black transition hover:bg-[#1ed760] disabled:opacity-50 " +
-                    "disabled:cursor-not-allowed"
-                  }
-                >
-                  {isConnecting ? 'Connecting...' : 'Connect Spotify'}
-                </button>
-              )}
+            <div className="text-right mt-2">
+              <a
+                href="/settings"
+                className="inline-flex items-center justify-center gap-2 rounded-full  px-3 py-1
+                bg-white/20 text-sm font-medium text-white/80 transition hover:bg-white/20"
+              >
+                <TbSettings size={20} className="shrink-0" />
+                Settings
+              </a>
             </div>
           )}
+          </div>
         </div>
       </header>
 

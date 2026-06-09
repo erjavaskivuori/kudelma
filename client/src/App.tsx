@@ -8,6 +8,7 @@ import { useAppDispatch } from './hooks/useAppStore';
 import { refresh } from './services/user/userSlice';
 import NotificationModal from './components/notifications/NotificationModal';
 import ProfilePage from './pages/profile/ProfilePage';
+import SettingsPage from './pages/settings/SettingsPage';
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -23,6 +24,7 @@ const App = () => {
         <Route element={<MainLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/profile/:userId" element={<ProfilePage />} />
+          <Route path="/settings" element={<SettingsPage />} />
         </Route>
 
         <Route path="/login" element={<LoginPage />} />
