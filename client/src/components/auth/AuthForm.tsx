@@ -18,8 +18,8 @@ type AuthFormProps = {
 const inputClass = clsx(
   'w-full rounded-xl border border-white/50 bg-white/85 px-3 py-2.5 text-sm text-slate-800',
   'shadow-sm placeholder:text-slate-400 backdrop-blur-sm transition-all duration-200',
-  'focus:border-[var(--color-popup)] focus:outline-none focus:ring-2',
-  'focus:ring-[var(--color-popup)]/30'
+  'focus:border-(--color-popup) focus:outline-none focus:ring-2',
+  'focus:ring-(--color-popup)/30'
 );
 
 const pageBackgroundClass = clsx(

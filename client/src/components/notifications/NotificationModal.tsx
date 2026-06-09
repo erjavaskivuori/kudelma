@@ -59,8 +59,8 @@ const NotificationModal = () => {
           {modal.primaryAction && (
             <button
               type="button"
-              className="rounded-xl bg-[var(--color-popup)] px-3 py-2 text-sm font-semibold
-                text-white transition-colors hover:bg-[var(--color-extra-dark)]"
+              className="rounded-xl bg-(--color-popup) px-3 py-2 text-sm font-semibold
+                text-white transition-colors hover:bg-(--color-extra-dark)"
               onClick={() => handleAction(modal.primaryAction?.to)}
             >
               {modal.primaryAction.label}
@@ -69,8 +69,8 @@ const NotificationModal = () => {
           {!modal.primaryAction && !modal.secondaryAction && (
             <button
               type="button"
-              className="rounded-xl bg-[var(--color-popup)] px-3 py-2 text-sm font-semibold
-                text-white transition-colors hover:bg-[var(--color-extra-dark)]"
+              className="rounded-xl bg-(--color-popup) px-3 py-2 text-sm font-semibold
+                text-white transition-colors hover:bg-(--color-extra-dark)"
               onClick={handleClose}
             >
               OK

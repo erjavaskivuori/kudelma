@@ -22,7 +22,7 @@ const FeedCard = ({
 
   return (
     <div
-      className="relative isolate bg-[var(--color-dark)] block max-w-sm rounded-2xl shadow-xs
+      className="relative isolate bg-(--color-dark) block max-w-sm rounded-2xl shadow-xs
         overflow-hidden cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -31,8 +31,8 @@ const FeedCard = ({
       <div className="absolute top-3 right-3 z-10">
         <button
           type="button"
-          className="inline-flex items-center justify-center text-white bg-[var(--color-popup)]/60
-            hover:bg-[var(--color-dark)]/90 shadow-xs rounded-lg w-8 h-8"
+          className="inline-flex items-center justify-center text-white bg-(--color-popup)/60
+            hover:bg-(--color-dark)/90 shadow-xs rounded-lg w-8 h-8"
           onClick={onFavoriteSelect}
           aria-pressed={selected}
         >
@@ -59,7 +59,7 @@ const FeedCard = ({
         <>
           {/* Overlay — covers entire card on hover */}
           <div
-            className={`absolute inset-0 rounded-2xl bg-[var(--color-dark)] flex flex-col
+            className={`absolute inset-0 rounded-2xl bg-(--color-dark) flex flex-col
               justify-center px-5 py-4 transition-opacity duration-200
               ${isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
           >
