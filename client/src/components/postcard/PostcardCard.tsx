@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { useState, type MouseEvent } from 'react';
 import { LuChefHat } from "react-icons/lu";
 import { PiBooksFill, PiMusicNotesFill } from "react-icons/pi";
+import { BsTrash3 } from "react-icons/bs";
 import type { PostCard } from '../../../../shared/types/card';
 
 type PostcardCardProps = {
   card: PostCard;
+  canDelete?: boolean;
+  onRemoveCard?: (cardId: number) => void;
 };
 
 const formatDate = (dateIso: string) => {
@@ -12,11 +15,24 @@ const formatDate = (dateIso: string) => {
   return date.toLocaleDateString("fi-FI");
 };
 
-const PostcardCard = ({ card }: PostcardCardProps) => {
+const PostcardCard = ({ card, canDelete = false, onRemoveCard }: PostcardCardProps) => {
   const [flipped, setFlipped] = useState(false);
   const hasPlaylist = card.playlist !== undefined;
   const hasTrack = card.track !== undefined;
   const hasArtist = card.artist !== undefined;
+
+  const handleRemoveCard = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (onRemoveCard) {
+      onRemoveCard(card.id);
+      return;
+    }
+
+    // Placeholder until delete API is wired.
+    window.alert(`TODO: remove card ${card.id}`);
+  };
 
   return (
     <article className="group perspective-distant">
@@ -61,13 +77,23 @@ const PostcardCard = ({ card }: PostcardCardProps) => {
 
           <div
             className="absolute inset-0 rounded-2xl border border-white/30
-              bg-yellow-50 p-4
-              text-slate-800 backface-hidden transform-[rotateY(180deg)]"
+              bg-yellow-50 p-4 text-slate-800 backface-hidden transform-[rotateY(180deg)]"
           >
+            {canDelete && (
+              <button
+                type="button"
+                className="absolute bottom-4 left-4 z-10 rounded-full p-1.5 text-red-500 transition
+                  hover:bg-red-50 hover:text-red-600"
+                onClick={handleRemoveCard}
+                aria-label="Remove this postcard"
+              >
+                <BsTrash3 size={22} />
+              </button>
+            )}
             <div className="grid h-full grid-cols-[1fr_7rem] gap-4">
               <div className="flex flex-col">
                 <div
-                  className="text-[1.7rem] leading-none tracking-wide"
+                  className="text-xl leading-none tracking-wide"
                   style={{ fontFamily: 'Caveat, cursive' }}
                 >
                   Greetings from {card.postcardMeta?.city ?? 'somewhere'}!
@@ -76,41 +102,41 @@ const PostcardCard = ({ card }: PostcardCardProps) => {
                   My picks:
                 </p>
                 <div className="flex gap-2 mt-2">
-                  <LuChefHat className="mt-1 shrink-0 text-lg" />
+                  <LuChefHat className="shrink-0 text-md" />
                   <a
                     href={card.recipe.sourceUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-sm font-medium hover:underline"
+                    className="hover:underline"
                   >
-                    <h4 className="text-base font-semibold">{card.recipe.title}</h4>
+                    <h4 className="text-sm font-semibold leading-4">{card.recipe.title}</h4>
                   </a>
                 </div>
 
-                <div className="flex gap-2">
-                  <PiBooksFill className="mt-1 shrink-0 text-lg" />
+                <div className="flex gap-2 mt-2">
+                  <PiBooksFill className="mt-1 shrink-0 text-md" />
                   <div>
                     <a
                     href={`https://openlibrary.org${card.book.id}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-sm font-medium hover:underline">
-                      <p className="text-base font-semibold">{card.book.title}</p>
+                    className="hover:underline">
+                      <p className="text-sm font-semibold">{card.book.title}</p>
                     </a>
-                    <p className="text-sm text-slate-600">{card.book.authors.join(', ')}</p>
+                    <p className="text-xs text-slate-600">{card.book.authors.join(', ')}</p>
                   </div>
                 </div>
                 {(hasPlaylist || hasTrack || hasArtist) && (
-                  <div className="flex gap-2">
-                    <PiMusicNotesFill className="mt-1 shrink-0 text-lg" />
+                  <div className="flex gap-2 mt-2">
+                    <PiMusicNotesFill className="mt-1.5 shrink-0 text-md" />
                     <div>
                         {hasArtist && (
                             <a
                             href={card.artist?.spotifyUrl}
                             target="_blank"
                             rel="noreferrer"
-                            className="text-sm font-medium hover:underline">
-                              <p className="text-base font-semibold">{card.artist?.name}</p>
+                            className="hover:underline">
+                              <p className="text-sm font-semibold">{card.artist?.name}</p>
                             </a>
                         )}
                         {hasTrack && (
@@ -118,8 +144,8 @@ const PostcardCard = ({ card }: PostcardCardProps) => {
                             href={card.track?.spotifyUrl}
                             target="_blank"
                             rel="noreferrer"
-                            className="text-sm font-medium hover:underline">
-                              <p className="text-base font-semibold">
+                            className="hover:underline">
+                              <p className="text-sm font-semibold">
                                 {card.track?.title} by&nbsp;
                                 {card.track?.artists?.map((a) => a).join(', ')}
                               </p>
@@ -130,8 +156,8 @@ const PostcardCard = ({ card }: PostcardCardProps) => {
                             href={card.playlist?.spotifyUrl}
                             target="_blank"
                             rel="noreferrer"
-                            className="text-sm font-medium hover:underline">
-                            <p className="text-base font-semibold">{card.playlist?.title}</p>
+                            className="hover:underline">
+                            <p className="text-sm font-semibold">{card.playlist?.title}</p>
                           </a>
                         )}
                     </div>
