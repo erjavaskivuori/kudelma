@@ -90,8 +90,6 @@ const ProfilePage = () => {
     );
   }
 
-  const profileDate = new Date(data.profile.createdAt).toLocaleDateString("fi-FI");
-
   const isOwnProfile = currentUser?.id === userId;
 
   const handleConnectSpotify = async () => {
@@ -116,7 +114,6 @@ const ProfilePage = () => {
           <div>
             <p className="text-xs uppercase tracking-[0.15em] text-white/70">Profile</p>
             <h1 className="mt-1 text-3xl font-semibold">{data.profile.name}</h1>
-            <p className="mt-2 text-sm text-white/80">Joined {profileDate}</p>
           </div>
           {isOwnProfile && (
             <div className="text-right">
