@@ -51,3 +51,7 @@ export const createCard = async (selection: FavoriteSelection): Promise<void> =>
 export const changeCardVisibility = async (visibility: 'PRIVATE' | 'PUBLIC'): Promise<void> => {
   await apiClient.patch('/cards/visibility', { visibility });
 };
+
+export const removeCard = async (cardId: number): Promise<void> => {
+  await apiClient.delete(`/cards/remove/${cardId}`);
+};

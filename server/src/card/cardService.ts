@@ -2,7 +2,9 @@ import { HttpError } from '../utils/errors/HttpError.js';
 import type { FavoriteSelection } from '../utils/schemas/favoriteSelectionSchema.js';
 import {
   createCard as createCardInDb,
-  getCardsByUserId
+  getCardsByUserId,
+  getCardById,
+  removeCardById
 } from './cardRepository.js';
 import { findProfileById, updateCardsVisibility } from '../user/userRepository.js';
 import type { ProfileCardsResponse } from '../../../shared/types/profile.js';
@@ -90,4 +92,24 @@ export const toggleCardsVisibility = async (userId: number, visibility: 'PRIVATE
   return {
     cardsVisibility: updatedProfile.cardsVisibility,
   };
+};
+
+export const removeCard = async (cardId: number, userId: number) => {
+  const profile = await findProfileById(userId);
+
+  if (!profile) {
+    throw new HttpError('Profile not found', 404);
+  }
+
+  const card = await getCardById(cardId, userId);
+  if (!card) {
+    throw new HttpError('Card not found', 404);
+  }
+
+  const removed = await removeCardById(cardId, userId);
+  if (!removed) {
+    throw new HttpError('Card not found', 404);
+  }
+
+  return;
 };

@@ -5,13 +5,13 @@ import { HttpError } from '../utils/errors/HttpError.js';
 import type { Request, Response } from 'express';
 import type { JwtPayload } from 'jsonwebtoken';
 
-type MockReq = Partial<Request> & { body?: unknown; user?: unknown };
+type MockReq = Partial<Request> & { body?: unknown; user?: JwtPayload & { id: number } };
 type MockRes = Partial<Response> & {
   status: (code: number) => MockRes;
   json: (data: unknown) => MockRes;
 };
 
-const mockReq = (body: unknown = {}, user: string | JwtPayload = {}): MockReq => ({
+const mockReq = (body: unknown = {}, user: JwtPayload & { id: number } = { id: 1 }): MockReq => ({
   body,
   user,
 });

@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import { z } from 'zod';
-import { createCard, getCardsForProfile } from './cardService.js';
+import { createCard, getCardsForProfile, removeCard } from './cardService.js';
 import {
   favoriteSelectionSchema,
   type FavoriteSelection
@@ -66,4 +66,20 @@ export const updateCardsVisibilityController = async (req: Request, res: Respons
     name: updatedProfile.name,
     cardsVisibility: updatedProfile.cardsVisibility,
   });
+};
+
+export const removeCardController = async (req: Request, res: Response) => {
+  const user = validate<JwtPayload>(jwtPayloadSchema, req.user);
+  const userId = user.id;
+
+  const cardId = Number(req.params.cardId);
+
+  if (Number.isNaN(cardId)) {
+    res.status(400).json({ error: 'Invalid card id' });
+    return;
+  }
+
+  await removeCard(cardId, userId);
+
+  res.status(204).send();
 };

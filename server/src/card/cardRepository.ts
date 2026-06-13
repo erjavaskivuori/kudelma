@@ -129,3 +129,44 @@ export const getCardsByUserId = async (userId: number): Promise<CardWithRelation
 
   return cards as unknown as CardWithRelations[];
 };
+
+export const getCardById = async (
+  cardId: number, userId: number
+): Promise<CardWithRelations | null> => {
+  const card = await prisma.card.findFirst({
+    where: { id: cardId, userId },
+    include: {
+      art: true,
+      book: true,
+      recipe: true,
+      playlist: true,
+      track: true,
+      artist: true,
+    },
+  });
+
+  return card as unknown as CardWithRelations | null;
+};
+
+export const removeCardById = async (cardId: number, userId: number): Promise<boolean> => {
+  return prisma.$transaction(async (tx) => {
+    const deleted = await tx.card.deleteMany({
+      where: { id: cardId, userId },
+    });
+
+    if (deleted.count === 0) {
+      return false;
+    }
+
+    await Promise.all([
+      tx.artwork.deleteMany({ where: { cards: { none: {} } } }),
+      tx.book.deleteMany({ where: { cards: { none: {} } } }),
+      tx.recipe.deleteMany({ where: { cards: { none: {} } } }),
+      tx.playlist.deleteMany({ where: { cards: { none: {} } } }),
+      tx.track.deleteMany({ where: { cards: { none: {} } } }),
+      tx.artist.deleteMany({ where: { cards: { none: {} } } }),
+    ]);
+
+    return true;
+  });
+};

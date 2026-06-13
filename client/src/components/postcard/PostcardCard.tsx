@@ -6,8 +6,8 @@ import type { PostCard } from '../../../../shared/types/card';
 
 type PostcardCardProps = {
   card: PostCard;
-  canDelete?: boolean;
-  onRemoveCard?: (cardId: number) => void;
+  canDelete: boolean;
+  onRemoveCard: (cardId: number) => Promise<void>;
 };
 
 const formatDate = (dateIso: string) => {
@@ -21,18 +21,16 @@ const PostcardCard = ({ card, canDelete = false, onRemoveCard }: PostcardCardPro
   const hasTrack = card.track !== undefined;
   const hasArtist = card.artist !== undefined;
 
-  const handleRemoveCard = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleRemoveCard = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.stopPropagation();
 
-    if (onRemoveCard) {
-      onRemoveCard(card.id);
-      return;
+    try {
+      await onRemoveCard(card.id);
+    } catch {
+      return;  // The error is handled in the parent component.
     }
-
-    // Placeholder until delete API is wired.
-    window.alert(`TODO: remove card ${card.id}`);
-  };
+};
 
   return (
     <article className="group perspective-distant">
@@ -84,7 +82,7 @@ const PostcardCard = ({ card, canDelete = false, onRemoveCard }: PostcardCardPro
                 type="button"
                 className="absolute bottom-4 left-4 z-10 rounded-full p-1.5 text-red-500 transition
                   hover:bg-red-50 hover:text-red-600"
-                onClick={handleRemoveCard}
+                onClick={(e) => void handleRemoveCard(e)}
                 aria-label="Remove this postcard"
               >
                 <BsTrash3 size={22} />
