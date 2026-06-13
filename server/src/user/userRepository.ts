@@ -94,3 +94,9 @@ export const updateCardsVisibility = async (
     },
   });
 };
+
+export const deleteUserById = async (userId: number): Promise<void> => {
+  await prisma.user.delete({
+    where: { id: userId },
+  });
+};

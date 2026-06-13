@@ -7,9 +7,12 @@ import {
   registerUser,
   issueTokens,
   refreshAccessToken,
-  revokeToken
+  revokeToken,
+  deleteUser
 } from '../auth/authService.js';
 import { accessTokenCookie, refreshTokenCookie } from '../auth/cookies.js';
+import { jwtPayloadSchema } from '../utils/schemas/jwtPayloadSchema.js';
+import type { JwtPayload } from '../utils/token.js';
 
 export const register = async (req: Request, res: Response) => {
   const { name, email, password } = validate<UserInput>(userSchema, req.body);
@@ -68,3 +71,18 @@ export const logout = async (req: Request, res: Response) => {
   res.sendStatus(204);
 };
 
+export const deleteUserController = async (req: Request, res: Response) => {
+  const userId = Number(req.params.userId);
+  const user = validate<JwtPayload>(jwtPayloadSchema, req.user);
+
+  if (user.id !== userId) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  if (Number.isNaN(userId)) {
+    return res.status(400).json({ error: 'Invalid user id' });
+  }
+  await deleteUser(userId);
+
+  return res.sendStatus(204);
+};

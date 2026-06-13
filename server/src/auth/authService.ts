@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { createUser, findByName, findUserById } from '../user/userRepository.js';
+import { createUser, findByName, findUserById, deleteUserById } from '../user/userRepository.js';
 import { createAccessToken, createRefreshToken, hashToken } from '../utils/token.js';
 import {
   saveRefreshToken,
@@ -116,4 +116,14 @@ export const refreshAccessToken = async (refreshToken: string) => {
 
 export const revokeToken = async (tokenHash: string) => {
   await revokeRefreshToken(hashToken(tokenHash));
+};
+
+export const deleteUser = async (userId: number) => {
+  const user = await findUserById(userId);
+  if (!user) {
+    throw new HttpError('User not found', 404);
+  }
+
+  const deleted = await deleteUserById(userId);
+  return deleted;
 };
