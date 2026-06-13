@@ -39,7 +39,7 @@ describe('weatherService', () => {
     const expectedWeatherData = {
       city: 'Helsinki',
       main: 'Clear',
-      temperature: 15.5,
+      temperature: 16,
       cloudiness: 20,
       sunrise: '10.20.00',
       sunset: '22.20.00',
@@ -65,7 +65,7 @@ describe('weatherService', () => {
       const mockOpenWeatherDataMissingWeather = {
         name: 'Helsinki',
         weather: [], // Empty weather array
-        main: { temp: 15.5 },
+        main: { temp: 16 },
         clouds: { all: 20 },
         sys: {
           sunrise: 1633072800,
@@ -85,7 +85,7 @@ describe('weatherService', () => {
       expect(result).toEqual({
         city: 'Helsinki',
         main: undefined,
-        temperature: 15.5,
+        temperature: 16,
         cloudiness: 20,
         sunrise: '10.20.00',
         sunset: '22.20.00',

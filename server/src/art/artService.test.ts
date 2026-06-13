@@ -117,7 +117,8 @@ describe('artService', () => {
         title: 'Syksy',
         year: 1941,
         authors: [{ name: 'Test, Artist A', role: 'taiteilija' }],
-        imageUrl: '/Cover/Show?source=Solr&id=test.artwork-with-image1&index=0&size=large',
+        // eslint-disable-next-line @stylistic/max-len
+        imageUrl: '/api/image-proxy?url=https%3A%2F%2Fapi.finna.fi%2FCover%2FShow%3Fsource%3DSolr%26id%3Dtest.artwork-with-image1%26index%3D0%26size%3Dlarge',
         buildings: [{
           value: '0/Kansallisgalleria Ateneumin taidemuseo/',
           translated: 'Kansallisgalleria / Ateneumin taidemuseo'
@@ -135,7 +136,8 @@ describe('artService', () => {
         title: 'Syksy',
         year: 1916,
         authors: [{ name: 'Test, Artist B', role: 'taiteilija' }],
-        imageUrl: '/Cover/Show?source=Solr&id=test.artwork-with-image2&index=0&size=large',
+        // eslint-disable-next-line @stylistic/max-len
+        imageUrl: '/api/image-proxy?url=https%3A%2F%2Fapi.finna.fi%2FCover%2FShow%3Fsource%3DSolr%26id%3Dtest.artwork-with-image2%26index%3D0%26size%3Dlarge',
         buildings: [{ value: '0/loviisankaupunginmuseo/', translated: 'Loviisan kaupunginmuseo' }],
         imageRights: {
           copyright: 'CC BY 4.0',
@@ -224,7 +226,8 @@ describe('artService', () => {
               copyright: 'CC BY 4.0',
               link: 'http://creativecommons.org/licenses/by/4.0/deed.fi'
             },
-            images: ['/Cover/Show?source=Solr&id=test.artwork-no-year&index=0&size=large'],
+            // eslint-disable-next-line @stylistic/max-len
+            images: ['/api/image-proxy?url=$/Cover/Show?source=Solr&id=test.artwork-no-year&index=0&size=large'],
             nonPresenterAuthors: [{ name: 'Unknown Artist', role: 'taiteilija' }],
             buildings: [{ value: '0/testi museo/', translated: 'Testi museo' }],
           },
