@@ -14,12 +14,16 @@ export const sortColorsByLuminance = (colors: string[]): string[] => {
   );
 };
 
+export const normalizeColorRange = (colors: string[]): string[] => {
+  return sortColorsByLuminance(colors).slice(0, 5);
+};
+
 // Minimum luminance for black text readability (WCAG AA ~4.5:1 contrast)
 const MIN_DARK_LUMINANCE = 0.18;
 
-export const updateColorRange = (colors: string[]): void => {
+export const applyColorRange = (colors: string[]): void => {
   const root = document.documentElement;
-  const sortedColors = sortColorsByLuminance(colors);
+  const sortedColors = normalizeColorRange(colors);
 
   let dark = chroma(sortedColors[1]);
   if (dark.luminance() < MIN_DARK_LUMINANCE) {
@@ -40,4 +44,8 @@ export const updateColorRange = (colors: string[]): void => {
 
   root.style.display = 'none';
   root.style.display = '';
+};
+
+export const updateColorRange = (colors: string[]): void => {
+  applyColorRange(colors);
 };

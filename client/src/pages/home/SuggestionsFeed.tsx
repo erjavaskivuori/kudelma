@@ -10,11 +10,12 @@ import {
 } from '../../services/api';
 import { useGeoLocation } from '../../hooks/useGeoLocation';
 import type { Item } from '../../../../shared/types/feed';
-import { updateColorRange } from '../../utils/colorManager';
+import { normalizeColorRange, updateColorRange } from '../../utils/colorManager';
 import FeedItem from '../../components/feed/FeedItem';
 import { useAppSelector } from '../../hooks/useAppStore';
 import Selection from '../../components/feed/Selection';
 import TopMusicSection from '../../components/music/MusicContainer';
+import { storeColorRange } from '../../services/colorStorage';
 
 const SuggestionsFeed = () => {
   const coords = useGeoLocation();
@@ -33,6 +34,7 @@ const SuggestionsFeed = () => {
   useEffect(() => {
     if (palette && palette.length === 5) {
       updateColorRange(palette);
+      storeColorRange(normalizeColorRange(palette));
     }
   }, [palette]);
 
