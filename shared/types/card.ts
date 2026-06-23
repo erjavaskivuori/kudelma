@@ -49,7 +49,10 @@ type Artist = {
 
 export type PostCard = {
   id: number;
-  userId: number;
+  user: {
+    id: number;
+    name: string;
+  };
   artwork: CardArtwork;
   book: CardBook;
   recipe: CardRecipe;

@@ -4,8 +4,11 @@ import type { FavoriteSelection } from '../utils/schemas/favoriteSelectionSchema
 
 export type CardWithRelations = {
   id: number;
-  userId: number;
   createdAt: Date;
+  user: {
+    id: number;
+    name: string;
+  };
   city: string | null;
   weatherMain: string | null;
   temperatureCelsius: number | null;
@@ -115,6 +118,12 @@ export const getCardsByUserId = async (userId: number): Promise<CardWithRelation
   const cards = await prisma.card.findMany({
     where: { userId },
     include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
       art: true,
       book: true,
       recipe: true,
@@ -177,6 +186,12 @@ export const getPublicCards = async (): Promise<CardWithRelations[]> => {
       user: { cardsVisibility: 'PUBLIC' },
     },
     include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
       art: true,
       book: true,
       recipe: true,

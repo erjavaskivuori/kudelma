@@ -65,7 +65,10 @@ export const getCardsForProfile = async (
     cardsVisible,
     cards: cards.map((card) => ({
       id: card.id,
-      userId: card.userId,
+      user: {
+        id: card.user.id,
+        name: card.user.name,
+      },
       artwork: {...card.art},
       book: {...card.book},
       recipe: {...card.recipe},
@@ -119,7 +122,10 @@ export const getPublicCards = async () => {
   const cards = await getPublicCardsFromDb();
   const formattedCards = cards.map((card) => ({
     id: card.id,
-    userId: card.userId,
+    user: card.user && {
+      id: card.user.id,
+      name: card.user.name,
+    },
     artwork: { ...card.art },
     book: { ...card.book },
     recipe: { ...card.recipe },
