@@ -35,6 +35,13 @@ describe('createCard service', () => {
       bookId: 'book123',
       artworkId: 'art456',
       recipeId: 789,
+      city: null,
+      weatherMain: null,
+      temperatureCelsius: null,
+      createdAt: new Date(),
+      playlistId: null,
+      trackId: null,
+      artistId: null,
     });
 
     const result = await createCard(validSelection, 1);

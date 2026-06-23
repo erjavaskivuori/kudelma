@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import { z } from 'zod';
-import { createCard, getCardsForProfile, removeCard } from './cardService.js';
+import { createCard, getCardsForProfile, removeCard, getPublicCards } from './cardService.js';
 import {
   favoriteSelectionSchema,
   type FavoriteSelection
@@ -82,4 +82,10 @@ export const removeCardController = async (req: Request, res: Response) => {
   await removeCard(cardId, userId);
 
   res.status(204).send();
+};
+
+export const getPublicCardsController = async (_req: Request, res: Response) => {
+  const cards = await getPublicCards();
+
+  res.status(200).json(cards);
 };

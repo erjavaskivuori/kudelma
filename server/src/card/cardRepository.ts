@@ -170,3 +170,24 @@ export const removeCardById = async (cardId: number, userId: number): Promise<bo
     return true;
   });
 };
+
+export const getPublicCards = async (): Promise<CardWithRelations[]> => {
+  const cards = await prisma.card.findMany({
+    where: {
+      user: { cardsVisibility: 'PUBLIC' },
+    },
+    include: {
+      art: true,
+      book: true,
+      recipe: true,
+      playlist: true,
+      track: true,
+      artist: true,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+
+  return cards as unknown as CardWithRelations[];
+};

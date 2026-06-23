@@ -4,7 +4,8 @@ import {
   createCard as createCardInDb,
   getCardsByUserId,
   getCardById,
-  removeCardById
+  removeCardById,
+  getPublicCards as getPublicCardsFromDb,
 } from './cardRepository.js';
 import { findProfileById, updateCardsVisibility } from '../user/userRepository.js';
 import type { ProfileCardsResponse } from '../../../shared/types/profile.js';
@@ -112,4 +113,25 @@ export const removeCard = async (cardId: number, userId: number) => {
   }
 
   return;
+};
+
+export const getPublicCards = async () => {
+  const cards = await getPublicCardsFromDb();
+  const formattedCards = cards.map((card) => ({
+    id: card.id,
+    userId: card.userId,
+    artwork: { ...card.art },
+    book: { ...card.book },
+    recipe: { ...card.recipe },
+    postcardMeta: {
+      city: card.city,
+      weatherMain: card.weatherMain,
+      temperatureCelsius: card.temperatureCelsius,
+      createdAt: card.createdAt.toISOString(),
+    },
+    ...(card.playlist && { playlist: { ...card.playlist } }),
+    ...(card.track && { track: { ...card.track } }),
+    ...(card.artist && { artist: { ...card.artist } }),
+  }));
+  return formattedCards;
 };
