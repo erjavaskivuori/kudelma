@@ -84,5 +84,9 @@ export const deleteUserController = async (req: Request, res: Response) => {
   }
   await deleteUser(userId);
 
+  // Clear cookies after user deletion
+  res.clearCookie('accessToken');
+  res.clearCookie('refreshToken');
+
   return res.sendStatus(204);
 };
