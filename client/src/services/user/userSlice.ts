@@ -4,6 +4,7 @@ import {
   registerUser,
   logoutUser,
   refreshAccessToken,
+  deleteUser,
   type User,
 } from './userService';
 
@@ -82,6 +83,21 @@ export const refresh = createAsyncThunk(
   }
 );
 
+export const remove = createAsyncThunk(
+  'user/delete',
+  async (userId: number, { rejectWithValue }) => {
+    try {
+      return await deleteUser(userId);
+    } catch (error: unknown) {
+      if (error instanceof Error && 'response' in error) {
+        const axiosError = error as { response?: { data?: { error?: string } } };
+        return rejectWithValue(axiosError.response?.data?.error ?? 'Profile deletion failed');
+      }
+      return rejectWithValue('Profile deletion failed');
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -138,6 +154,17 @@ const userSlice = createSlice({
       .addCase(refresh.rejected, (state) => {
         state.user = null;
         state.status = 'idle';
+      });
+
+    // Delete user
+    builder
+      .addCase(remove.fulfilled, (state) => {
+        state.user = null;
+        state.status = 'idle';
+        state.error = null;
+      })
+      .addCase(remove.rejected, (state, action) => {
+        state.error = (action.payload as string) ?? 'Profile deletion failed';
       });
   },
 });

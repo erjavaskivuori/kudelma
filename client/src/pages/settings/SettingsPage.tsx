@@ -1,4 +1,5 @@
-import { CardVisibility } from '../../components/settings/cardVisibility';
+import { CardVisibility } from '../../components/settings/CardVisibility';
+import { DeleteProfile } from '../../components/settings/DeleteProfile';
 
 
 const SettingsPage = () => {
@@ -13,6 +14,7 @@ const SettingsPage = () => {
         </div>
         <CardVisibility />
         <hr className="border-white/20" />
+        <DeleteProfile />
       </div>
     </section>
   );

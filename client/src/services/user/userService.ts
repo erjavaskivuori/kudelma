@@ -25,7 +25,6 @@ export const loginUser = async (name: string, password: string): Promise<User> =
   return response.data;
 };
 
-// TODO: error handling???
 export const logoutUser = async (): Promise<void> => {
   await apiClient.post('/auth/logout');
 };
@@ -40,3 +39,6 @@ export const getSpotifyAuthUrl = async (): Promise<{ url: string }> => {
   return response.data;
 };
 
+export const deleteUser = async (userId: number): Promise<void> => {
+  await apiClient.delete(`/auth/delete/${userId}`);
+};
