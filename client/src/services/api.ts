@@ -3,6 +3,7 @@ import type { WeatherData, Coordinates } from '../../../shared/types/weather';
 import type { Artwork } from '../../../shared/types/art';
 import type { Book } from '../../../shared/types/books';
 import type { Recipe } from '../../../shared/types/recipe';
+import type { PostCard } from '../../../shared/types/card';
 import type { ProfileCardsResponse } from '../../../shared/types/profile';
 import type { RankedResults } from '../../../shared/types/music';
 
@@ -92,6 +93,12 @@ export const api = createApi({
       }),
       providesTags: (_result, _error, userId) => [{ type: 'ProfileCards', id: userId }],
     }),
+    getPublicCards: builder.query<PostCard[], void>({
+      query: () => ({
+        url: '/cards/public',
+      }),
+      providesTags: ['ProfileCards'],
+    }),
   }),
 });
 
@@ -105,4 +112,5 @@ export const {
   useLazyGetMusicRecommendationsQuery,
   useGetRecipesQuery,
   useGetProfileCardsQuery,
+  useGetPublicCardsQuery,
 } = api;
