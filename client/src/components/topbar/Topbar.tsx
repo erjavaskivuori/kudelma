@@ -8,7 +8,7 @@ import WeatherCompact from './Weather';
 const TopBar = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user.user);
-  const coords = useGeoLocation();
+  const { coords } = useGeoLocation();
   const { data: weather } = useGetWeatherQuery(
     coords ?? { lat: 0, lon: 0 },
     { skip: !coords }

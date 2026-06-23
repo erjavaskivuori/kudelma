@@ -28,7 +28,7 @@ const TopMusicSection = () => {
   const currentUser = useAppSelector((state) => state.user.user);
   const selectedMusic = useAppSelector((state) => state.favoriteSelection.selectedMusic);
   const [isConnecting, setIsConnecting] = useState(false);
-  const coords = useGeoLocation();
+  const { coords } = useGeoLocation();
   const { data: weather, isLoading: isWeatherLoading } = useGetWeatherQuery(
     coords ?? { lat: 0, lon: 0 },
     { skip: !coords }
