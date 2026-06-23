@@ -79,7 +79,12 @@ const PostcardCard = ({ card }: { card: PostCard }) => {
                 text-slate-800"
             >
               <div>
-                <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Postcard</p>
+                <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
+                  Postcard from&nbsp;
+                  <a href={`/profile/${card.user?.id}`} className="hover:underline">
+                    {card.user?.name}
+                  </a>
+                </p>
                 <h3 className="mt-1 text-lg font-semibold leading-tight">{card.artwork.title}</h3>
                 <p className="mt-1 text-sm text-slate-600">
                   {card.artwork.authors.join(', ')}
@@ -92,7 +97,7 @@ const PostcardCard = ({ card }: { card: PostCard }) => {
             className="absolute inset-0 rounded-2xl border border-white/30
               bg-yellow-50 p-4 text-slate-800 backface-hidden transform-[rotateY(180deg)]"
           >
-            {currentUser?.id === card.userId && (
+            {currentUser?.id === card.user?.id && (
               <button
                 type="button"
                 className="absolute bottom-4 left-4 z-10 rounded-full p-1.5 text-red-500 transition
