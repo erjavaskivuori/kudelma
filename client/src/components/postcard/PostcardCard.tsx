@@ -59,7 +59,7 @@ const PostcardCard = ({ card }: { card: PostCard }) => {
         }
       >
         <div
-          className="relative h-84 w-full rounded-2xl shadow-lg
+          className="relative h-87 w-full rounded-2xl shadow-lg
             transition-transform duration-500
             transform-3d group-focus-within:shadow-xl"
           style={{ transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}
@@ -193,7 +193,7 @@ const PostcardCard = ({ card }: { card: PostCard }) => {
                   <p>{formatDate(card.postcardMeta.createdAt)}</p>
                   <p>{card.postcardMeta.weatherMain ?? 'Weather unknown'}</p>
                   {card.postcardMeta.temperatureCelsius !== null && (
-                    <p>{card.postcardMeta.temperatureCelsius} C</p>
+                    <p>{card.postcardMeta.temperatureCelsius}&#8451;</p>
                   )}
                 </div>
               </div>

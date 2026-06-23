@@ -78,7 +78,7 @@ const Selection = ({ weather }: SelectionProps) => {
             temperatureCelsius: weather?.temperature,
           },
         })).unwrap();
-        void navigate("/?mode=community");
+        void navigate(`/profile/${user.id}`);
       } catch {
         dispatch(showModal({
           title: 'Could not create a card',

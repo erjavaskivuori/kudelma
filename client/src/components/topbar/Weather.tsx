@@ -73,7 +73,7 @@ const WeatherCompact = ({ weather }: WeatherCompactProps) => {
             </div>
             <div className="flex items-center gap-2 text-white">
               {getIcon(weather.id, 48)}
-              <span className="text-2xl font-bold">{weather.temperature}°C</span>
+              <span className="text-2xl font-bold">{weather.temperature}&#8451;</span>
             </div>
           </div>
 
