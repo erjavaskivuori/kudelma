@@ -7,7 +7,7 @@ import { useAppSelector, useAppDispatch } from '../../hooks/useAppStore';
 import { showModal } from '../../services/notifications/notificationSlice';
 import { refresh } from '../../services/user/userSlice';
 import { getSpotifyAuthUrl } from '../../services/user/userService';
-import { removeCard } from '../../services/card/cardService';
+
 
 const ProfilePage = () => {
   const params = useParams();
@@ -109,31 +109,6 @@ const ProfilePage = () => {
     }
   };
 
-  const handleRemoveCard = async (cardId: number) => {
-    try {
-      if (window.confirm(
-        'Are you sure you want to remove this postcard? This action cannot be undone.'
-      )) {
-        await removeCard(cardId);
-        window.location.reload();
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        dispatch(showModal({
-          title: 'Failed to remove postcard',
-          message: `An error occurred while trying to remove the postcard:
-            ${error.message}. Please try again.`,
-        }));
-      } else {
-        dispatch(showModal({
-          title: 'Failed to remove postcard',
-          message: 'An unknown error occurred while trying to remove the postcard.\
-            Please try again.',
-        }));
-      }
-    }
-  };
-
   return (
     <section className="mx-auto max-w-6xl text-white">
       <header className="rounded-2xl border border-white/20 bg-white/10 p-6 backdrop-blur-sm">
@@ -212,8 +187,6 @@ const ProfilePage = () => {
             <PostcardCard
               key={card.id}
               card={card}
-              canDelete={currentUser?.id === card.userId}
-              onRemoveCard={handleRemoveCard}
             />
           ))}
         </div>

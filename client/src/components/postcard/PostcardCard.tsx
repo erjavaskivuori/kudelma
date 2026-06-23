@@ -1,36 +1,51 @@
-import { useState, type MouseEvent } from 'react';
+import { useState } from 'react';
 import { LuChefHat } from "react-icons/lu";
 import { PiBooksFill, PiMusicNotesFill } from "react-icons/pi";
 import { BsTrash3 } from "react-icons/bs";
+import { removeCard } from '../../services/card/cardService';
+import { showModal } from '../../services/notifications/notificationSlice';
 import type { PostCard } from '../../../../shared/types/card';
-
-type PostcardCardProps = {
-  card: PostCard;
-  canDelete: boolean;
-  onRemoveCard: (cardId: number) => Promise<void>;
-};
+import { useAppDispatch, useAppSelector } from '../../hooks/useAppStore';
 
 const formatDate = (dateIso: string) => {
   const date = new Date(dateIso);
   return date.toLocaleDateString("fi-FI");
 };
 
-const PostcardCard = ({ card, canDelete = false, onRemoveCard }: PostcardCardProps) => {
+const PostcardCard = ({ card }: { card: PostCard }) => {
   const [flipped, setFlipped] = useState(false);
+  const dispatch = useAppDispatch();
+  const currentUser = useAppSelector((state) => state.user.user);
   const hasPlaylist = card.playlist !== undefined;
   const hasTrack = card.track !== undefined;
   const hasArtist = card.artist !== undefined;
 
-  const handleRemoveCard = async (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-
+  const handleRemoveCard = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
     try {
-      await onRemoveCard(card.id);
-    } catch {
-      return;  // The error is handled in the parent component.
+      if (window.confirm(
+        'Are you sure you want to remove this postcard? This action cannot be undone.'
+      )) {
+        await removeCard(card.id);
+        window.location.reload();
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        dispatch(showModal({
+          title: 'Failed to remove postcard',
+          message: `An error occurred while trying to remove the postcard:
+            ${error.message}. Please try again.`,
+        }));
+      } else {
+        dispatch(showModal({
+          title: 'Failed to remove postcard',
+          message: 'An unknown error occurred while trying to remove the postcard.\
+            Please try again.',
+        }));
+      }
     }
-};
+  };
 
   return (
     <article className="group perspective-distant">
@@ -77,7 +92,7 @@ const PostcardCard = ({ card, canDelete = false, onRemoveCard }: PostcardCardPro
             className="absolute inset-0 rounded-2xl border border-white/30
               bg-yellow-50 p-4 text-slate-800 backface-hidden transform-[rotateY(180deg)]"
           >
-            {canDelete && (
+            {currentUser?.id === card.userId && (
               <button
                 type="button"
                 className="absolute bottom-4 left-4 z-10 rounded-full p-1.5 text-red-500 transition
