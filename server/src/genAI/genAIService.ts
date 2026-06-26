@@ -11,7 +11,14 @@ dotenv.config();
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GENAI_PROMPT = process.env.GENAI_PROMPT;
 const GENAI_MUSIC_PROMPT = process.env.GENAI_MUSIC_PROMPT;
-const GENAI_MODEL = 'gemini-3.1-flash-lite';
+const GENAI_MODELS = [
+  'gemini-2.5-flash',
+  'gemini-3.5-flash',
+  'gemini-3-flash-preview',
+  'gemini-2.5-pro',
+  'gemini-2.5-flash-lite',
+  'gemini-3.1-flash-lite',
+];
 
 if (!GEMINI_API_KEY) {
   throw new Error('GEMINI_API_KEY is not defined in environment variables');
@@ -137,6 +144,21 @@ const getFallbackQueries = (
   };
 };
 
+const generateContentWithFallback = async (prompt: string): Promise<string> => {
+  for (const model of GENAI_MODELS) {
+    try {
+      const response = await ai.models.generateContent({ model, contents: prompt });
+      if (response?.text) {
+        return response.text;
+      }
+      console.warn(`Model ${model} returned empty response, trying next`);
+    } catch (error) {
+      console.error(`Model ${model} failed:`, error, '— trying next model');
+    }
+  }
+  throw new Error('All Gemini models failed');
+};
+
 const extractQueriesFromText = (text: string): SpotifyQueries => {
   const jsonStr = extractJsonFromText(text);
   const parsed = JSON.parse(jsonStr) as Partial<SpotifyQueries>;
@@ -168,22 +190,14 @@ export const generateKeywords = async (weather: WeatherData): Promise<Keywords> 
   };
 
   const promptWithContext = createContextualPrompt(weather);
-  let response;
+  let responseText: string;
   try {
-    response = await ai.models.generateContent({
-      model: GENAI_MODEL,
-      contents: promptWithContext,
-    });
+    responseText = await generateContentWithFallback(promptWithContext);
   } catch (error) {
-    console.error('Error generating content from GenAI:', error, 'using fallback keywords');
+    console.error('All models failed for keywords, using fallback:', error);
     return getFallbackKeywords();
   }
-
-  if (!response || !response.text) {
-    console.error('No response from GenAI, using fallback keywords');
-    return getFallbackKeywords();
-  }
-  const jsonStr = extractJsonFromText(response.text);
+  const jsonStr = extractJsonFromText(responseText);
 
   try {
     const keywords = JSON.parse(jsonStr) as Keywords;
@@ -224,24 +238,16 @@ export const generateSpotifyQueries = async (
 
   const promptWithContext = createSpotifyContextPrompt(weather, activity, moods);
 
-  let response;
+  let responseText: string;
   try {
-    response = await ai.models.generateContent({
-      model: GENAI_MODEL,
-      contents: promptWithContext,
-    });
+    responseText = await generateContentWithFallback(promptWithContext);
   } catch (error) {
-    console.error('Error generating Spotify queries from GenAI:', error, 'using fallback queries');
-    return getFallbackQueries(weather.main, moods, activity);
-  }
-
-  if (!response || !response.text) {
-    console.error('No Spotify queries response from GenAI, using fallback queries');
+    console.error('All models failed for Spotify queries, using fallback:', error);
     return getFallbackQueries(weather.main, moods, activity);
   }
 
   try {
-    const generatedGenres = extractQueriesFromText(response.text);
+    const generatedGenres = extractQueriesFromText(responseText);
 
     await redis.set(cacheKey, JSON.stringify(generatedGenres), {
       expiration: { type: 'EXAT', value: EXPIRE_AT },
