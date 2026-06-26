@@ -81,7 +81,7 @@ const AuthForm = ({
               htmlFor="name"
               className="mb-2.5 block text-sm font-medium text-slate-900"
             >
-              Username
+              Username *
             </label>
             <input
               type="text"
@@ -118,7 +118,7 @@ const AuthForm = ({
               htmlFor="password"
               className="mb-2.5 block text-sm font-medium text-slate-900"
             >
-              Password
+              Password *
             </label>
             <input
               type="password"
