@@ -15,11 +15,22 @@ import musicRouter from './music/spotifyRoutes.js';
 const app = express();
 
 app.use(express.json());
+const allowedOrigins = [
+  'http://localhost:8080',
+  'http://localhost:5173',
+  'https://kudelma.vercel.app',
+];
+
 app.use(cors({
-  origin: [
-    'http://localhost:8080',
-    process.env.FRONTEND_URL!,
-  ],
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`CORS blocked: ${origin}`));
+  },
   credentials: true,
 }));
 app.use(cookieParser());
