@@ -10,6 +10,7 @@ import {
 } from './spotifyAuthService.js';
 import { generateSpotifyQueries } from '../genAI/genAIService.js';
 import { getSpotifyRecommendations } from './spotifyService.js';
+import logger from '../utils/logger.js';
 
 export const connectSpotify = (req: Request, res: Response) => {
   const userId = req.user?.id;
@@ -33,17 +34,21 @@ export const spotifyCallback = async (req: Request, res: Response) => {
 
   const userId = verifySpotifyState(state);
 
+  const FRONTEND_URL = process.env.FRONTEND_URL || '';
+
   if (errorParam) {
-    return res.redirect(`/profile/${userId}?error=spotify_auth_failed`);
+    logger.error('Spotify authorization error', { userId, error: errorParam });
+    return res.redirect(`${FRONTEND_URL}/profile/${userId}?error=spotify_auth_failed`);
   }
 
   if (!code) {
+    logger.error('Missing Spotify authorization code', { userId });
     return res.status(400).json({ error: 'Missing Spotify authorization code' });
   }
 
   await exchangeSpotifyCodeForTokens(code, userId);
 
-  return res.redirect(`/profile/${userId}?spotify_connected=true`);
+  return res.redirect(`${FRONTEND_URL}/profile/${userId}?spotify_connected=true`);
 };
 
 export const getRecommendations = async (req: Request, res: Response) => {
