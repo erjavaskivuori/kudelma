@@ -4,8 +4,8 @@ import jwt, { type JwtPayload } from 'jsonwebtoken';
 import { HttpError } from '../utils/errors/index.js';
 import { syncSpotifyTokens, findUserById, updateSpotifyTokens } from '../user/userRepository.js';
 
-const API_URL = process.env.API_URL || 'http://127.0.0.1:8080/api';
-const REDIRECT_URI = `${API_URL}/music/spotify/callback`;
+const BACKEND_URL = process.env.BACKEND_URL || 'http://127.0.0.1:8080/api';
+const REDIRECT_URI = `${BACKEND_URL}/music/spotify/callback`;
 const SPOTIFY_STATE_EXPIRY = '10m';
 
 interface SpotifyTokenResponse {
