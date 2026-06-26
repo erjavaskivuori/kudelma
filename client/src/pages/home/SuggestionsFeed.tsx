@@ -114,9 +114,9 @@ const SuggestionsFeed = () => {
   itemList.sort(() => Math.random() - 0.5); // Shuffle items
 
   return (
-    <>
+    <div className="flex min-h-screen flex-col">
       <TopMusicSection />
-      <div className="justify-center flex">
+      <div className="flex grow justify-center">
         <Masonry columns={{ xs: 2, sm: 3, lg: 4 }} spacing={2}>
           {itemList.map(item => (
             <div key={item.data.id} className="break-inside-avoid">
@@ -125,10 +125,10 @@ const SuggestionsFeed = () => {
           ))}
         </Masonry>
       </div>
-      <div className="sticky bottom-4 flex justify-center">
+      <div className="sticky bottom-4 flex w-full items-center justify-center">
         <Selection weather={weather} />
       </div>
-    </>
+    </div>
   );
 };
 
