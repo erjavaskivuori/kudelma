@@ -5,6 +5,10 @@ import { HttpError } from '../utils/errors/HttpError.js';
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
+vi.mock('../utils/fetchWithRetry.js', () => ({
+  fetchWithRetry: (url: string): Promise<Response> => mockFetch(url) as Promise<Response>,
+}));
+
 vi.mock('../infra/redis.js', () => ({
   redis: {
     get: vi.fn().mockResolvedValue(null), // Always return null to skip cache
@@ -56,7 +60,8 @@ describe('weatherService', () => {
       const result = await fetchWeatherByCoordinates(60.1695, 24.9354);
 
       expect(fetch).toHaveBeenCalledWith(
-        'https://api.openweathermap.org/data/2.5/weather?lat=60.1695&lon=24.9354&appid=test-api-key&units=metric'
+        'https://api.openweathermap.org/data/2.5/weather'
+        + '?lat=60.1695&lon=24.9354&appid=test-api-key&units=metric'
       );
       expect(result).toEqual(expectedWeatherData);
     });
@@ -145,7 +150,8 @@ describe('weatherService', () => {
       await fetchWeatherByCoordinates(60.1695, 24.9354);
 
       expect(fetch).toHaveBeenCalledWith(
-        'https://api.openweathermap.org/data/2.5/weather?lat=60.1695&lon=24.9354&appid=test-api-key&units=metric'
+        'https://api.openweathermap.org/data/2.5/weather'
+        + '?lat=60.1695&lon=24.9354&appid=test-api-key&units=metric'
       );
     });
 
@@ -160,7 +166,8 @@ describe('weatherService', () => {
       await fetchWeatherByCoordinates(-60.1695, -24.9354);
 
       expect(fetch).toHaveBeenCalledWith(
-        'https://api.openweathermap.org/data/2.5/weather?lat=-60.1695&lon=-24.9354&appid=test-api-key&units=metric'
+        'https://api.openweathermap.org/data/2.5/weather'
+        + '?lat=-60.1695&lon=-24.9354&appid=test-api-key&units=metric'
       );
     });
   });

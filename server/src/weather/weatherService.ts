@@ -3,6 +3,7 @@ import type { WeatherData } from '../../../shared/types/weather.js';
 import { HttpError } from '../utils/errors/HttpError.js';
 import { redis } from '../infra/redis.js';
 import { getNextChangeTimestamp } from '../utils/timeBuckets.js';
+import { fetchWithRetry } from '../utils/fetchWithRetry.js';
 
 const EXPIRE_AT = getNextChangeTimestamp();
 
@@ -17,7 +18,10 @@ export const fetchWeatherByCoordinates = async (
     return JSON.parse(cachedData) as WeatherData;
   }
 
-  const response: Response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${process.env.OPEN_WEATHER_API_KEY}&units=metric`);
+  const url = 'https://api.openweathermap.org/data/2.5/weather'
+    + `?lat=${latitude}&lon=${longitude}`
+    + `&appid=${process.env.OPEN_WEATHER_API_KEY}&units=metric`;
+  const response: Response = await fetchWithRetry(url);
   if (!response.ok) {
     throw new HttpError('Failed to fetch weather data', response.status);
   }
