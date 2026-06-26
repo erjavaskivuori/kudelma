@@ -1,4 +1,5 @@
 import { HttpError } from '../utils/errors/HttpError.js';
+import logger from '../utils/logger.js';
 import type { OpenLibraryBook, BookSubjectResponse } from './bookTypes.js';
 import type { Book } from '../../../shared/types/books.js';
 import { redis } from '../infra/redis.js';
@@ -42,7 +43,7 @@ export const fetchBooksByKeywords = async (keywords: string[]) => {
   for (let i = 0; i < keywords.length; i++) {
     const randomIndex = Math.floor(Math.random() * keywords.length);
     const keyword = keywords[randomIndex];
-    console.log(`Fetching books for keyword: ${keyword}`);
+    logger.debug('Fetching books for keyword', { keyword });
 
     const response: Response = await fetch(`http://openlibrary.org/subjects/${keyword}.json?limit=40`);
     if (!response.ok) {
@@ -50,7 +51,7 @@ export const fetchBooksByKeywords = async (keywords: string[]) => {
     }
     const data: BookSubjectResponse = await response.json() as BookSubjectResponse;
 
-    console.log(data);
+    logger.debug('OpenLibrary response', { keyword, workCount: data.work_count });
 
     // If no works found for this keyword, continue to next
     if (data.work_count === 0) {

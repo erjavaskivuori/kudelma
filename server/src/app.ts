@@ -16,7 +16,7 @@ const app = express();
 
 app.use(express.json());
 const allowedOrigins = [
-  'http://localhost:8080',
+  'http://127.0.0.1:8080',
   'http://localhost:5173',
   'https://kudelma.vercel.app',
 ];
@@ -35,6 +35,7 @@ app.use(cors({
 }));
 app.use(cookieParser());
 
+app.use(middleware.requestId);
 app.use(middleware.requestLogger);
 app.use('/auth', authRouter);
 app.use('/weather', weatherRouter);

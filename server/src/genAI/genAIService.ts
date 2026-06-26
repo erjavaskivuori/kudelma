@@ -1,5 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
+import logger from '../utils/logger.js';
 import type { Keywords, SpotifyQueries } from './genAITypes.js';
 import type { WeatherData } from '../../../shared/types/weather.js';
 import { redis } from '../infra/redis.js';
@@ -151,9 +152,13 @@ const generateContentWithFallback = async (prompt: string): Promise<string> => {
       if (response?.text) {
         return response.text;
       }
-      console.warn(`Model ${model} returned empty response, trying next`);
+      logger.warn('GenAI model returned empty response', { model });
     } catch (error) {
-      console.error(`Model ${model} failed:`, error, '— trying next model');
+      logger.error('GenAI model failed', {
+        model,
+        message: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+      });
     }
   }
   throw new Error('All Gemini models failed');
@@ -194,7 +199,10 @@ export const generateKeywords = async (weather: WeatherData): Promise<Keywords> 
   try {
     responseText = await generateContentWithFallback(promptWithContext);
   } catch (error) {
-    console.error('All models failed for keywords, using fallback:', error);
+    logger.error('All GenAI models failed for keywords, using fallback', {
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
     return getFallbackKeywords();
   }
   const jsonStr = extractJsonFromText(responseText);
@@ -210,10 +218,10 @@ export const generateKeywords = async (weather: WeatherData): Promise<Keywords> 
     return keywords;
   } catch (error) {
     if (error instanceof SyntaxError) {
-      console.error(`JSON parsing error: ${error.message}, using fallback keywords`);
+      logger.warn('JSON parsing error for keywords, using fallback', { message: error.message });
       return getFallbackKeywords();
     }
-    console.error('Failed to parse GenAI response, using fallback keywords');
+    logger.warn('Failed to parse GenAI response for keywords, using fallback');
     return getFallbackKeywords();
   }
 };
@@ -242,7 +250,10 @@ export const generateSpotifyQueries = async (
   try {
     responseText = await generateContentWithFallback(promptWithContext);
   } catch (error) {
-    console.error('All models failed for Spotify queries, using fallback:', error);
+    logger.error('All GenAI models failed for Spotify queries, using fallback', {
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
     return getFallbackQueries(weather.main, moods, activity);
   }
 
@@ -256,11 +267,14 @@ export const generateSpotifyQueries = async (
     return generatedGenres;
   } catch (error) {
     if (error instanceof SyntaxError) {
-      console.error(`Spotify queries parsing error: ${error.message}, using fallback queries`);
+      logger.warn(
+        'JSON parsing error for Spotify queries, using fallback',
+        { message: error.message }
+      );
       return getFallbackQueries(weather.main, moods, activity);
     }
 
-    console.error('Failed to parse Spotify queries response, using fallback queries');
+    logger.warn('Failed to parse Spotify queries response, using fallback');
     return getFallbackQueries(weather.main, moods, activity);
   }
 };

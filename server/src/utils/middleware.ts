@@ -1,10 +1,11 @@
+import crypto from 'node:crypto';
 import type { Request, Response, NextFunction, RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
 import logger from './logger.js';
 import { HttpError } from './errors/index.js';
 
 const SENSITIVE_KEYS = new Set(
-  ['password', 'token', 'accessToken', 'refreshToken', 'secret', 'latitude', 'longitude']
+  ['email', 'password', 'token', 'accessToken', 'refreshToken', 'secret', 'latitude', 'longitude']
 );
 
 const sanitizeBody = (body: unknown): unknown => {
@@ -17,14 +18,30 @@ const sanitizeBody = (body: unknown): unknown => {
   );
 };
 
-const requestLogger = (req: Request, _res: Response, next: NextFunction) => {
-  logger.info('Method:', req.method);
-  logger.info('Path:  ', req.path);
-  logger.info('Query: ', JSON.stringify(req.query, null, 2));
-  if (process.env.NODE_ENV === 'development') {
-    logger.info('Body:', sanitizeBody(req.body));
+export const requestId: RequestHandler = (req, _res, next) => {
+  req.id = crypto.randomUUID();
+  next();
+};
+
+const requestLogger = (req: Request, res: Response, next: NextFunction) => {
+  const start = Date.now();
+
+  res.on('finish', () => {
+    logger.info('Request', {
+      reqId: req.id,
+      method: req.method,
+      path: req.path,
+      status: res.statusCode,
+      durationMs: Date.now() - start,
+      userId: req.user?.id,
+    });
+  });
+
+  const body: unknown = req.body;
+  if (body && typeof body === 'object' && !Array.isArray(body) && Object.keys(body).length > 0) {
+    logger.info('Request body', { body: sanitizeBody(body) as Record<string, unknown> });
   }
-  logger.info('---');
+
   next();
 };
 
@@ -32,10 +49,21 @@ const unknownEndpoint = (_req: Request, res: Response) => {
   res.status(404).send({ error: 'unknown endpoint' });
 };
 
-const errorHandler = (error: Error, _req: Request, res: Response, _next: NextFunction) => {
-  logger.error('Error caught in errorHandler:', error);
-
+const errorHandler = (error: Error, req: Request, res: Response, _next: NextFunction) => {
   const status = (error as HttpError).status || 500;
+
+  logger.error('Unhandled error', {
+    reqId: req.id,
+    method: req.method,
+    path: req.path,
+    userId: req.user?.id,
+    status,
+    errorName: error.name,
+    message: error.message,
+    stack: error.stack,
+    details: (error as HttpError).details as Record<string, unknown> | undefined,
+  });
+
   const rawMessage = error.message || 'Something went wrong';
   const isPrismaRuntimeError =
     error.name.startsWith('PrismaClient')
@@ -45,10 +73,7 @@ const errorHandler = (error: Error, _req: Request, res: Response, _next: NextFun
     ? 'Database is temporarily unavailable'
     : rawMessage;
 
-  res.status(status).json({
-    error: message,
-    ...(process.env.NODE_ENV === 'development' && { stack: error.stack }),
-  });
+  res.status(status).json({ error: message });
 };
 
 export const requireAuth: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
@@ -93,6 +118,7 @@ export const optionalAuth: RequestHandler = (req: Request, _res: Response, next:
 };
 
 export default {
+  requestId,
   requestLogger,
   unknownEndpoint,
   errorHandler,

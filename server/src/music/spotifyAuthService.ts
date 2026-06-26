@@ -3,6 +3,7 @@ import querystring from 'querystring';
 import jwt, { type JwtPayload } from 'jsonwebtoken';
 import { HttpError } from '../utils/errors/index.js';
 import { syncSpotifyTokens, findUserById, updateSpotifyTokens } from '../user/userRepository.js';
+import logger from '../utils/logger.js';
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://127.0.0.1:8080/api';
 const REDIRECT_URI = `${BACKEND_URL}/music/spotify/callback`;
@@ -44,6 +45,7 @@ export const verifySpotifyState = (state: string): number => {
 
 export const generateSpotifyAuthUrl = (userId: number): string => {
   if (!process.env.SPOTIFY_CLIENT_ID) {
+    logger.error('Spotify Client ID not configured', { userId });
     throw new HttpError('Spotify Client ID is not configured', 500);
   }
 
@@ -104,7 +106,11 @@ export const exchangeSpotifyCodeForTokens = async (code: string, userId: number)
       expiresAt
     );
   } catch (error: unknown) {
-    console.error('Error exchanging spotify code for tokens:', getSpotifyErrorMessage(error));
+    logger.error('Spotify token exchange failed', {
+      userId,
+      message: getSpotifyErrorMessage(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
     throw new HttpError('Failed to authenticate with Spotify', 500);
   }
 };
@@ -139,7 +145,10 @@ export const refreshSpotifyToken = async (refreshToken: string) => {
       refreshToken: response.data.refresh_token || refreshToken,
     };
   } catch (error: unknown) {
-    console.error('Error refreshing spotify token:', getSpotifyErrorMessage(error));
+    logger.error('Spotify token refresh failed', {
+      message: getSpotifyErrorMessage(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
     throw new HttpError('Failed to refresh Spotify token', 500);
   }
 };

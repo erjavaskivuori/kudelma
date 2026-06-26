@@ -1,17 +1,33 @@
-const info = (...params: unknown[]) => {
-  console.log(new Date().toISOString(), '[INFO]', ...params);
+const isProd = process.env.NODE_ENV === 'production';
+
+const info = (message: string, context?: Record<string, unknown>) => {
+  const parts: unknown[] = [new Date().toISOString(), '[INFO]', message];
+  if (context) parts.push(JSON.stringify(context));
+  console.log(...parts);
 };
 
-const error = (...params: unknown[]) => {
-  console.error(new Date().toISOString(), '[ERROR]', ...params);
+const error = (message: string, context?: Record<string, unknown>) => {
+  const parts: unknown[] = [new Date().toISOString(), '[ERROR]', message];
+  if (context) parts.push(JSON.stringify(context));
+  console.error(...parts);
 };
 
-const warn = (...params: unknown[]) => {
-  console.warn(new Date().toISOString(), '[WARN]', ...params);
+const warn = (message: string, context?: Record<string, unknown>) => {
+  const parts: unknown[] = [new Date().toISOString(), '[WARN]', message];
+  if (context) parts.push(JSON.stringify(context));
+  console.warn(...parts);
+};
+
+const debug = (message: string, context?: Record<string, unknown>) => {
+  if (isProd) return;
+  const parts: unknown[] = [new Date().toISOString(), '[DEBUG]', message];
+  if (context) parts.push(JSON.stringify(context));
+  console.log(...parts);
 };
 
 export default {
   info,
   error,
-  warn
+  warn,
+  debug,
 };
