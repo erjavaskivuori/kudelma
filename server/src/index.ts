@@ -3,11 +3,7 @@ dotenv.config();
 
 import app from './app.js';
 
-if (!process.env.PORT) {
-  throw new Error('PORT is not defined in environment variables');
-}
-
-const PORT = process.env.PORT;
+const PORT = Number(process.env.PORT) || 3001;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
