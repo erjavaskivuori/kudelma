@@ -148,7 +148,7 @@ const Selection = ({ weather }: SelectionProps) => {
             disabled={status === 'loading'}
             type="button"
             className="mt-2 px-4 py-1.5 rounded-xl text-sm font-semibold
-              bg(--color-popup) text-white
+              bg-(--color-dark) text-white
               hover:bg-(--color-extra-dark)
               transition-colors duration-200"
             onClick={(e) => void handleCreateCard(e)}
