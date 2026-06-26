@@ -17,8 +17,8 @@ const transformBookToDisplayBook = (book: OpenLibraryBook) => {
     : book.cover_edition_key
       ? `https://covers.openlibrary.org/b/olid/${book.cover_edition_key}-L.jpg`
       : '';
-
-  const proxiedCoverUrl = `/api/image-proxy?url=${encodeURIComponent(coverUrl)}`;
+  const backendUrl = process.env.BACKEND_URL || '/api';
+  const proxiedCoverUrl = `${backendUrl}/image-proxy?url=${encodeURIComponent(coverUrl)}`;
 
   const displayBook = {
     id: book.key,
@@ -61,7 +61,7 @@ export const fetchBooksByKeywords = async (keywords: string[]) => {
 
     const booksForKeyword: Book[] = data.works.map(
       book => transformBookToDisplayBook(book)
-    ).filter(book => book !== null) as Book[];
+    ).filter(book => book !== null);
 
     // Add books to the main list
     books.push(...booksForKeyword);

@@ -60,8 +60,9 @@ const transformFinnaRecordToArtwork = (record: FinnaRecord): Artwork | null => {
   if (!imageUrl) {
     return null;
   }
+  const backendUrl = process.env.BACKEND_URL || '/api';
   const fullImageUrl = `https://api.finna.fi${imageUrl}`;
-  const proxiedImageUrl = `/api/image-proxy?url=${encodeURIComponent(fullImageUrl)}`;
+  const proxiedImageUrl = `${backendUrl}/image-proxy?url=${encodeURIComponent(fullImageUrl)}`;
 
   const uniqueAuthors = record.nonPresenterAuthors.filter((author, index, array) =>
     array.findIndex(a => a.name === author.name) === index
