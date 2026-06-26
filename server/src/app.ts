@@ -15,7 +15,13 @@ import musicRouter from './music/spotifyRoutes.js';
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:8080',
+    process.env.FRONTEND_URL!,
+  ],
+  credentials: true,
+}));
 app.use(cookieParser());
 
 app.use(middleware.requestLogger);
