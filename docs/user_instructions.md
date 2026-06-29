@@ -22,3 +22,21 @@ Account settings are available from the user's profile page. There, the user can
 
 * choose whether their postcards are public
 * delete their account
+
+## Getting Spotify recommendations
+
+When user has connected their account they can influence the music recommendations by sharing
+what they are doing and what is their mood. If user clicks "Skip for now" the recommendations
+will be based only on the weather and seasonal information.
+
+Picking activity view:
+
+![Picking activity](/docs/pics/picking_cues.png)
+
+Picking mood view:
+
+![Picking mood](/docs/pics/picking_cues2.png)
+
+The recommendations view:
+
+![Recommendations](/docs/pics/recommendations.png)
