@@ -116,34 +116,40 @@ const PostcardCard = ({ card }: { card: PostCard }) => {
                 >
                   Greetings from {card.postcardMeta?.city ?? 'somewhere'}!
                 </div>
-                <p className="mt-4 text-sm text-slate-700">
-                  My picks:
-                </p>
-                <div className="flex gap-2 mt-2">
-                  <LuChefHat className="shrink-0 text-md" />
-                  <a
-                    href={card.recipe.sourceUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:underline"
-                  >
-                    <h4 className="text-sm font-semibold leading-4">{card.recipe.title}</h4>
-                  </a>
-                </div>
-
-                <div className="flex gap-2 mt-2">
-                  <PiBooksFill className="mt-1 shrink-0 text-md" />
-                  <div>
+                { card.recipe || card.book || card.playlist || card.track || card.artist ? (
+                  <p className="mt-4 text-sm text-slate-700">
+                    My picks:
+                  </p>
+                ) : null }
+                { card.recipe && (
+                  <div className="flex gap-2 mt-2">
+                    <LuChefHat className="shrink-0 text-md" />
                     <a
-                    href={`https://openlibrary.org${card.book.id}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:underline">
-                      <p className="text-sm font-semibold">{card.book.title}</p>
+                      href={card.recipe.sourceUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="hover:underline"
+                    >
+                      <h4 className="text-sm font-semibold leading-4">{card.recipe.title}</h4>
                     </a>
-                    <p className="text-xs text-slate-600">{card.book.authors.join(', ')}</p>
                   </div>
-                </div>
+                )}
+
+                { card.book && (
+                  <div className="flex gap-2 mt-2">
+                    <PiBooksFill className="mt-1 shrink-0 text-md" />
+                    <div>
+                      <a
+                        href={`https://openlibrary.org${card.book.id}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="hover:underline">
+                        <p className="text-sm font-semibold">{card.book.title}</p>
+                      </a>
+                      <p className="text-xs text-slate-600">{card.book.authors.join(', ')}</p>
+                    </div>
+                  </div>
+                )}
                 {(hasPlaylist || hasTrack || hasArtist) && (
                   <div className="flex gap-2 mt-2">
                     <PiMusicNotesFill className="mt-1.5 shrink-0 text-md" />

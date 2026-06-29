@@ -25,19 +25,19 @@ const Selection = ({ weather }: SelectionProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const allSelected = book && artwork && recipe;
-  const noneSelected = !book && !artwork && !recipe;
+  const canCreate = !!artwork;
+  const allSelected = book && artwork && recipe && selectedMusic;
 
-  const missingCategories: string[] = [];
-  if (!book) missingCategories.push('book');
-  if (!artwork) missingCategories.push('artwork');
-  if (!recipe) missingCategories.push('recipe');
+  const missingOptional: string[] = [];
+  if (!book) missingOptional.push('a book');
+  if (!selectedMusic) missingOptional.push('music');
+  if (!recipe) missingOptional.push('a recipe');
 
-  const guideText = noneSelected
-    ? 'Select one book, one artwork, and one recipe to create your card!'
+  const guideText = !artwork
+    ? 'Select an artwork to get started on creating your card!'
     : allSelected
       ? 'All items selected! Create your card now.'
-      : `Choose ${missingCategories.join(' and ')} to finish your card!`;
+      : `You can still add ${missingOptional.join(', ')} or create your card now!`;
 
   const selectedCards = [
     artwork && { type: 'artwork' as const, data: artwork, rotation: '-rotate-6' },
@@ -65,12 +65,12 @@ const Selection = ({ weather }: SelectionProps) => {
       return;
     }
 
-    if (allSelected) {
+    if (canCreate) {
       try {
         await dispatch(createCardAsync({
-          book: book,
+          book: book ?? undefined,
           artwork: artwork,
-          recipe: recipe,
+          recipe: recipe ?? undefined,
           selectedMusic,
           postcardMeta: {
             city: weather?.city,
@@ -139,11 +139,13 @@ const Selection = ({ weather }: SelectionProps) => {
           backdrop-blur-md bg-white/70 text-gray-800
           border border-white/40
           transition-all duration-300
-          ${allSelected ? 'bg-green-100/70 border-green-300/50' : ''}
+          ${allSelected
+            ? 'bg-green-100/70 border-green-300/50'
+            : canCreate ? 'bg-amber-50/70 border-amber-200/50' : ''}
         `}
       >
         <p>{guideText}</p>
-        {allSelected && (
+        {canCreate && (
           <button
             disabled={status === 'loading'}
             type="button"

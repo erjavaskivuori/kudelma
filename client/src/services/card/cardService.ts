@@ -6,9 +6,9 @@ import type { SelectedMusic } from './musicSelection';
 import { serializeSelectedMusic } from './musicSelection';
 
 export type FavoriteSelection = {
-  book: Book;
+  book?: Book;
   artwork: Artwork;
-  recipe: Recipe;
+  recipe?: Recipe;
   selectedMusic?: SelectedMusic | null;
   postcardMeta?: {
     city?: string;
@@ -20,12 +20,12 @@ export type FavoriteSelection = {
 export const createCard = async (selection: FavoriteSelection): Promise<void> => {
   const { book, artwork, recipe, postcardMeta, selectedMusic } = selection;
   const payload = {
-    book: {
+    book: book ? {
       id: book.id,
       title: book.title,
       year: book.year,
       authors: book.authors
-    },
+    } : undefined,
     artwork: {
       id: artwork.id,
       title: artwork.title,
@@ -37,11 +37,11 @@ export const createCard = async (selection: FavoriteSelection): Promise<void> =>
         : null,
       copyright: artwork.imageRights.copyright
     },
-    recipe: {
+    recipe: recipe ? {
       id: recipe.id,
       title: recipe.title,
       sourceUrl: recipe.sourceUrl,
-    },
+    } : undefined,
     postcardMeta,
     ...(selectedMusic ? serializeSelectedMusic(selectedMusic) : {}),
   };

@@ -21,13 +21,13 @@ export type CardWithRelations = {
     buildings: string[];
     copyright: string;
   };
-  book: {
+  book?: {
     id: string;
     title: string;
     authors: string[];
     year: number | null;
   };
-  recipe: {
+  recipe?: {
     id: number;
     title: string;
     sourceUrl: string;
@@ -74,18 +74,22 @@ export const createCard = async (
           },
         },
       },
-      recipe: {
-        connectOrCreate: {
-          where: { id: recipe.id },
-          create: recipe,
+      ...(recipe && {
+        recipe: {
+          connectOrCreate: {
+            where: { id: recipe.id },
+            create: recipe,
+          },
         },
-      },
-      book: {
-        connectOrCreate: {
-          where: { id: book.id },
-          create: { ...book, year: book.year ?? null },
+      }),
+      ...(book && {
+        book: {
+          connectOrCreate: {
+            where: { id: book.id },
+            create: { ...book, year: book.year ?? null },
+          },
         },
-      },
+      }),
       ...(playlist && {
         playlist: {
           connectOrCreate: {

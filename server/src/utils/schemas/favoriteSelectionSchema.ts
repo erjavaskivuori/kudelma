@@ -49,14 +49,14 @@ const artistSchema = z.object({
 });
 
 export const favoriteSelectionSchema = z.object({
-  book: bookSchema,
+  book: bookSchema.optional(),
   artwork: artworkSchema,
-  recipe: recipeSchema,
+  recipe: recipeSchema.optional(),
   postcardMeta: postcardMetaSchema.optional(),
   playlist: playlistSchema.optional(),
   track: trackSchema.optional(),
   artist: artistSchema.optional(),
-}).refine((data) => !!data.book && !!data.artwork && !!data.recipe,
-  { message: 'You must select exactly one book, one artwork, and one recipe.' });
+}).refine((data) => !!data.artwork,
+  { message: 'You must select an artwork to create a card.' });
 
 export type FavoriteSelection = z.infer<typeof favoriteSelectionSchema>;

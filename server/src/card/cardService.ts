@@ -70,8 +70,8 @@ export const getCardsForProfile = async (
         name: card.user.name,
       },
       artwork: {...card.art},
-      book: {...card.book},
-      recipe: {...card.recipe},
+      ...(card.book && { book: { ...card.book } }),
+      ...(card.recipe && { recipe: { ...card.recipe } }),
       postcardMeta: {
         city: card.city,
         weatherMain: card.weatherMain,
@@ -127,8 +127,8 @@ export const getPublicCards = async () => {
       name: card.user.name,
     },
     artwork: { ...card.art },
-    book: { ...card.book },
-    recipe: { ...card.recipe },
+    ...(card.book && { book: { ...card.book } }),
+    ...(card.recipe && { recipe: { ...card.recipe } }),
     postcardMeta: {
       city: card.city,
       weatherMain: card.weatherMain,

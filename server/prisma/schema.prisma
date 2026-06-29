@@ -89,8 +89,8 @@ model Card {
   createdAt          DateTime @default(now())
   userId             Int
   artworkId          String
-  recipeId           Int
-  bookId             String
+  recipeId           Int?
+  bookId             String?
   city               String?
   weatherMain        String?
   temperatureCelsius Float?
@@ -100,8 +100,8 @@ model Card {
 
   user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   art      Artwork   @relation(fields: [artworkId], references: [id], onDelete: Cascade)
-  recipe   Recipe    @relation(fields: [recipeId], references: [id], onDelete: Cascade)
-  book     Book      @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  recipe   Recipe?   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  book     Book?     @relation(fields: [bookId], references: [id], onDelete: Cascade)
   playlist Playlist? @relation(fields: [playlistId], references: [id], onDelete: Cascade)
   track    Track?    @relation(fields: [trackId], references: [id], onDelete: Cascade)
   artist   Artist?   @relation(fields: [artistId], references: [id], onDelete: Cascade)

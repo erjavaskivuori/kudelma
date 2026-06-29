@@ -54,8 +54,8 @@ export type PostCard = {
     name: string;
   };
   artwork: CardArtwork;
-  book: CardBook;
-  recipe: CardRecipe;
+  book?: CardBook;
+  recipe?: CardRecipe;
   postcardMeta: PostcardMeta;
   playlist?: Playlist;
   track?: Track;

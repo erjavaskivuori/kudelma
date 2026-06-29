@@ -6,19 +6,19 @@ import type { Recipe } from '../../../../shared/types/recipe';
 import type { SelectedMusic } from './musicSelection';
 
 type FavoriteSelectionState = {
-  book: Book | null;
+  book?: Book;
   artwork: Artwork | null;
-  recipe: Recipe | null;
-  selectedMusic: SelectedMusic | null;
+  recipe?: Recipe;
+  selectedMusic?: SelectedMusic;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
 };
 
 const initialState: FavoriteSelectionState = {
-  book: null,
+  book: undefined,
   artwork: null,
-  recipe: null,
-  selectedMusic: null,
+  recipe: undefined,
+  selectedMusic: undefined,
   status: 'idle',
   error: null,
 };
@@ -27,9 +27,9 @@ export const createCardAsync = createAsyncThunk(
   'cards/create',
   async (
     selection: {
-      book: Book;
+      book?: Book;
       artwork: Artwork;
-      recipe: Recipe;
+      recipe?: Recipe;
       selectedMusic?: SelectedMusic | null;
       postcardMeta?: {
         city?: string;
@@ -59,7 +59,7 @@ const favoriteSelectionSlice = createSlice({
       state.book = action.payload;
     },
     unsetBook(state) {
-      state.book = null;
+      state.book = undefined;
     },
     setArtwork(state, action: PayloadAction<Artwork>) {
       state.artwork = action.payload;
@@ -71,13 +71,13 @@ const favoriteSelectionSlice = createSlice({
       state.recipe = action.payload;
     },
     unsetRecipe(state) {
-      state.recipe = null;
+      state.recipe = undefined;
     },
     setSelectedMusic(state, action: PayloadAction<SelectedMusic>) {
       state.selectedMusic = action.payload;
     },
     clearSelectedMusic(state) {
-      state.selectedMusic = null;
+      state.selectedMusic = undefined;
     }
   },
   extraReducers: (builder) => {
@@ -88,10 +88,10 @@ const favoriteSelectionSlice = createSlice({
       })
       .addCase(createCardAsync.fulfilled, (state) => {
         state.status = 'succeeded';
-        state.book = null;
+        state.book = undefined;
         state.artwork = null;
-        state.recipe = null;
-        state.selectedMusic = null;
+        state.recipe = undefined;
+        state.selectedMusic = undefined;
       })
       .addCase(createCardAsync.rejected, (state, action) => {
         state.status = 'failed';
