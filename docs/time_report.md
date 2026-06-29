@@ -15,7 +15,7 @@
 | 29.12.2025 | 5     | - Designed and implemented masonry layout for feed items<br>- Started book-related backend implementation|
 | 30.12.2025 | 8     | - Created image proxy to proxy images through backend<br>- Added caching for backend services<br>- Finished book service backend implementation<br>- Started designing book display in frontend|
 | 31.12.2025 | 6     | - Image proxying as own controller and route<br>- Backend book-related changes for multiple keyword support<br>- Frontend work for book display<br>- Started implementing recipe fetching|
-| 2.1.2026   | 2     | - Finished recipe-related backend functionality<br>- Created related frontend functionality and component<br>- Setup Prisma and Postgres<br>- Improve development documentation<br>- Update setup and start scripts|
+| 2.1.2026   | 7     | - Finished recipe-related backend functionality<br>- Created related frontend functionality and component<br>- Setup Prisma and Postgres<br>- Improve development documentation<br>- Update setup and start scripts<br>- Start implementing user authentication|
 | 7.1.2026   | 3     | - Debugged issue with Prisma|
 | 8.1.2026   | 8     | - Registration initial setup<br>- Backend architecture changes (move to DDD)<br>- Improvements and fixes for neglected tests|
 | 9.1.2026   | 9     | - Implemented validations with Zod<br>- Updated tests<br>- Implemented login, access token control, logout|
@@ -41,5 +41,5 @@
 | 13.6.2026  | 2     | - BE for removing cards and user<br>- Connect remove button<br>- Settings refactor|
 | 23.6.2026  | 5     | - Completed user removal in profile settings<br>- Postcard refactor<br>- BE: get all public cards<br>- FE: display public cards in community tab, add creator info<br>- Store colors to local storage<br>- Loading screen for APIs<br>- Enhanced logging<br>- Misc fixes|
 | 26.6.2026  | 5     | - Deployment and production fixes|
-| 29.6.2026  | 4    | - Adaptations to mobile screens<br>-Documentation<br>-Fixes to making book and recipe optional|
-| **Total**  | **186** ||
+| 29.6.2026  | 4    | - Adaptations to mobile screens<br>- Documentation<br>- Fixes to making book and recipe optional|
+| **Total**  | **191** ||
