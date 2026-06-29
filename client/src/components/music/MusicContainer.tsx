@@ -46,6 +46,7 @@ const TopMusicSection = () => {
   });
   const [pendingRecommendationRequest, setPendingRecommendationRequest] =
     useState<RecommendationRequest | null>(null);
+  const [activeTab, setActiveTab] = useState<'playlists' | 'tracks' | 'artists'>('playlists');
 
   const [
     fetchRecommendations,
@@ -265,7 +266,7 @@ const TopMusicSection = () => {
 
   return (
     <div
-      className="mb-8 max-h-90 rounded-2xl border border-white/20 bg-white/10 p-3 pl-5
+      className="mb-8 mx-2 max-h-90 rounded-2xl border border-white/20 bg-white/10 p-3 pl-5
       text-white backdrop-blur-sm">
       <div className="mb-4 flex flex-wrap items-start justify-between gap-4">
         <div>
@@ -282,36 +283,58 @@ const TopMusicSection = () => {
           </button>
         </div>
       </div>
+      {/* Tab toggle — visible only on small screens */}
+      <div className="flex gap-2 mb-3 lg:hidden">
+        {(['playlists', 'tracks', 'artists'] as const).map((tab) => (
+          <button
+            key={tab}
+            type="button"
+            onClick={() => setActiveTab(tab)}
+            className={`rounded-full border px-3 py-1 text-xs font-semibold capitalize transition
+              ${activeTab === tab
+                ? 'border-white/30 bg-white/20 text-white'
+                : 'border-white/15 text-white/55 hover:text-white/80'}`}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
       <div className="grid gap-6 lg:grid-cols-3 pr-2">
-        <MusicRecommendations
-          title="Playlists"
-          emptyMessage="No playlists matched this set of cues."
-          content={
-            hasPlaylists ? (
-              <div
-                className="max-h-40 space-y-2 overflow-y-auto pr-1 scrollbar-thin
-                  scrollbar-track-transparent scrollbar-thumb-white/20">
-                {recommendations.playlists.map((playlist) => (
-                  <MusicPlaylistCard
-                    key={playlist.id}
-                    playlist={playlist}
-                    selected={isSelected({ kind: 'playlist', playlist })}
-                    onSelect={(item) => toggleMusicSelection({ kind: 'playlist', playlist: item })}
-                  />
-                ))}
-              </div>
-            ) : null
-          }
-        />
+        <div className={activeTab !== 'playlists' ? 'hidden lg:block' : ''}>
+          <MusicRecommendations
+            title="Playlists"
+            emptyMessage="No playlists matched this set of cues."
+            content={
+              hasPlaylists ? (
+                <div
+                  className="max-h-30 md:max-h-40 max-w-70 sm:max-w-full space-y-2 overflow-y-auto
+                    pr-1 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20">
+                  {recommendations.playlists.map((playlist) => (
+                    <MusicPlaylistCard
+                      key={playlist.id}
+                      playlist={playlist}
+                      selected={isSelected({ kind: 'playlist', playlist })}
+                      onSelect={(item) => toggleMusicSelection({
+                        kind: 'playlist',
+                        playlist: item
+                      })}
+                    />
+                  ))}
+                </div>
+              ) : null
+            }
+          />
+        </div>
 
+        <div className={activeTab !== 'tracks' ? 'hidden lg:block' : ''}>
           <MusicRecommendations
             title="Tracks"
             emptyMessage="No tracks matched this set of cues."
             content={
               hasTracks ? (
                 <div
-                  className="max-h-40 space-y-2 overflow-y-auto pr-1 scrollbar-thin
-                    scrollbar-track-transparent scrollbar-thumb-white/20">
+                  className="max-h-30 md:max-h-40 max-w-70 sm:max-w-full space-y-2 overflow-y-auto
+                    pr-1 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20">
                   {recommendations.tracks.map((track) => (
                     <MusicTrackCard
                       key={track.id}
@@ -324,15 +347,18 @@ const TopMusicSection = () => {
               ) : null
             }
           />
+        </div>
 
+        <div className={activeTab !== 'artists' ? 'hidden lg:block' : ''}>
           <MusicRecommendations
             title="Artists"
             emptyMessage="No artists matched this set of cues."
             content={
               hasArtists ? (
-                  <div
-                    className="max-h-40 flex flex-nowrap gap-2 overflow-x-auto overflow-y-hidden
-                      pr-1 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20">
+                <div
+                  className="max-h-30 md:max-h-40 max-w-70 sm:max-w-full flex flex-nowrap gap-2
+                    overflow-x-auto overflow-y-hidden pr-1 scrollbar-thin
+                    scrollbar-track-transparent scrollbar-thumb-white/20">
                   {recommendations.artists.map((artist) => (
                     <MusicArtistCard
                       key={artist.id}
@@ -345,6 +371,7 @@ const TopMusicSection = () => {
               ) : null
             }
           />
+        </div>
       </div>
     </div>
   );

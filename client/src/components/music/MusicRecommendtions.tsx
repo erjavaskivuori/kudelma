@@ -10,7 +10,7 @@ interface MusicRecommendationsProps {
 const MusicRecommendations = ({ title, emptyMessage, content }: MusicRecommendationsProps) => {
   return (
     <section
-      className="rounded-3xl border max-h-65 border-white/15 bg-black/10 p-4 shadow-sm
+      className="rounded-3xl border max-h-50 md:max-h-90 border-white/15 bg-black/10 p-4 shadow-sm
         shadow-black/10 backdrop-blur-sm">
       <div className="mb-2 flex items-end justify-between gap-3">
         <div>

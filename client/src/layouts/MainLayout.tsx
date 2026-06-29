@@ -5,7 +5,7 @@ const MainLayout = () => {
   return (
     <div className="min-h-screen bg-(--color-extra-dark)">
       <TopBar />
-      <main className="mx-auto px-10 py-2">
+      <main className="mx-auto px-1 md:px-10 py-2">
         <Outlet />
       </main>
     </div>
