@@ -11,23 +11,36 @@ This file provides guiding to setup development environment with Docker.
 
 1. Setup environment variables
 
-    The application uses OpenWeather API, Google Gemini API and Spoonacular API,
-    which require an API key. In addition you need to setup a port for the
-    backend, and database URL.
+    The application uses OpenWeather, Google Gemini and Spotify, Spoonacular APIs,
+    which require an API key.
 
     The prompt for Gemini is also defined as an environment variable. Gemini is
-    used to create keywords to fetch data from 3rd party APIs.
+    used to create keywords to fetch data from 3rd party APIs. If the API is for
+    any reason unreachable, the fallback keywords will be used.
 
     ```env
     PORT=3001
+    API_URL=http://127.0.0.1:8080/api
+    NODE_ENV=development
+
     OPEN_WEATHER_API_KEY=<your-api-key>
     GEMINI_API_KEY=<your-api-key>
     SPOONACULAR_API_KEY=<your-api-key>
+    SPOTIFY_CLIENT_ID=<your-client-id>
+    SPOTIFY_CLIENT_SECRET=<your-client-secret>
+
     DATABASE_URL="postgresql://postgres:prisma@postgres:5432/postgres"
     REDIS_URL=<your-redis-url>
     JWT_SECRET=<your-jwt-secret>
 
     GENAI_PROMPT=""
+    GENAI_MUSIC_PROMPT=""
+
+    FALLBACK_KEYWORDS_SPRING={"colors":[],"books":[],"music":[],"art":[],"recipes":[]}
+    FALLBACK_KEYWORDS_SUMMER={"colors":[],"books":[],"music":[],"art":[],"recipes":[]}
+    FALLBACK_KEYWORDS_AUTUMN={"colors":[],"books":[],"music":[],"art":[],"recipes":[]}
+    FALLBACK_KEYWORDS_WINTER={"colors":[],"books":[],"music":[],"art":[],"recipes":[]}
+
     ```
 
     >INFO: `postgres:5432` works only with Docker. If running locally, use
@@ -56,6 +69,8 @@ This file provides guiding to setup development environment with Docker.
 
     This command runs the script located at `./script/dev_start.sh`. It starts
     the services defined in `docker-compose.dev.yaml`.
+
+    View the running application at http://127.0.0.1:8080/
 
     To stop the containers you can use `CTRL + C`.
 
