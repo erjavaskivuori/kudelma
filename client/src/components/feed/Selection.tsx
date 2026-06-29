@@ -89,7 +89,7 @@ const Selection = ({ weather }: SelectionProps) => {
   };
 
   return (
-    <div className="flex items-end gap-4 p-4">
+    <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4 p-4">
       {/* Stack selected cards */}
       {selectedCards.length > 0 && (
         <div className="relative flex items-end h-32">
